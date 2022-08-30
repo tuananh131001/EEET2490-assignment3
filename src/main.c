@@ -2,10 +2,6 @@
 // -------------------------------------
 #include "mbox.h"
 #include "uart.h"
-// include welcome
-#include "printf.h"
-#include "quest_a.h"
-#include "quest_b.h"
 
 void main() {
     // set up serial console
