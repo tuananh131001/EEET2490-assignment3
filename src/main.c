@@ -1,42 +1,27 @@
 // -----------------------------------main.c
 // -------------------------------------
+#include "framebf.h"
 #include "mbox.h"
 #include "uart.h"
-
 void main() {
-    // set up serial console
     uart_init();
+    fb_init();
 
-    // welcome
-    print_welcome();
+    drawRect(150, 150, 400, 400, 0x03, 0);
+    drawRect(300, 300, 350, 350, 0x2e, 1);
 
-    uart_puts("\n\n");
-    /*
-    Test with repl.it:
-Decimals: 1977
-Characters: a A 
-String: Hello 
-Float: 3.142
-Hex: 64
-Octal: 144
-Percent: %
-Width:       3232
-Check precious: 32.14 
-*/
-    printf("Decimals: %d\n", 1977);
-    printf("Characters: %c %c \n", 'a', 65);
-    printf("String: %s \n", "Hello");
-    printf("Float: %f \n", 3.14159265);
-    printf("Hex: %x\n", 100);
-    printf("Octal: %o\n", 100);
-    printf("Percent: %%\n");
-    printf("Width: %10d ", 3232);
-    printf("\nCheck precious: %.2f \n", 32.1416);
+    drawCircle(960, 540, 250, 0x0e, 0);
+    drawCircle(960, 540, 50, 0x13, 1);
 
+    drawPixel(250, 250, 0x0e);
 
-    while (1) {
-        get_command();
-    }
+    drawChar('O', 500, 500, 0x05);
+    drawString(100, 100, "Hello world!", 0x0f);
+
+    drawLine(100, 500, 350, 700, 0x0c);
+
+    while (1)
+        ;
 }
 
 // #include "uart.h"
