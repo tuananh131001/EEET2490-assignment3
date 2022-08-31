@@ -20,9 +20,9 @@ void main() {
     // drawString(100, 120, "Vo Quoc Huy - s3823236", 0x0f);
 
     // drawLine(100, 500, 350, 700, 0x0c);
-    Entity player;
-    init_player(&player);
-    drawEntity(player);
+    Game game;
+    init_game(&game);
+    render(&game.world);
     // while (1)
     //     ;
 }
