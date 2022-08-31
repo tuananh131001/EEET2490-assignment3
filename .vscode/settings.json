@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "*.js": "javascriptreact",
-        "terminal.h": "c"
+        "terminal.h": "c",
+        "game.h": "c"
     }
 }
