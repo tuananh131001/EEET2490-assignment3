@@ -83,6 +83,7 @@ void drawRect(int x1, int y1, int x2, int y2, unsigned char attr, int fill) {
         y++;
     }
 }
+// Draw an object like ship , alien with pixel data in object.h
 void drawEntity(Entity entity) {
     int *colorptr;
     int width = entity.dimension.width;
@@ -92,8 +93,30 @@ void drawEntity(Entity entity) {
     int oldX = x;
     int y = entity.position.y;
 
-    colorptr = (int *)blue_ship_sprite.image_pixels;
+    if (entity.type == PAWN) colorptr = (int *)pawn_sprite.image_pixels;
+    // else if (entity.type == KNIGHT)
+    //     colorptr = (int *)knight_sprite.image_pixels;
+    // else if (entity.type == QUEEN)
+    //     colorptr = (int *)queen_sprite.image_pixels;
+    else if (entity.type == PLAYER)
+        colorptr = (int *)blue_ship_sprite.image_pixels;
+    // else if (entity.type == BUNKER) {
+    //     if (entity.health.current_health <= BUNKER_HEALTH / 3) {
+    //         colorptr = (int *)bunker_3.image_pixels;
+    //         width = bunker_3.width;
+    //         height = bunker_3.height;
+    //     } else if (entity.health.current_health <= BUNKER_HEALTH / 2) {
+    //         colorptr = (int *)bunker_2.image_pixels;
+    //         width = bunker_2.width;
+    //         height = bunker_2.height;
+    //     } else {
+    //         colorptr = (int *)bunker_1.image_pixels;
+    //         width = bunker_1.width;
+    //         height = bunker_1.height;
+    //     }
+    // }
 
+    // draw in 2D
     for (int i = 0; i < (width * height); i++) {
         x++;
         if (i % width == 0) {
