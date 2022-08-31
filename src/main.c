@@ -3,6 +3,7 @@
 #include "framebf.h"
 #include "mbox.h"
 #include "uart.h"
+#include "display_image.h"
 void main() {
     uart_init();
     fb_init();
@@ -16,6 +17,9 @@ void main() {
     // drawPixel(250, 250, 0x0e);
 
     // drawChar('O', 500, 500, 0x05);
+
+    // displayTomImage(500,100);
+ 
     // drawString(100, 100, "Nguyen Tuan Anh - s3864077", 0x0f);
     // drawString(100, 120, "Vo Quoc Huy - s3823236", 0x0f);
 
