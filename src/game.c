@@ -7,10 +7,12 @@ void init_game(Game *world) {
     fb_init();
 }
 
+// Create the stage
 void init_map(World *world) { 
     init_player(&world->player); 
     init_enemies(world);
     }
+// Setting the value for player
 void init_player(Entity *player) {
     player->dimension.height = blue_ship_sprite.height;
     player->dimension.width = blue_ship_sprite.width;
@@ -19,6 +21,7 @@ void init_player(Entity *player) {
     player->type = PLAYER;
 }
 
+// Setting the value for aliens
 void init_enemies(World *world) {
     for (int i = 0, j = 0; i < NUM_ENEMIES; i++) {
         if (i < 10) {
@@ -50,6 +53,7 @@ void init_enemies(World *world) {
     // }
 }
 
+// Draw the enity using the data has set
 void render(World *world) {
     drawEntity(world->player);
     for (int i = 0; i < NUM_ENEMIES; i++) {
