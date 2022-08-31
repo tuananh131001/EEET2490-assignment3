@@ -2,6 +2,7 @@
     "files.associations": {
         "*.js": "javascriptreact",
         "terminal.h": "c",
-        "game.h": "c"
+        "game.h": "c",
+        "random": "c"
     }
 }

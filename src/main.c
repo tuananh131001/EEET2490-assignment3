@@ -3,10 +3,14 @@
 #include "framebf.h"
 #include "mbox.h"
 #include "uart.h"
+#include "display_image.h"
 void main() {
     uart_init();
     fb_init();
-
+    int screen_width = 1200;
+    int screen_height = 768;
+    int x_coordinate = 50;
+    int y_coordinate =100;
     // drawRect(150, 150, 400, 400, 0x03, 0);
     // drawRect(300, 300, 350, 350, 0x2e, 1);
 
@@ -16,13 +20,17 @@ void main() {
     // drawPixel(250, 250, 0x0e);
 
     // drawChar('O', 500, 500, 0x05);
+
+    // displayTomImage(x_coordinate,100);
+    // controlTomJerryImage(x_coordinate,y_coordinate);
+ 
     // drawString(100, 100, "Nguyen Tuan Anh - s3864077", 0x0f);
     // drawString(100, 120, "Vo Quoc Huy - s3823236", 0x0f);
 
     // drawLine(100, 500, 350, 700, 0x0c);
-    Game game;
-    init_game(&game);
-    render(&game.world);
+    // Game game;
+    // init_game(&game);
+    // render(&game.world);
     // while (1)
     //     ;
 }
