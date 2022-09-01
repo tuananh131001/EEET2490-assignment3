@@ -13,14 +13,14 @@ void fb_init() {
     mBuf[2] = MBOX_TAG_SETPHYWH;  // Tag identifier
     mBuf[3] = 8;                  // Value size in bytes
     mBuf[4] = 0;
-    mBuf[5] = 1200;  // Value(width)
-    mBuf[6] = 800;  // Value(height)
+    mBuf[5] = 1024;  // Value(width)
+    mBuf[6] = 768;  // Value(height)
 
     mBuf[7] = MBOX_TAG_SETVIRTWH;
     mBuf[8] = 8;
     mBuf[9] = 8;
-    mBuf[10] = 1200;
-    mBuf[11] = 800;
+    mBuf[10] = 1024;
+    mBuf[11] = 768;
 
     mBuf[12] = MBOX_TAG_SETVIRTOFF;
     mBuf[13] = 8;
@@ -213,3 +213,18 @@ void drawString(int x, int y, char *s, unsigned char attr) {
     }
 }
 
+// Draw list of frame images in video
+void display_frame_image(unsigned int frame_image[], int x, int y, int width, int height)
+{
+	int num = 0;
+
+    while ( y < height){
+        for (x = 0; x < width; x++){
+            int offs = (y * pitch) + (x * 4);
+			*((unsigned int *)(fb + offs)) = frame_image[num];
+            num++;
+        }
+        y++;
+		x = 0;
+    }
+}
