@@ -28,7 +28,7 @@ void displayTomAndJerryVideo(int x, int y)
     uart_puts("Press s to stop ");
     char character = uart_get_char();
     // Keep displaying the video until the user press s
-    while (character != 's')
+    while (1)
     {
         // loop through all the frame image video
         for (int i = 0; i < 15; i ++) {

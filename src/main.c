@@ -25,9 +25,11 @@ void main() {
     // drawString(100, 100, "Nguyen Tuan Anh - s3864077", 0x0f);
     // drawString(100, 120, "Vo Quoc Huy - s3823236", 0x0f);
     // drawLine(100, 500, 350, 700, 0x0c);
-    // Game game;
-    // init_game(&game);
-    // render(&game.world);
+    Game game;
+    init_game(&game);
+    render(&game.world);
+    move_player(&game.world.player);
+
     // displayTomAndJerryVideo(x_coordinate,y_coordinate);
 
     // while (1){
