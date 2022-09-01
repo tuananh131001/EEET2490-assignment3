@@ -73,6 +73,22 @@ char uart_getc() {
 }
 
 /**
+ * Get a character with if
+ */
+char uart_get_char()
+{
+    char c;
+    if (!(*AUX_MU_LSR & 0x01))
+        asm volatile("nop");
+
+    /* read it and return */
+    c = (char)(*AUX_MU_IO);
+
+    /* convert carriage return to newline */
+    return (c == '\r' ? '\n' : c);
+}
+
+/**
  * Display a string
  */
 void uart_puts(char *s) {

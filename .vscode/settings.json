@@ -3,6 +3,7 @@
         "*.js": "javascriptreact",
         "terminal.h": "c",
         "game.h": "c",
-        "random": "c"
+        "random": "c",
+        "test_video.h": "c"
     }
 }
