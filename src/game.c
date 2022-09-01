@@ -23,7 +23,6 @@ void init_player(Entity *player) {
 }
 
 // Move player
-
 void move_player(World *world) {
     uart_puts("Press a to move left: \n");
     uart_puts("Press d to move right: \n");
@@ -36,8 +35,7 @@ void move_player(World *world) {
             clear_emulator_screen(1280,720);
             uart_puts("has been left");  // print the received char
             move_entity(&world->player, LEFT);
-            update_player_position(&world);
-            world->player.position.x += -10;
+            update_player_position(world);
             drawEntity(world->player);
         }
         // if character = s, scroll down -> screen down
