@@ -73,5 +73,3 @@ void render(World *world); // framebf.c
 void move_player(World *world);
 
 void clear(Entity entity);
-void *updateRender(void *arg);
-void *updateWorld(void *arg);

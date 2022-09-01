@@ -29,8 +29,7 @@ void main() {
     init_game(&game);
     render(&game.world);
     move_player(&game.world.player);
-    updateWorld(&game);
-    updateRender(&game);
+
     // displayTomAndJerryVideo(x_coordinate,y_coordinate);
 
     // while (1){
