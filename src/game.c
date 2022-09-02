@@ -1,5 +1,4 @@
 #include "game.h"
-
 #include "helper.h"
 #include "object.h"
 
@@ -14,6 +13,7 @@ void init_map(World *world)
 {
     init_player(&world->player);
     init_enemies(world);
+    init_life(&world->life);
 }
 // Setting the value for player
 void init_player(Entity *player)
@@ -22,6 +22,8 @@ void init_player(Entity *player)
     player->dimension.width = blue_ship_sprite.width;
     player->position.x = (MAP_WIDTH / 2) - (player->dimension.width / 2);
     player->position.y = MAP_HEIGHT - 162;
+    player->health.current_health = 5;
+    player->needs_render = false;
     player->type = PLAYER;
 }
 
@@ -211,6 +213,34 @@ void init_enemies(World *world)
 void render(World *world)
 {
     drawEntity(world->player);
+    int w;
+    int chealth = (world->player.health.current_health);
+    if (chealth == 5)
+    {
+        w = 150;
+    }
+    else if (chealth == 4)
+    {
+        w = 120;
+    }
+    else if (chealth == 3)
+    {
+        w = 90;
+    }
+    else if (chealth == 2)
+    {
+        w = 60;
+    }
+    else if (chealth == 1)
+    {
+        w = 30;
+    }
+    else if (chealth == 0)
+    {
+        w = 0;
+    }
+    drawBar(chealth, 100, 700, w);
+
     // for (int i = 0; i < NUM_ENEMIES; i++) {
     //     drawEntity(world->enemies[i]);
     // }
@@ -240,4 +270,30 @@ void clear(Entity entity)
         }
         clear_emulator_screen(x, y);
     }
+}
+
+void clearBar(int health, int x, int y, int w)
+{
+    int width = 150;
+    int height = 33;
+
+    int oldX = x;
+
+    for (int i = 0; i < (width * height); i++)
+    {
+        x++;
+        if (i % width == 0)
+        {
+            y++;
+            x = oldX;
+        }
+        clear_emulator_screen(x, y);
+    }
+}
+
+void init_life(Entity *life)
+{
+    life->health.player_health = 5;
+    life->needs_update = false;
+    life->needs_render = true;
 }

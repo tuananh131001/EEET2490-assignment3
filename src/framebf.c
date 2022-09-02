@@ -127,6 +127,38 @@ void drawEntity(Entity entity) {
     }
 }
 
+void drawBar(int health, int x, int y, int w) {
+    int *colorptr;
+    int width = w;
+    int height = 33;
+
+    int oldX = x;
+    if (health == 5)
+        colorptr = (int *)LIFE100.image_pixels;
+    else if (health == 4)
+        colorptr = (int *)LIFE80.image_pixels;
+    else if (health == 3)
+        colorptr = (int *)LIFE60.image_pixels;
+    else if (health == 2)
+        colorptr = (int *)LIFE40.image_pixels;
+    else if (health == 1)
+        colorptr = (int *)LIFE20.image_pixels;
+
+
+    for (int i = 0; i < (width * height); i++) {
+        x++;
+        if (i % width == 0) {
+            y++;
+            x = oldX;
+        }
+        drawPixel(x, y, colorptr[i]);
+    }
+
+    
+}
+
+
+
 void drawLine(int x1, int y1, int x2, int y2, unsigned char attr) {
     int dx, dy, p, x, y;
 
@@ -228,3 +260,4 @@ void display_frame_image(unsigned int frame_image[], int x, int y, int width, in
 		x = 0;
     }
 }
+

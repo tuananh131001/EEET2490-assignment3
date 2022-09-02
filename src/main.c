@@ -27,6 +27,7 @@ void main() {
     // drawLine(100, 500, 350, 700, 0x0c);
     Game game;
     init_game(&game);
+    
     render(&game.world);
     move_player(&game.world.player);
 
