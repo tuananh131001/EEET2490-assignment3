@@ -10,6 +10,10 @@
 #define HORIZONTAL_OFFSET 61
 #define VERTICAL_OFFSET 61
 
+#define TOP_MAX 162
+#define MAX_BULLETS 10
+#define BULLET_VELOCITY 15
+
 #define MAP_WIDTH 1024
 #define MAP_HEIGHT 768
 
@@ -29,9 +33,14 @@ typedef struct {
 
 typedef struct { float x, y; } Velocity;
 
-
-
 typedef enum { PLAYER = 1, PAWN = 2 } Type;
+
+typedef struct {
+    Position position;
+    Position previous_pos;
+    Velocity velocity;
+    Dimension dimension;
+} Missile;
 /* ship, alien, bunker */
 typedef struct {
     Velocity velocity;
@@ -39,6 +48,7 @@ typedef struct {
     Position position;
     Position previous_pos;
     bool needs_render;
+    Missile projectile[MAX_BULLETS];
     Type type;
     Health health;
     bool needs_update;
@@ -74,5 +84,11 @@ void init_enemies(World *world);
 void init_life(Entity *life);
 void render(World *world); // framebf.c
 void move_player(World *world);
+
+void entity_shoot(Entity *entity, Direction direction) ;
+Missile* create_bullet(Entity owner);
+void move_bullet(Missile *projectile, Direction direction);
+void *memcpy(void *dest, const void *src, unsigned long n);
+void draw_projectile(Type type, Position position, Dimension dimension) ;
 
 void clear(Entity entity);
