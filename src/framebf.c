@@ -14,7 +14,7 @@ void fb_init() {
     mBuf[3] = 8;                  // Value size in bytes
     mBuf[4] = 0;
     mBuf[5] = 1024;  // Value(width)
-    mBuf[6] = 768;  // Value(height)
+    mBuf[6] = 768;   // Value(height)
 
     mBuf[7] = MBOX_TAG_SETVIRTWH;
     mBuf[8] = 8;
@@ -92,7 +92,6 @@ void drawEntity(Entity entity) {
     int x = entity.position.x;
     int oldX = x;
     int y = entity.position.y;
-
     if (entity.type == PAWN) colorptr = (int *)pawn_sprite.image_pixels;
     // else if (entity.type == KNIGHT)
     //     colorptr = (int *)knight_sprite.image_pixels;
@@ -142,11 +141,7 @@ void drawBar(int health, int x, int y) {
         }
         drawPixel(x, y, colorptr[i]);
     }
-
-    
 }
-
-
 
 void drawLine(int x1, int y1, int x2, int y2, unsigned char attr) {
     int dx, dy, p, x, y;
@@ -235,18 +230,17 @@ void drawString(int x, int y, char *s, unsigned char attr) {
 }
 
 // Draw list of frame images in video
-void display_frame_image(unsigned int frame_image[], int x, int y, int width, int height)
-{
-	int num = 0;
+void display_frame_image(unsigned int frame_image[], int x, int y, int width,
+                         int height) {
+    int num = 0;
 
-    while ( y < height){
-        for (x = 0; x < width; x++){
+    while (y < height) {
+        for (x = 0; x < width; x++) {
             int offs = (y * pitch) + (x * 4);
-			*((unsigned int *)(fb + offs)) = frame_image[num];
+            *((unsigned int *)(fb + offs)) = frame_image[num];
             num++;
         }
         y++;
-		x = 0;
+        x = 0;
     }
 }
-
