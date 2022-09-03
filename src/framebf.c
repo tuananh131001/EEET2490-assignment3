@@ -127,6 +127,27 @@ void drawEntity(Entity entity) {
     }
 }
 
+void drawBar(int health, int x, int y) {
+    int *colorptr;
+    int width = 40;
+    int height = 40;
+
+    int oldX = x;
+    colorptr = (int *)blue_ship_sprite.image_pixels;
+    for (int i = 0; i < (width * height); i++) {
+        x++;
+        if (i % width == 0) {
+            y++;
+            x = oldX;
+        }
+        drawPixel(x, y, colorptr[i]);
+    }
+
+    
+}
+
+
+
 void drawLine(int x1, int y1, int x2, int y2, unsigned char attr) {
     int dx, dy, p, x, y;
 
@@ -228,3 +249,4 @@ void display_frame_image(unsigned int frame_image[], int x, int y, int width, in
 		x = 0;
     }
 }
+
