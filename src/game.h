@@ -40,6 +40,7 @@ typedef struct {
     Position previous_pos;
     bool needs_render;
     Type type;
+    Health health;
     bool needs_update;
     bool enabled;
 } Entity;
@@ -47,6 +48,8 @@ typedef struct {
 typedef struct map {
     Entity player;
     Entity enemies[NUM_ENEMIES];
+    Entity life;
+
 } World;
 
 typedef struct {
@@ -68,7 +71,7 @@ void init_map(World *world);
 
 void init_player(Entity *player);
 void init_enemies(World *world);
-
+void init_life(Entity *life);
 void render(World *world); // framebf.c
 void move_player(World *world);
 

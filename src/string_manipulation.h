@@ -8,3 +8,5 @@ int string_contains();
 int string_to_integer();
 void string_split();
 int array_length();
+void integer_to_string(int n, char *str);
+char integer_to_character(int n);
