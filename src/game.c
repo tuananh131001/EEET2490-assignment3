@@ -1,6 +1,7 @@
 #include "game.h"
 #include "helper.h"
 #include "object.h"
+#include "string_manipulation.h"
 
 void init_game(Game *world)
 {
@@ -22,7 +23,7 @@ void init_player(Entity *player)
     player->dimension.width = blue_ship_sprite.width;
     player->position.x = (MAP_WIDTH / 2) - (player->dimension.width / 2);
     player->position.y = MAP_HEIGHT - 162;
-    player->health.current_health = 5;
+    player->health.current_health = 1;
     player->needs_render = false;
     player->type = PLAYER;
 }
@@ -48,6 +49,7 @@ void move_player(World *world)
             move_entity(&world->player, LEFT);
             update_player_position(world, type);
             drawEntity(world->player);
+            render_health(world);
         }
         // if character = s, scroll down -> screen down
         else if (character == 'd')
@@ -57,6 +59,8 @@ void move_player(World *world)
             move_entity(&world->player, RIGHT);
             update_player_position(world, type);
             drawEntity(world->player);
+            render_health(world);
+
         }
         else if (character == 'w')
         {
@@ -65,6 +69,7 @@ void move_player(World *world)
             move_entity(&world->player, UP);
             update_player_position(world, type);
             drawEntity(world->player);
+            render_health(world);
         }
         else if (character == 's')
         {
@@ -74,6 +79,8 @@ void move_player(World *world)
             move_entity(&world->player, DOWN);
             update_player_position(world, type);
             drawEntity(world->player);
+            render_health(world);
+
         }
     }
 }
@@ -126,10 +133,10 @@ void update_player_position(World *world, char *type)
             world->player.position.y = 0;
         }
         // Check the current y position is at the bottom edge
-        else if (world->player.position.y + world->player.velocity.y > MAP_HEIGHT - world->player.dimension.height)
+        else if (world->player.position.y + world->player.velocity.y > 720 - world->player.dimension.height)
         {
             // Update vertical position
-            world->player.position.y = MAP_HEIGHT - world->player.dimension.height;
+            world->player.position.y = 720 - world->player.dimension.height;
         }
         else
         { // Update vertical position
@@ -213,33 +220,10 @@ void init_enemies(World *world)
 void render(World *world)
 {
     drawEntity(world->player);
-    int w;
-    int chealth = (world->player.health.current_health);
-    if (chealth == 5)
-    {
-        w = 150;
-    }
-    else if (chealth == 4)
-    {
-        w = 120;
-    }
-    else if (chealth == 3)
-    {
-        w = 90;
-    }
-    else if (chealth == 2)
-    {
-        w = 60;
-    }
-    else if (chealth == 1)
-    {
-        w = 30;
-    }
-    else if (chealth == 0)
-    {
-        w = 0;
-    }
-    drawBar(chealth, 100, 700, w);
+    render_health(world);
+        
+
+    
 
     // for (int i = 0; i < NUM_ENEMIES; i++) {
     //     drawEntity(world->enemies[i]);
@@ -249,6 +233,35 @@ void render(World *world)
     // drawEntity(world->player);
     // world->player.needs_render = false;
     // }
+}
+
+void render_health(World *world){
+    int chealth = (world->player.health.current_health);
+    char* health = integer_to_character(chealth);
+    drawLine(0, 720, 1024, 720, 0x0c);
+    drawChar(health, 20, 730, 0x0c);
+
+     if (chealth == 3)
+    {
+        drawBar(5, 60, 720);
+        drawBar(5, 110, 720);
+        drawBar(5, 160, 720);
+
+    }
+    else if (chealth == 2)
+    {
+        drawBar(5, 60, 720);
+        drawBar(5, 110, 720);
+    }
+    else if (chealth == 1)
+    {
+        drawBar(5, 60, 720);
+
+    }
+    else if (chealth == 0)
+    {
+        clear_emulator_screen(60, 720);
+    }
 }
 
 void clear(Entity entity)
@@ -272,9 +285,9 @@ void clear(Entity entity)
     }
 }
 
-void clearBar(int health, int x, int y, int w)
+void clearBar(int x, int y)
 {
-    int width = 150;
+    int width = 200;
     int height = 33;
 
     int oldX = x;

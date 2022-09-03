@@ -18,13 +18,12 @@ void main() {
 
     // drawPixel(250, 250, 0x0e);
 
-    // drawChar('O', 500, 500, 0x05);
+    
 
     // controlTomJerryImage(x_coordinate,y_coordinate);
  
     // drawString(100, 100, "Nguyen Tuan Anh - s3864077", 0x0f);
     // drawString(100, 120, "Vo Quoc Huy - s3823236", 0x0f);
-    // drawLine(100, 500, 350, 700, 0x0c);
     Game game;
     init_game(&game);
     

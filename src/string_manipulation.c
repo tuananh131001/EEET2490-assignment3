@@ -198,6 +198,10 @@ void integer_to_string(int n, char *str)
   }
 }
 
-
+// Generate a function to convert integer to character
+char integer_to_character(int n)
+{
+  return n + '0';
+}
 
 

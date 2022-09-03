@@ -127,24 +127,13 @@ void drawEntity(Entity entity) {
     }
 }
 
-void drawBar(int health, int x, int y, int w) {
+void drawBar(int health, int x, int y) {
     int *colorptr;
-    int width = w;
-    int height = 33;
+    int width = 40;
+    int height = 40;
 
     int oldX = x;
-    if (health == 5)
-        colorptr = (int *)LIFE100.image_pixels;
-    else if (health == 4)
-        colorptr = (int *)LIFE80.image_pixels;
-    else if (health == 3)
-        colorptr = (int *)LIFE60.image_pixels;
-    else if (health == 2)
-        colorptr = (int *)LIFE40.image_pixels;
-    else if (health == 1)
-        colorptr = (int *)LIFE20.image_pixels;
-
-
+    colorptr = (int *)blue_ship_sprite.image_pixels;
     for (int i = 0; i < (width * height); i++) {
         x++;
         if (i % width == 0) {
