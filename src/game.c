@@ -23,8 +23,12 @@ void init_player(Entity *player) {
     player->position.x = (MAP_WIDTH / 2) - (player->dimension.width / 2);
     player->position.y = MAP_HEIGHT - 162;
     player->health.current_health = 1;
-    player->needs_render = false;
     player->type = PLAYER;
+    player->needs_update = true;
+    player->needs_render = true;
+    player->needs_clear = false;
+    player->combat_update = false;
+    player->enabled = true;
 }
 
 // Move player
@@ -74,25 +78,11 @@ void move_player(World *world) {
             render_health(world);
         } else if (character == ' ') {
             char *type = "shoot";
-            uart_puts("This is space");
-            clear_emulator_screen(1024, 768);
             entity_shoot(&world->player, UP);
             update_player_position(world, type);
             drawEntity(world->player);
-            for (int i = 0; i < MAX_BULLETS; i++) {
-                Type type = world->player.type;
-                // if (world->player.projectile[i].needs_render) {
-                // clear_projectile(world->player.projectile[i].previous_pos,
-                //                  world->player.projectile[i].dimension);
-                draw_projectile(type, world->player.projectile[i].position,
-                                world->player.projectile[i].dimension);
-                // printf("\n%f", world->player.projectile[i].position.x);
-                // } else if (world->player.projectile[i].needs_clear) {
-                //     clear_projectile(world->player.projectile[i].position,
-                //                      world->player.projectile[i].dimension);
-                //     world->player.projectile[i].needs_clear = false;
-                // }
-            }
+            draw_projectile(world->player.type, world->player.projectile[0].position,
+                            world->player.projectile[0].dimension);
         }
     }
 }
@@ -174,21 +164,21 @@ void update_player_position(World *world, char *type) {
         }
     } else if (type == "shoot") {
         for (int i = 0; i < MAX_BULLETS; i++) {
-            // if (world->player.projectile[i].needs_update) {
-            // if (world->player.projectile[i].position.y > TOP_MAX) {
-            world->player.projectile[i].previous_pos =
-                world->player.projectile[i].position;
-            world->player.projectile[i].position.x +=
-                world->player.projectile[i].velocity.x;
-            world->player.projectile[i].position.y +=
-                world->player.projectile[i].velocity.y;
-            // world->player.projectile[i].needs_render = true;
-            // } else {
-            //     world->player.projectile[i].needs_render = false;
-            //     world->player.projectile[i].active = false;
-            //     world->player.projectile[i].needs_clear = true;
-            // }
-            // }
+            if (world->player.projectile[i].needs_update) {
+                if (world->player.projectile[i].position.y > TOP_MAX) {
+                    world->player.projectile[i].previous_pos =
+                        world->player.projectile[i].position;
+                    world->player.projectile[i].position.x +=
+                        world->player.projectile[i].velocity.x;
+                    world->player.projectile[i].position.y +=
+                        world->player.projectile[i].velocity.y;
+                    world->player.projectile[i].needs_render = true;
+                } else {
+                    world->player.projectile[i].needs_render = false;
+                    world->player.projectile[i].active = false;
+                    world->player.projectile[i].needs_clear = true;
+                }
+            }
         }
     }
     // world->player.position.x += world->player.velocity.x;
@@ -206,6 +196,8 @@ void entity_shoot(Entity *entity, Direction direction) {
     for (int i = 0; i < MAX_BULLETS; i++) {
         // if (!entity->projectile[i].active) {
         // entity->projectile[i] = *create_bullet(*entity);
+
+        // Initial a bullet
         entity->projectile[i].position.x =
             entity->position.x + (entity->dimension.width / 2);
         if (entity->type == PLAYER)
@@ -222,25 +214,6 @@ void entity_shoot(Entity *entity, Direction direction) {
         return;
         // }
     }
-}
-
-Missile *create_bullet(Entity owner) {
-    Missile bullet[10];
-    bullet->position.x = owner.position.x + (owner.dimension.width / 2);
-    printf("\n inide create bullet %f\n", owner.position.x);
-    printf("\n%f\n", owner.position.y);
-    printf("\n inide create bullet dimen %f\n", owner.dimension.width);
-    printf("\n inide create bullet dimen %f\n", bullet->position.x);
-
-    if (owner.type == PLAYER)
-        bullet->position.y = owner.position.y - owner.dimension.height;
-    else
-        bullet->position.y = owner.position.y + owner.dimension.height;
-    bullet->dimension.height = red_laser.height;
-    bullet->dimension.width = red_laser.width;
-    printf("\n final inide create bullet dimen %f\n", bullet->position.x);
-
-    return bullet;
 }
 
 void move_bullet(Missile *projectile, Direction direction) {
@@ -289,9 +262,27 @@ void init_enemies(World *world) {
 
 // Draw the enity using the data has set
 void render(World *world) {
-    drawEntity(world->player);
-    render_health(world);
-
+    if (world->player.needs_render && world->player.enabled) {
+        clear(world->player);
+        drawEntity(world->player);
+        world->player.needs_render = false;
+    } else if (world->player.needs_clear) {
+        clear(world->player);
+        world->player.needs_clear = false;
+    }
+    // for (int i = 0; i < MAX_BULLETS; i++) {
+    //     Type type = world->player.type;
+    //     if (world->player.projectile[i].needs_render) {
+    //         clear_projectile(world->player.projectile[i].previous_pos,
+    //                          world->player.projectile[i].dimension);
+    //         draw_projectile(type, world->player.projectile[i].position,
+    //                         world->player.projectile[i].dimension);
+    //     } else if (world->player.projectile[i].needs_clear) {
+    //         clear_projectile(world->player.projectile[i].position,
+    //                          world->player.projectile[i].dimension);
+    //         world->player.projectile[i].needs_clear = false;
+    //     }
+    // }
     // for (int i = 0; i < NUM_ENEMIES; i++) {
     //     drawEntity(world->enemies[i]);
     // }
@@ -300,30 +291,6 @@ void render(World *world) {
     // drawEntity(world->player);
     // world->player.needs_render = false;
     // }
-}
-void draw_projectile(Type type, Position position, Dimension dimension) {
-    int *colorptr;
-    int width = dimension.width;
-    int height = dimension.height;
-
-    // if (type != PLAYER)
-    colorptr = (int *)green_laser.image_pixels;
-    // else
-    //     colorptr = (int *)red_laser.image_pixels;
-
-    int x = position.x;
-    int oldX = x;
-    int y = position.y;
-    printf("/n %d", x);
-    printf("/n %d", y);
-    for (int i = 0; i < (width * height); i++) {
-        x++;
-        if (i % width == 0) {
-            y++;
-            x = oldX;
-        }
-        drawPixel(x, y, colorptr[i]);
-    }
 }
 
 void render_health(World *world) {

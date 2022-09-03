@@ -125,6 +125,45 @@ void drawEntity(Entity entity) {
         drawPixel(x, y, colorptr[i]);
     }
 }
+void clear_projectile(Position position, Dimension dimension) {
+    int width = dimension.width;
+    int height = dimension.height;
+
+    int x = position.x;
+    int oldX = x;
+    int y = position.y;
+
+    for (int i = 0; i < (width * height); i++) {
+        x++;
+        if (i % width == 0) {
+            y++;
+            x = oldX;
+        }
+        drawPixel(width, height, 0);
+    }
+}
+void draw_projectile(Type type, Position position, Dimension dimension) {
+    int *colorptr;
+    int width = dimension.width;
+    int height = dimension.height;
+
+    // if (type != PLAYER)
+    colorptr = (int *)green_laser.image_pixels;
+    // else
+    //     colorptr = (int *)red_laser.image_pixels;
+
+    int x = position.x;
+    int oldX = x;
+    int y = position.y;
+    for (int i = 0; i < (width * height); i++) {
+        x++;
+        if (i % width == 0) {
+            y++;
+            x = oldX;
+        }
+        drawPixel(x, y, colorptr[i]);
+    }
+}
 
 void drawBar(int health, int x, int y) {
     int *colorptr;
@@ -142,6 +181,7 @@ void drawBar(int health, int x, int y) {
         drawPixel(x, y, colorptr[i]);
     }
 }
+
 
 void drawLine(int x1, int y1, int x2, int y2, unsigned char attr) {
     int dx, dy, p, x, y;
