@@ -186,7 +186,7 @@ void drawScore(int num, int value1, int value2) {
     int *colorptr;
     int width = 32;
     int height = 51;
-    printf("num is %d", num);
+    // printf("num is %d", num);
     if (num == 1)
         colorptr = (int *)ONE_IMAGE.image_pixels;
     else if (num == 2)

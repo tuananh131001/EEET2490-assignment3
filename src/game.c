@@ -522,7 +522,7 @@ void render_score(World *world){
         int tens = (world->playerScore.score % 100) / 10;
         int hundreds = (world->playerScore.score % 1000) / 100;
         int thousands = (world->playerScore.score % 10000) / 1000;
-        printf("Score: %d \n", world->playerScore.score);
+        // printf("Score: %d \n", world->playerScore.score);
         // clearScore(thousands, SCORE_ORIGINX, SCORE_ORIGINY);
         // clearScore(hundreds, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
         // clearScore(tens, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
