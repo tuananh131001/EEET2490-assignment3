@@ -1,5 +1,6 @@
 #include "tom_jerry_video.h"
 #include "framebf.h"
+#include "uart.h"
 
 void video_wait_ms(unsigned int n)
 {
