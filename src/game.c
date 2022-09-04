@@ -240,8 +240,7 @@ void entity_shoot(Entity *entity, Direction direction)
     wait_msec(60000);
     for (int i = 0; i < MAX_BULLETS; i++)
     {
-        // if (!entity->projectile[i].active) {
-        // entity->projectile[i] = *create_bullet(*entity);
+        if (!entity->projectile[i].active) {
 
         // Initial a bullet
         entity->projectile[i].position.x =
@@ -261,7 +260,7 @@ void entity_shoot(Entity *entity, Direction direction)
         entity->projectile[i].active = true;
         move_bullet(&entity->projectile[i], direction);
         return;
-        // }
+        }
     }
 }
 
@@ -372,8 +371,8 @@ void update_combat_system(World *world)
             {
                 world->enemies[i].enabled = false;
                 world->enemies[i].needs_clear = true;
-                // world->playerScore.needsRender = true;
-                // update_score(world, world->enemies[i].type);
+                world->playerScore.needsRender = true;
+                update_score(world, world->enemies[i].type);
                 // update_shooters(world, i);
                 // update_left_most(world, i);
                 // update_right_most(world, i);
@@ -419,6 +418,7 @@ void render(World *world)
 {
     wait_msec(60000);
     render_health(world);
+    render_score(world);
     if (world->player.needs_render && world->player.enabled)
     {
         // clear(world->player);
@@ -516,6 +516,27 @@ void render_health(World *world)
     }
 }
 
+void render_score(World *world){
+  if (world->playerScore.needsRender) {
+        int ones = (world->playerScore.score % 10);
+        int tens = (world->playerScore.score % 100) / 10;
+        int hundreds = (world->playerScore.score % 1000) / 100;
+        int thousands = (world->playerScore.score % 10000) / 1000;
+        printf("Score: %d \n", world->playerScore.score);
+        // clearScore(thousands, SCORE_ORIGINX, SCORE_ORIGINY);
+        // clearScore(hundreds, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
+        // clearScore(tens, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
+        // clearScore(ones, SCORE_ORIGINX + SHIFT + SHIFT + SHIFT, SCORE_ORIGINY);
+        // clear_emulator_screen(1024, 768);
+        drawScore(thousands, SCORE_ORIGINX, SCORE_ORIGINY);
+        drawScore(hundreds, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
+        drawScore(tens, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
+        drawScore(ones, SCORE_ORIGINX + SHIFT + SHIFT + SHIFT, SCORE_ORIGINY);
+
+        world->playerScore.needsRender = false;
+    }  
+}
+
 
 
 void init_life(Entity *life)
@@ -524,6 +545,18 @@ void init_life(Entity *life)
     life->needs_update = false;
     life->needs_render = true;
 }
+
+void init_playerScore(Score *playerScore) {
+    playerScore->score = 0;
+    playerScore->needsUpdate = false;
+    playerScore->needsRender = true;
+}
+
+void update_score(World *world, Type type) {
+    if (type == PAWN) world->playerScore.score += PAWN_POINTS;
+    if (type == QUEEN) world->playerScore.score += QUEEN_POINTS;
+}
+
 void *memcpy(void *dest, const void *src, unsigned long n)
 {
     for (unsigned long i = 0; i < n; i++)
@@ -538,6 +571,6 @@ void init_map(World *world)
     init_player(&world->player);
     init_enemies(world);
     init_bunkers(world->bunkers);
-
+    init_playerScore(&world->playerScore);
     init_life(&world->life);
 }

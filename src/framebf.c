@@ -182,6 +182,46 @@ void drawBar(int health, int x, int y) {
     }
 }
 
+void drawScore(int num, int value1, int value2) {
+    int *colorptr;
+    int width = 32;
+    int height = 51;
+    printf("num is %d", num);
+    if (num == 1)
+        colorptr = (int *)ONE_IMAGE.image_pixels;
+    else if (num == 2)
+        colorptr = (int *)TWO_IMAGE.image_pixels;
+    else if (num == 3)
+        colorptr = (int *)THREE_IMAGE.image_pixels;
+    else if (num == 4)
+        colorptr = (int *)FOUR_IMAGE.image_pixels;
+    else if (num == 5)
+        colorptr = (int *)FIVE_IMAGE.image_pixels;
+    else if (num == 6)
+        colorptr = (int *)SIX_IMAGE.image_pixels;
+    else if (num == 7)
+        colorptr = (int *)SEVEN_IMAGE.image_pixels;
+    else if (num == 8)
+        colorptr = (int *)EIGHT_IMAGE.image_pixels;
+    else if (num == 9)
+        colorptr = (int *)NINE_IMAGE.image_pixels;
+    else if (num == 0)
+        colorptr = (int *)ZERO_IMAGE.image_pixels;
+
+    int x = value1;
+    int y = value2;
+    int oldX = x;
+
+    for (int i = 0; i < (width * height); i++) {
+        x++;
+        if (i % width == 0) {
+            y++;
+            x = oldX;
+        }
+        drawPixel(x, y, colorptr[i]);
+    }
+}
+
 
 void drawLine(int x1, int y1, int x2, int y2, unsigned char attr) {
     int dx, dy, p, x, y;
