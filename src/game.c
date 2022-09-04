@@ -38,6 +38,7 @@ void move_player(World *world) {
     uart_puts("Press d to move right: \n");
     uart_puts("Press w to move up: \n");
     uart_puts("Press s to move down: \n");
+    
     while (1) {
         char character = uart_getc();
         if (character != '\n' && character != '\b') {
@@ -57,6 +58,7 @@ void move_player(World *world) {
         } else if (character == ' ') {
             entity_shoot(&world->player, UP);
         }
+        
         render_health(world);
         update_player_position(world);
         render(world);
@@ -142,7 +144,7 @@ void entity_shoot(Entity *entity, Direction direction) {
     // if (clock() < entity->timer) return;
 
     // entity->timer = clock() + CLOCKS_PER_SEC / 2;
-
+    wait_msec(60000);
     for (int i = 0; i < MAX_BULLETS; i++) {
         // if (!entity->projectile[i].active) {
         // entity->projectile[i] = *create_bullet(*entity);
@@ -215,6 +217,7 @@ void init_enemies(World *world) {
 
 // Draw the enity using the data has set
 void render(World *world) {
+    wait_msec(60000);
     render_health(world);
     if (world->player.needs_render && world->player.enabled) {
         // clear(world->player);
