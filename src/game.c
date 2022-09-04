@@ -160,6 +160,9 @@ void entity_shoot(Entity *entity, Direction direction) {
         entity->projectile[i].dimension.width = red_laser.width;
         printf("\nprojectve x: %f", entity->projectile[i].position.x);
         printf("\nprojectve y: %f\n", entity->projectile[i].position.y);
+        entity->projectile[i].needs_update = true;
+        entity->projectile[i].needs_render = true;
+        entity->projectile[i].active = true;
         move_bullet(&entity->projectile[i], direction);
         return;
         // }
@@ -222,19 +225,19 @@ void render(World *world) {
         clear(world->player);
         world->player.needs_clear = false;
     }
-    // for (int i = 0; i < MAX_BULLETS; i++) {
-    //     Type type = world->player.type;
-    //     if (world->player.projectile[i].needs_render) {
-    //         clear_projectile(world->player.projectile[i].previous_pos,
-    //                          world->player.projectile[i].dimension);
-    //         draw_projectile(type, world->player.projectile[i].position,
-    //                         world->player.projectile[i].dimension);
-    //     } else if (world->player.projectile[i].needs_clear) {
-    //         clear_projectile(world->player.projectile[i].position,
-    //                          world->player.projectile[i].dimension);
-    //         world->player.projectile[i].needs_clear = false;
-    //     }
-    // }
+    for (int i = 0; i < MAX_BULLETS; i++) {
+        Type type = world->player.type;
+        if (world->player.projectile[i].needs_render) {
+            clear_projectile(world->player.projectile[i].previous_pos,
+                             world->player.projectile[i].dimension);
+            draw_projectile(type, world->player.projectile[i].position,
+                            world->player.projectile[i].dimension);
+        } else if (world->player.projectile[i].needs_clear) {
+            clear_projectile(world->player.projectile[i].position,
+                             world->player.projectile[i].dimension);
+            world->player.projectile[i].needs_clear = false;
+        }
+    }
     // for (int i = 0; i < NUM_ENEMIES; i++) {
     //     drawEntity(world->enemies[i]);
     // }
