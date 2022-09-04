@@ -6,10 +6,10 @@
 #define NUM_PAWNS 30
 #define NUM_ENEMIES (NUM_PAWNS)
 
-#define alien_initial_y 162
-#define alien_initial_x 675
-#define HORIZONTAL_OFFSET 61
-#define VERTICAL_OFFSET 61
+#define alien_initial_y 0
+#define alien_initial_x 200
+#define HORIZONTAL_OFFSET 60
+#define VERTICAL_OFFSET 0
 
 #define PLAYER_SPEED 15
 #define VERTICAL_SPEED 6
@@ -21,6 +21,9 @@
 
 #define MAP_WIDTH 1024
 #define MAP_HEIGHT 768
+
+#define MAX_SHOOTERS 10
+
 
 typedef union {
     int current_health;
@@ -70,7 +73,10 @@ typedef struct {
 typedef struct map {
     Entity player;
     Entity enemies[NUM_ENEMIES];
+    int shooters[MAX_SHOOTERS];
     Entity life;
+    int left_most_enemies[6];
+    int right_most_enemies[6];
 
 } World;
 

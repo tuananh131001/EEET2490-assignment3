@@ -6,44 +6,57 @@
 #include "printf.h"
 #include "string_manipulation.h"
 
-void init_game(Game *world) {
+void init_game(Game *world)
+{
     init_map(&world->world);
     fb_init();
 }
 
 // Create the stage
-void init_map(World *world) {
+void init_map(World *world)
+{
     init_player(&world->player);
     init_enemies(world);
     // init_life(&world->life);
 }
 // Setting the value for aliens
-void init_enemies(World *world) {
-    for (int i = 0, j = 0; i < NUM_ENEMIES; i++) {
-        if (i < 10) {
-            world->enemies[i].position.x =
-                alien_initial_x + (HORIZONTAL_OFFSET * i);
-            world->enemies[i].position.y =
-                alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 5);
-        } else if (i < 20) {
-            world->enemies[i].position.x =
-                alien_initial_x + (HORIZONTAL_OFFSET * (i % 10));
-            world->enemies[i].position.y =
-                alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 4);
-        } else {
-            world->enemies[i].position.x =
-                alien_initial_x + (HORIZONTAL_OFFSET * (i % 20));
-            world->enemies[i].position.y =
-                alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 3);
+void init_enemies(World *world)
+{
+    for (int i = 0, j = 0; i < NUM_ENEMIES; i++)
+    {
+        if (i < NUM_PAWNS)
+        {
+            if (i < 10)
+            {
+                world->enemies[i].position.x =
+                    alien_initial_x + (HORIZONTAL_OFFSET * i);
+                world->enemies[i].position.y =
+                    alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 5);
+            }
+            else if (i < 20)
+            {
+                world->enemies[i].position.x =
+                    alien_initial_x + (HORIZONTAL_OFFSET * (i % 10));
+                world->enemies[i].position.y =
+                    alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 4);
+            }
+            else
+            {
+                world->enemies[i].position.x =
+                    alien_initial_x + (HORIZONTAL_OFFSET * (i % 20));
+                world->enemies[i].position.y =
+                    alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 3);
+            }
+            world->enemies[i].dimension.height = pawn_sprite.height;
+            world->enemies[i].dimension.width = pawn_sprite.width;
+            world->enemies[i].health.current_health = 1;
+            world->enemies[i].type = PAWN;
         }
-        world->enemies[i].dimension.height = pawn_sprite.height;
-        world->enemies[i].dimension.width = pawn_sprite.width;
-        // world->enemies[i].health.current_health = PAWN_HEALTH;
-        world->enemies[i].type = PAWN;
-        world->enemies[i].needs_render = true;  // default it will appear
-        // world->enemies[i].needs_update = true;
+
+        world->enemies[i].needs_render = true; // default it will appear
+        world->enemies[i].needs_update = true;
         world->enemies[i].enabled = true;
-        // world->enemies[i].combat_update = false;
+        world->enemies[i].combat_update = false;
     }
 
     // for (int i = 0; i < 6; i++) {
@@ -52,7 +65,8 @@ void init_enemies(World *world) {
     // }
 }
 // Setting the value for player
-void init_player(Entity *player) {
+void init_player(Entity *player)
+{
     player->dimension.height = blue_ship_sprite.height;
     player->dimension.width = blue_ship_sprite.width;
     player->position.x = (MAP_WIDTH / 2) - (player->dimension.width / 2);
@@ -67,80 +81,95 @@ void init_player(Entity *player) {
 }
 
 // Move player
-void move_player(World *world) {
+void move_player(World *world)
+{
     uart_puts("Press a to move left: \n");
     uart_puts("Press d to move right: \n");
     uart_puts("Press w to move up: \n");
     uart_puts("Press s to move down: \n");
 
-    while (1) {
+    while (1)
+    {
         char character = uart_getc();
-        if (character != '\n' && character != '\b') {
+        if (character != '\n' && character != '\b')
+        {
         }
-        if (character == 'a') {
+        if (character == 'a')
+        {
             move_entity(&world->player, LEFT);
         }
         // if character = s, scroll down -> screen down
-        else if (character == 'd') {
+        else if (character == 'd')
+        {
             move_entity(&world->player, RIGHT);
-
-        } else if (character == 'w') {
+        }
+        else if (character == 'w')
+        {
             move_entity(&world->player, UP);
-
-        } else if (character == 's') {
+        }
+        else if (character == 's')
+        {
             move_entity(&world->player, DOWN);
-        } else if (character == ' ') {
+        }
+        else if (character == ' ')
+        {
             entity_shoot(&world->player, UP);
         }
 
         render_health(world);
+
+        update_collision_system(world);
+        update_combat_system(world);
         update_player_position(world);
         render(world);
     }
 }
 
-void move_entity(Entity *entity, Direction direction) {
-    switch (direction) {
-        case LEFT:
-            entity->velocity.x =
-                (entity->type == PLAYER) ? -PLAYER_SPEED : -HORIZONTAL_SPEED;
-            entity->velocity.y = 0;
-
-            entity->needs_update = true;
-            break;
-        case RIGHT:
-            entity->velocity.x =
-                (entity->type == PLAYER) ? PLAYER_SPEED : HORIZONTAL_SPEED;
-            entity->velocity.y = 0;
-            entity->needs_update = true;
-            break;
-        case UP:
-            entity->velocity.x = 0;
-            entity->velocity.y = -VERTICAL_SPEED;
-            entity->needs_update = true;
-            break;
-        case DOWN:
-            entity->velocity.x = 0;
-            entity->velocity.y = VERTICAL_SPEED;
-            entity->needs_update = true;
-            break;
-        case RESET_VERTICAL:
-            entity->velocity.y = 0;
-            entity->needs_update = true;
-            break;
-        case RESET_HORIZONTAL:
-            entity->velocity.x = 0;
-            entity->needs_update = true;
-            break;
-        default:
-            entity->velocity.x = 0;
-            entity->velocity.y = 0;
-            entity->needs_update = true;
+void move_entity(Entity *entity, Direction direction)
+{
+    switch (direction)
+    {
+    case LEFT:
+        entity->velocity.x =
+            (entity->type == PLAYER) ? -PLAYER_SPEED : -HORIZONTAL_SPEED;
+        entity->velocity.y = 0;
+        entity->needs_update = true;
+        break;
+    case RIGHT:
+        entity->velocity.x =
+            (entity->type == PLAYER) ? PLAYER_SPEED : HORIZONTAL_SPEED;
+        entity->velocity.y = 0;
+        entity->needs_update = true;
+        break;
+    case UP:
+        entity->velocity.x = 0;
+        entity->velocity.y = -VERTICAL_SPEED;
+        entity->needs_update = true;
+        break;
+    case DOWN:
+        entity->velocity.x = 0;
+        entity->velocity.y = VERTICAL_SPEED;
+        entity->needs_update = true;
+        break;
+    case RESET_VERTICAL:
+        entity->velocity.y = 0;
+        entity->needs_update = true;
+        break;
+    case RESET_HORIZONTAL:
+        entity->velocity.x = 0;
+        entity->needs_update = true;
+        break;
+    default:
+        entity->velocity.x = 0;
+        entity->velocity.y = 0;
+        entity->needs_update = true;
     }
 }
 // void update_movement_system(World *world) {
-void update_player_position(World *world) {
-    if (world->player.needs_update) {
+void update_player_position(World *world)
+{
+    if (world->player.needs_update)
+    {
         world->player.previous_pos = world->player.position;
         world->player.position.x += world->player.velocity.x;
         world->player.position.y += world->player.velocity.y;
@@ -149,9 +178,12 @@ void update_player_position(World *world) {
         world->player.needs_update = false;
     }
 
-    for (int i = 0; i < MAX_BULLETS; i++) {
-        if (world->player.projectile[i].needs_update) {
-            if (world->player.projectile[i].position.y > TOP_MAX) {
+    for (int i = 0; i < MAX_BULLETS; i++)
+    {
+        if (world->player.projectile[i].needs_update)
+        {
+            if (world->player.projectile[i].position.y > TOP_MAX)
+            {
                 world->player.projectile[i].previous_pos =
                     world->player.projectile[i].position;
                 world->player.projectile[i].position.x +=
@@ -159,7 +191,9 @@ void update_player_position(World *world) {
                 world->player.projectile[i].position.y +=
                     world->player.projectile[i].velocity.y;
                 world->player.projectile[i].needs_render = true;
-            } else {
+            }
+            else
+            {
                 world->player.projectile[i].needs_render = false;
                 world->player.projectile[i].active = false;
                 world->player.projectile[i].needs_clear = true;
@@ -174,12 +208,14 @@ void update_player_position(World *world) {
     // world->player.needs_update = false;
     // }
 }
-void entity_shoot(Entity *entity, Direction direction) {
+void entity_shoot(Entity *entity, Direction direction)
+{
     // if (clock() < entity->timer) return;
 
     // entity->timer = clock() + CLOCKS_PER_SEC / 2;
     wait_msec(60000);
-    for (int i = 0; i < MAX_BULLETS; i++) {
+    for (int i = 0; i < MAX_BULLETS; i++)
+    {
         // if (!entity->projectile[i].active) {
         // entity->projectile[i] = *create_bullet(*entity);
 
@@ -205,41 +241,181 @@ void entity_shoot(Entity *entity, Direction direction) {
     }
 }
 
-void move_bullet(Missile *projectile, Direction direction) {
-    switch (direction) {
-        case UP:
-            projectile->velocity.y = -BULLET_VELOCITY;
-            break;
-        case DOWN:
-            projectile->velocity.y = BULLET_VELOCITY;
-            break;
-        default:
-            projectile->velocity.y = 0;
+void move_bullet(Missile *projectile, Direction direction)
+{
+    switch (direction)
+    {
+    case UP:
+        projectile->velocity.y = -BULLET_VELOCITY;
+        break;
+    case DOWN:
+        projectile->velocity.y = BULLET_VELOCITY;
+        break;
+    default:
+        projectile->velocity.y = 0;
+    }
+}
+
+void update_left_most(World *world, int index)
+{
+    for (int i = 0; i < 6; i++)
+    {
+        if (world->left_most_enemies[i] == index)
+        {
+            world->left_most_enemies[i] += 1;
+        }
+    }
+}
+
+void update_right_most(World *world, int index)
+{
+    for (int i = 0; i < 6; i++)
+    {
+        if (world->right_most_enemies[i] == index)
+        {
+            world->right_most_enemies[i] -= 1;
+        }
+    }
+}
+
+void update_combat_system(World *world)
+{
+
+    for (int i = 0; i < NUM_ENEMIES; i++)
+    {
+
+        if (world->enemies[i].combat_update)
+        {
+            world->enemies[i].health.current_health -= 1;
+            if (world->enemies[i].health.current_health <= 0)
+            {
+                world->enemies[i].enabled = false;
+                world->enemies[i].needs_clear = true;
+                // world->playerScore.needsRender = true;
+                // update_score(world, world->enemies[i].type);
+                // update_shooters(world, i);
+                // update_left_most(world, i);
+                // update_right_most(world, i);
+                // world->enemies_alive -= 1;
+            }
+            world->enemies[i].combat_update = false;
+            // if (world->enemies_alive == 0) {
+            //     endScreen(1);
+            // }
+        }
+    }
+    update_player_position(world);
+    render(world);
+
+    // for (int i = 0; i < NUM_BUNKERS; i++) {
+    //     if (world->bunkers[i].combat_update) {
+    //         world->bunkers[i].health.current_health -= 1;
+    //         if (world->bunkers[i].health.current_health <= 0) {
+    //             world->bunkers[i].enabled = false;
+    //             world->bunkers[i].needs_clear = true;
+    //         }
+    //         world->bunkers[i].combat_update = false;
+    //     }
+    // }
+
+    // if (world->player.combat_update) {
+    //     world->life.needs_render = true;
+    //     world->player.health.current_health -= 1;
+    //     if (world->player.health.current_health <= 0) {
+    //         world->player.enabled = false;
+    //         world->player.needs_clear = true;
+    //     }
+    //     world->player.combat_update = false;
+    //     if (world->player.health.current_health == 0) {
+    //         endScreen(0);
+    //     }
+    // }
+}
+
+void update_collision_system(World *world)
+{
+    Entity *player = &world->player;
+    Entity *enemy = world->enemies;
+    // Entity *bunker = world->bunkers;
+
+    for (int i = 0; i < MAX_BULLETS; i++)
+    {
+        if (player->projectile[i].active)
+        {
+            for (int j = 0; j < NUM_ENEMIES; j++)
+                resolve_collisions(&player->projectile[i], &enemy[j]);
+            // for (int k = 0; k < NUM_BUNKERS; k++)
+            //     resolve_collisions(&player->projectile[i], &bunker[k]);
+        }
+    }
+    // for (int i = 0; i < 10; i++) {
+    //     int index = world->shooters[i];
+    //     for (int j = 0; j < MAX_BULLETS; j++) {
+    //         if (enemy[index].projectile[j].active) {
+    //             resolve_collisions(&enemy[index].projectile[j], player);
+    //             // for (int k = 0; k < NUM_BUNKERS; k++)
+    //             //     resolve_collisions(&enemy[index].projectile[j], &bunker[k]);
+    //         }
+    //     }
+    // }
+}
+
+bool intersectAABB(Missile *projectile, Entity *entity)
+{
+    return projectile->position.x <
+               (entity->position.x + entity->dimension.width) &&
+           (projectile->position.x + projectile->dimension.width) >
+               entity->position.x &&
+           projectile->position.y <
+               (entity->position.y + entity->dimension.height) &&
+           (projectile->position.y + projectile->dimension.height) >
+               entity->position.y;
+}
+
+void resolve_collisions(Missile *projectile, Entity *entity)
+{
+    bool isEnabled = entity->enabled;
+    bool intersects = intersectAABB(projectile, entity);
+    if (isEnabled && intersects)
+    {
+        projectile->active = false;
+        projectile->needs_update = false;
+        projectile->needs_render = false;
+        projectile->needs_clear = true;
+        entity->combat_update = true;
     }
 }
 
 // Draw the enity using the data has set
-void render(World *world) {
+void render(World *world)
+{
     wait_msec(60000);
     render_health(world);
-    if (world->player.needs_render && world->player.enabled) {
+    if (world->player.needs_render && world->player.enabled)
+    {
         // clear(world->player);
         clear_emulator_screen(1024, 768);
         drawEntity(world->player);
         world->player.needs_render = false;
-    } else if (world->player.needs_clear) {
+    }
+    else if (world->player.needs_clear)
+    {
         clear_emulator_screen(1024, 768);
         world->player.needs_clear = false;
     }
-    for (int i = 0; i < MAX_BULLETS; i++) {
+    for (int i = 0; i < MAX_BULLETS; i++)
+    {
         Type type = world->player.type;
 
-        if (world->player.projectile[i].needs_render) {
+        if (world->player.projectile[i].needs_render)
+        {
             clear_projectile(world->player.projectile[i].previous_pos,
                              world->player.projectile[i].dimension);
             draw_projectile(type, world->player.projectile[i].position,
                             world->player.projectile[i].dimension);
-        } else if (world->player.projectile[i].needs_clear) {
+        }
+        else if (world->player.projectile[i].needs_clear)
+        {
             clear_projectile(world->player.projectile[i].position,
                              world->player.projectile[i].dimension);
             world->player.projectile[i].needs_clear = false;
@@ -248,15 +424,22 @@ void render(World *world) {
     // for (int i = 0; i < NUM_ENEMIES; i++) {
     //     drawEntity(world->enemies[i]);
     // }
-    for (int i = 0; i < NUM_ENEMIES; i++) {
-        if (world->enemies[i].needs_render && world->enemies[i].enabled) {
+    for (int i = 0; i < NUM_ENEMIES; i++)
+    {
+        if (world->enemies[i].needs_render && world->enemies[i].enabled)
+        {
             // clear(world->enemies[i]);
             // clear_emulator_screen(1024, 768);
             drawEntity(world->enemies[i]);
+            
             world->enemies[i].needs_render = true; // false default
-        } else if (world->enemies[i].needs_clear) {
+        }
+        else if (world->enemies[i].needs_clear)
+        {
             // clear(world->enemies[i]);
-            clear_emulator_screen(1024, 768);
+            // clear_emulator_screen(1024, 768);
+             clear_emulator_screen(1024, 768);
+            drawEntity(world->player);
             world->enemies[i].needs_clear = false;
         }
     }
@@ -267,29 +450,36 @@ void render(World *world) {
     // }
 }
 
-void render_health(World *world) {
+void render_health(World *world)
+{
     int chealth = (world->player.health.current_health);
     char health = integer_to_character(chealth);
     drawLine(0, 720, 1024, 720, 0x0c);
     drawChar(health, 20, 730, 0x0c);
 
-    if (chealth == 3) {
+    if (chealth == 3)
+    {
         drawBar(5, 60, 720);
         drawBar(5, 110, 720);
         drawBar(5, 160, 720);
-
-    } else if (chealth == 2) {
+    }
+    else if (chealth == 2)
+    {
         drawBar(5, 60, 720);
         drawBar(5, 110, 720);
-    } else if (chealth == 1) {
+    }
+    else if (chealth == 1)
+    {
         drawBar(5, 60, 720);
-
-    } else if (chealth == 0) {
+    }
+    else if (chealth == 0)
+    {
         clear_emulator_screen(60, 720);
     }
 }
 
-void clear(Entity entity) {
+void clear(Entity entity)
+{
     int width = entity.dimension.width;
     int height = entity.dimension.height;
 
@@ -297,39 +487,31 @@ void clear(Entity entity) {
     int oldX = x;
     int y = entity.previous_pos.y;
 
-    for (int i = 0; i < (width * height); i++) {
+    for (int i = 0; i < (width * height); i++)
+    {
         x++;
-        if (i % width == 0) {
+        if (i % width == 0)
+        {
             y++;
             x = oldX;
         }
-        clear_emulator_screen(x, y);
+        clearPixel(x, y);
     }
 }
 
-void clearBar(int x, int y) {
-    int width = 200;
-    int height = 33;
 
-    int oldX = x;
 
-    for (int i = 0; i < (width * height); i++) {
-        x++;
-        if (i % width == 0) {
-            y++;
-            x = oldX;
-        }
-        clear_emulator_screen(x, y);
-    }
-}
 
-void init_life(Entity *life) {
+void init_life(Entity *life)
+{
     life->health.player_health = 5;
     life->needs_update = false;
     life->needs_render = true;
 }
-void *memcpy(void *dest, const void *src, unsigned long n) {
-    for (unsigned long i = 0; i < n; i++) {
+void *memcpy(void *dest, const void *src, unsigned long n)
+{
+    for (unsigned long i = 0; i < n; i++)
+    {
         ((char *)dest)[i] = ((char *)src)[i];
     }
 }
