@@ -1,15 +1,16 @@
 // -----------------------------------main.c
 // -------------------------------------
-#include "framebf.h"
-#include "mbox.h"
-#include "uart.h"
 #include "display_image.h"
 #include "display_video.h"
+#include "framebf.h"
+#include "game.h"
+#include "mbox.h"
+#include "uart.h"
 void main() {
     uart_init();
     fb_init();
     int x_coordinate = 50;
-    int y_coordinate =200;
+    int y_coordinate = 200;
     // drawRect(150, 150, 400, 400, 0x03, 0);
     // drawRect(300, 300, 350, 350, 0x2e, 1);
 
@@ -18,23 +19,23 @@ void main() {
 
     // drawPixel(250, 250, 0x0e);
 
-    
-
     // controlTomJerryImage(x_coordinate,y_coordinate);
- 
+
     // drawString(100, 100, "Nguyen Tuan Anh - s3864077", 0x0f);
     // drawString(100, 120, "Vo Quoc Huy - s3823236", 0x0f);
+   
     Game game;
-    init_game(&game);
     
-    render(&game.world);
-    move_player(&game.world.player);
+    init_game(&game);
+
+    // render(&game.world);
+    move_player(&game.world);
+    
 
     // displayTomAndJerryVideo(x_coordinate,y_coordinate);
 
     // while (1){
     // }
-        
 }
 
 // #include "uart.h"
