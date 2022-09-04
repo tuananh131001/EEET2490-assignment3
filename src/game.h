@@ -142,3 +142,4 @@ void render_score(World *world);
 void update_combat_system(World *world);
 void update_collision_system(World *world);
 void clear(Entity entity);
+void update_score(World *world, Type type);

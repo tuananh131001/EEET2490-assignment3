@@ -12,24 +12,29 @@ void init_game(Game *world)
     fb_init();
 }
 
-
 // Setting the value for aliens
 void init_enemies(World *world)
 {
-   for (int i = 0, j = 0; i < NUM_ENEMIES; i++) {
-        if (i < NUM_PAWNS) {
-            if (i < 10) {
+    for (int i = 0, j = 0; i < NUM_ENEMIES; i++)
+    {
+        if (i < NUM_PAWNS)
+        {
+            if (i < 10)
+            {
                 world->enemies[i].position.x =
                     alien_initial_x + (HORIZONTAL_OFFSET * i);
                 world->enemies[i].position.y =
                     alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 5);
-            } else if (i < 20) {
+            }
+            else if (i < 20)
+            {
                 world->enemies[i].position.x =
                     alien_initial_x + (HORIZONTAL_OFFSET * (i % 10));
                 world->enemies[i].position.y =
                     alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 4);
-
-            } else {
+            }
+            else
+            {
                 world->enemies[i].position.x =
                     alien_initial_x + (HORIZONTAL_OFFSET * (i % 20));
                 world->enemies[i].position.y =
@@ -39,13 +44,18 @@ void init_enemies(World *world)
             world->enemies[i].dimension.width = pawn_sprite.width;
             world->enemies[i].health.current_health = PAWN_HEALTH;
             world->enemies[i].type = PAWN;
-        } else if (i < 50) {
-            if (j < 10) {
+        }
+        else if (i < 50)
+        {
+            if (j < 10)
+            {
                 world->enemies[i].position.x =
                     alien_initial_x + (HORIZONTAL_OFFSET * (i % 30));
                 world->enemies[i].position.y =
                     alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 2);
-            } else {
+            }
+            else
+            {
                 world->enemies[i].position.x =
                     alien_initial_x + (HORIZONTAL_OFFSET * (i % 40));
                 world->enemies[i].position.y =
@@ -56,7 +66,7 @@ void init_enemies(World *world)
             world->enemies[i].health.current_health = QUEEN_HEALTH;
             world->enemies[i].type = QUEEN;
             j++;
-        } 
+        }
         world->enemies[i].needs_render = true;
         world->enemies[i].needs_update = true;
         world->enemies[i].enabled = true;
@@ -77,7 +87,7 @@ void init_player(Entity *player)
     player->dimension.width = blue_ship_sprite.width;
     player->position.x = (MAP_WIDTH / 2) - (player->dimension.width / 2);
     player->position.y = MAP_HEIGHT - 100;
-    player->health.current_health = 1;
+    player->health.current_health = 3;
     player->type = PLAYER;
     player->needs_update = true;
     player->needs_render = true;
@@ -87,8 +97,10 @@ void init_player(Entity *player)
 }
 
 // Setting the value for bunker
-void init_bunkers(Entity bunkers[]) {
-    for (int i = 0; i < NUM_BUNKERS; i++) {
+void init_bunkers(Entity bunkers[])
+{
+    for (int i = 0; i < NUM_BUNKERS; i++)
+    {
         bunkers[i].position.x = 290 + (190 * (i + 1)) + (120 * i);
         bunkers[i].position.y = (MAP_HEIGHT)-250;
         bunkers[i].previous_pos = bunkers[i].position;
@@ -139,8 +151,6 @@ void move_player(World *world)
         {
             entity_shoot(&world->player, UP);
         }
-
-        render_health(world);
 
         update_collision_system(world);
         update_combat_system(world);
@@ -240,26 +250,27 @@ void entity_shoot(Entity *entity, Direction direction)
     wait_msec(60000);
     for (int i = 0; i < MAX_BULLETS; i++)
     {
-        if (!entity->projectile[i].active) {
+        if (!entity->projectile[i].active)
+        {
 
-        // Initial a bullet
-        entity->projectile[i].position.x =
-            entity->position.x + (entity->dimension.width / 2);
-        if (entity->type == PLAYER)
-            entity->projectile[i].position.y =
-                entity->position.y - entity->dimension.height;
-        else
-            entity->projectile[i].position.y =
-                entity->position.y + entity->dimension.height;
-        entity->projectile[i].dimension.height = red_laser.height;
-        entity->projectile[i].dimension.width = red_laser.width;
-        printf("\nprojectve x: %f", entity->projectile[i].position.x);
-        printf("\nprojectve y: %f\n", entity->projectile[i].position.y);
-        entity->projectile[i].needs_update = true;
-        entity->projectile[i].needs_render = true;
-        entity->projectile[i].active = true;
-        move_bullet(&entity->projectile[i], direction);
-        return;
+            // Initial a bullet
+            entity->projectile[i].position.x =
+                entity->position.x + (entity->dimension.width / 2);
+            if (entity->type == PLAYER)
+                entity->projectile[i].position.y =
+                    entity->position.y - entity->dimension.height;
+            else
+                entity->projectile[i].position.y =
+                    entity->position.y + entity->dimension.height;
+            entity->projectile[i].dimension.height = red_laser.height;
+            entity->projectile[i].dimension.width = red_laser.width;
+            printf("\nprojectve x: %f", entity->projectile[i].position.x);
+            printf("\nprojectve y: %f\n", entity->projectile[i].position.y);
+            entity->projectile[i].needs_update = true;
+            entity->projectile[i].needs_render = true;
+            entity->projectile[i].active = true;
+            move_bullet(&entity->projectile[i], direction);
+            return;
         }
     }
 }
@@ -300,9 +311,6 @@ void update_right_most(World *world, int index)
         }
     }
 }
-
-
-
 
 bool intersectAABB(Missile *projectile, Entity *entity)
 {
@@ -385,12 +393,15 @@ void update_combat_system(World *world)
         }
     }
 
-    for (int i = 0; i < NUM_BUNKERS; i++) {
-        if (world->bunkers[i].combat_update) {
+    for (int i = 0; i < NUM_BUNKERS; i++)
+    {
+        if (world->bunkers[i].combat_update)
+        {
             world->bunkers[i].health.current_health -= 1;
-            printf("Health: %d \n",world->bunkers[i].health.current_health);
+            printf("Health: %d \n", world->bunkers[i].health.current_health);
 
-            if (world->bunkers[i].health.current_health <= 0) {
+            if (world->bunkers[i].health.current_health <= 0)
+            {
                 world->bunkers[i].enabled = false;
                 world->bunkers[i].needs_clear = true;
             }
@@ -412,13 +423,11 @@ void update_combat_system(World *world)
     // }
 }
 
-
 // Draw the enity using the data has set
 void render(World *world)
 {
     wait_msec(60000);
     render_health(world);
-    render_score(world);
     if (world->player.needs_render && world->player.enabled)
     {
         // clear(world->player);
@@ -459,23 +468,27 @@ void render(World *world)
             // clear(world->enemies[i]);
             // clear_emulator_screen(1024, 768);
             drawEntity(world->enemies[i]);
-            
+
             world->enemies[i].needs_render = true; // false default
         }
         else if (world->enemies[i].needs_clear)
         {
             // clear(world->enemies[i]);
             // clear_emulator_screen(1024, 768);
-             clear_emulator_screen(1024, 768);
+            clear_emulator_screen(1024, 768);
             drawEntity(world->player);
             world->enemies[i].needs_clear = false;
         }
     }
-     for (int i = 0; i < NUM_BUNKERS; i++) {
-        if (world->bunkers[i].enabled) {
+    for (int i = 0; i < NUM_BUNKERS; i++)
+    {
+        if (world->bunkers[i].enabled)
+        {
             // clear_emulator_screen(1024, 768);
             drawEntity(world->bunkers[i]);
-        } else if (world->bunkers[i].needs_clear) {
+        }
+        else if (world->bunkers[i].needs_clear)
+        {
             clear_emulator_screen(1024, 768);
             drawEntity(world->player);
             world->bunkers[i].needs_clear = false;
@@ -486,6 +499,11 @@ void render(World *world)
     // drawEntity(world->player);
     // world->player.needs_render = false;
     // }
+
+    if (world->playerScore.needsRender)
+    {
+        render_score(world);
+    }
 }
 
 void render_health(World *world)
@@ -516,28 +534,24 @@ void render_health(World *world)
     }
 }
 
-void render_score(World *world){
-  if (world->playerScore.needsRender) {
-        int ones = (world->playerScore.score % 10);
-        int tens = (world->playerScore.score % 100) / 10;
-        int hundreds = (world->playerScore.score % 1000) / 100;
-        int thousands = (world->playerScore.score % 10000) / 1000;
-        // printf("Score: %d \n", world->playerScore.score);
-        // clearScore(thousands, SCORE_ORIGINX, SCORE_ORIGINY);
-        // clearScore(hundreds, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
-        // clearScore(tens, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
-        // clearScore(ones, SCORE_ORIGINX + SHIFT + SHIFT + SHIFT, SCORE_ORIGINY);
-        // clear_emulator_screen(1024, 768);
-        drawScore(thousands, SCORE_ORIGINX, SCORE_ORIGINY);
-        drawScore(hundreds, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
-        drawScore(tens, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
-        drawScore(ones, SCORE_ORIGINX + SHIFT + SHIFT + SHIFT, SCORE_ORIGINY);
+void render_score(World *world)
+{
+    int ones = (world->playerScore.score % 10);
+    printf("ones: %d \n", ones);
+    int tens = (world->playerScore.score % 100) / 10;
+    printf("tens: %d \n", tens);
+    int hundreds = (world->playerScore.score % 1000) / 100;
+    printf("hundreds: %d \n", hundreds);
+    int thousands = (world->playerScore.score % 10000) / 1000;
+    printf("thousands: %d \n", thousands);
 
-        world->playerScore.needsRender = false;
-    }  
+    drawScore(thousands, SCORE_ORIGINX, SCORE_ORIGINY);
+    drawScore(hundreds, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
+    drawScore(tens, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
+    drawScore(ones, SCORE_ORIGINX + SHIFT + SHIFT + SHIFT, SCORE_ORIGINY);
+
+    world->playerScore.needsRender = false;
 }
-
-
 
 void init_life(Entity *life)
 {
@@ -546,15 +560,19 @@ void init_life(Entity *life)
     life->needs_render = true;
 }
 
-void init_playerScore(Score *playerScore) {
+void init_playerScore(Score *playerScore)
+{
     playerScore->score = 0;
     playerScore->needsUpdate = false;
     playerScore->needsRender = true;
 }
 
-void update_score(World *world, Type type) {
-    if (type == PAWN) world->playerScore.score += PAWN_POINTS;
-    if (type == QUEEN) world->playerScore.score += QUEEN_POINTS;
+void update_score(World *world, Type type)
+{
+    if (type == PAWN)
+        world->playerScore.score += PAWN_POINTS;
+    if (type == QUEEN)
+        world->playerScore.score += QUEEN_POINTS;
 }
 
 void *memcpy(void *dest, const void *src, unsigned long n)
