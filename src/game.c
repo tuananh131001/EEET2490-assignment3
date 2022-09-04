@@ -247,7 +247,7 @@ void entity_shoot(Entity *entity, Direction direction)
     // if (clock() < entity->timer) return;
 
     // entity->timer = clock() + CLOCKS_PER_SEC / 2;
-    wait_msec(60000);
+    wait_msec(30000);
     for (int i = 0; i < MAX_BULLETS; i++)
     {
         if (!entity->projectile[i].active)
@@ -430,14 +430,14 @@ void render(World *world)
     render_health(world);
     if (world->player.needs_render && world->player.enabled)
     {
-        // clear(world->player);
-        clear_emulator_screen(1024, 768);
+        clear(world->player);
+        // clear_emulator_screen(1024, 768);
         drawEntity(world->player);
         world->player.needs_render = false;
     }
     else if (world->player.needs_clear)
     {
-        clear_emulator_screen(1024, 768);
+        clear(world->player);
         world->player.needs_clear = false;
     }
     for (int i = 0; i < MAX_BULLETS; i++)
@@ -465,7 +465,7 @@ void render(World *world)
     {
         if (world->enemies[i].needs_render && world->enemies[i].enabled)
         {
-            // clear(world->enemies[i]);
+            clear(world->enemies[i]);
             // clear_emulator_screen(1024, 768);
             drawEntity(world->enemies[i]);
 
@@ -473,9 +473,9 @@ void render(World *world)
         }
         else if (world->enemies[i].needs_clear)
         {
-            // clear(world->enemies[i]);
+            clear(world->enemies[i]);
             // clear_emulator_screen(1024, 768);
-            clear_emulator_screen(1024, 768);
+            // clear_emulator_screen(1024, 768);
             drawEntity(world->player);
             world->enemies[i].needs_clear = false;
         }
@@ -485,11 +485,12 @@ void render(World *world)
         if (world->bunkers[i].enabled)
         {
             // clear_emulator_screen(1024, 768);
+            clear(world->bunkers[i]);
             drawEntity(world->bunkers[i]);
         }
         else if (world->bunkers[i].needs_clear)
         {
-            clear_emulator_screen(1024, 768);
+            clear(world->bunkers[i]);
             drawEntity(world->player);
             world->bunkers[i].needs_clear = false;
         }
@@ -591,4 +592,22 @@ void init_map(World *world)
     init_bunkers(world->bunkers);
     init_playerScore(&world->playerScore);
     init_life(&world->life);
+}
+
+void clear(Entity entity) {
+    int width = entity.dimension.width;
+    int height = entity.dimension.height;
+
+    int x = entity.previous_pos.x;
+    int oldX = x;
+    int y = entity.previous_pos.y;
+
+    for (int i = 0; i < (width * height); i++) {
+        x++;
+        if (i % width == 0) {
+            y++;
+            x = oldX;
+        }
+        drawPixel(x, y, 0);
+    }
 }

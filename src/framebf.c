@@ -161,6 +161,8 @@ void clear_projectile(Position position, Dimension dimension)
         drawPixel(x, y, 0);
     }
 }
+
+
 void draw_projectile(Type type, Position position, Dimension dimension)
 {
     int *colorptr;
