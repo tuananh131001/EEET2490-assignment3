@@ -106,5 +106,6 @@ void move_bullet(Missile *projectile, Direction direction);
 void *memcpy(void *dest, const void *src, unsigned long n);
 void draw_projectile(Type type, Position position, Dimension dimension);
 void clear_projectile(Position position, Dimension dimension);
+void render_health(World *world);
 
 void clear(Entity entity);

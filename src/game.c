@@ -17,6 +17,40 @@ void init_map(World *world) {
     init_enemies(world);
     // init_life(&world->life);
 }
+// Setting the value for aliens
+void init_enemies(World *world) {
+    for (int i = 0, j = 0; i < NUM_ENEMIES; i++) {
+        if (i < 10) {
+            world->enemies[i].position.x =
+                alien_initial_x + (HORIZONTAL_OFFSET * i);
+            world->enemies[i].position.y =
+                alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 5);
+        } else if (i < 20) {
+            world->enemies[i].position.x =
+                alien_initial_x + (HORIZONTAL_OFFSET * (i % 10));
+            world->enemies[i].position.y =
+                alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 4);
+        } else {
+            world->enemies[i].position.x =
+                alien_initial_x + (HORIZONTAL_OFFSET * (i % 20));
+            world->enemies[i].position.y =
+                alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 3);
+        }
+        world->enemies[i].dimension.height = pawn_sprite.height;
+        world->enemies[i].dimension.width = pawn_sprite.width;
+        // world->enemies[i].health.current_health = PAWN_HEALTH;
+        world->enemies[i].type = PAWN;
+        world->enemies[i].needs_render = true;  // default it will appear
+        // world->enemies[i].needs_update = true;
+        world->enemies[i].enabled = true;
+        // world->enemies[i].combat_update = false;
+    }
+
+    // for (int i = 0; i < 6; i++) {
+    //     world->left_most_enemies[i] = 10 * i;
+    //     world->right_most_enemies[i] = 10 * i + 9;
+    // }
+}
 // Setting the value for player
 void init_player(Entity *player) {
     player->dimension.height = blue_ship_sprite.height;
@@ -38,7 +72,7 @@ void move_player(World *world) {
     uart_puts("Press d to move right: \n");
     uart_puts("Press w to move up: \n");
     uart_puts("Press s to move down: \n");
-    
+
     while (1) {
         char character = uart_getc();
         if (character != '\n' && character != '\b') {
@@ -58,7 +92,7 @@ void move_player(World *world) {
         } else if (character == ' ') {
             entity_shoot(&world->player, UP);
         }
-        
+
         render_health(world);
         update_player_position(world);
         render(world);
@@ -184,37 +218,6 @@ void move_bullet(Missile *projectile, Direction direction) {
     }
 }
 
-// Setting the value for aliens
-void init_enemies(World *world) {
-    for (int i = 0, j = 0; i < NUM_ENEMIES; i++) {
-        if (i < 10) {
-            world->enemies[i].position.x =
-                alien_initial_x + (HORIZONTAL_OFFSET * i);
-            world->enemies[i].position.y =
-                alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 5);
-        } else if (i < 20) {
-            world->enemies[i].position.x =
-                alien_initial_x + (HORIZONTAL_OFFSET * (i % 10));
-            world->enemies[i].position.y =
-                alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 4);
-        } else {
-            world->enemies[i].position.x =
-                alien_initial_x + (HORIZONTAL_OFFSET * (i % 20));
-            world->enemies[i].position.y =
-                alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 3);
-        }
-        world->enemies[i].dimension.height = pawn_sprite.height;
-        world->enemies[i].dimension.width = pawn_sprite.width;
-        // world->enemies[i].health.current_health = PAWN_HEALTH;
-        world->enemies[i].type = PAWN;
-    }
-
-    // for (int i = 0; i < 6; i++) {
-    //     world->left_most_enemies[i] = 10 * i;
-    //     world->right_most_enemies[i] = 10 * i + 9;
-    // }
-}
-
 // Draw the enity using the data has set
 void render(World *world) {
     wait_msec(60000);
@@ -225,11 +228,12 @@ void render(World *world) {
         drawEntity(world->player);
         world->player.needs_render = false;
     } else if (world->player.needs_clear) {
-        clear(world->player);
+        clear_emulator_screen(1024, 768);
         world->player.needs_clear = false;
     }
     for (int i = 0; i < MAX_BULLETS; i++) {
         Type type = world->player.type;
+
         if (world->player.projectile[i].needs_render) {
             clear_projectile(world->player.projectile[i].previous_pos,
                              world->player.projectile[i].dimension);
@@ -244,6 +248,18 @@ void render(World *world) {
     // for (int i = 0; i < NUM_ENEMIES; i++) {
     //     drawEntity(world->enemies[i]);
     // }
+    for (int i = 0; i < NUM_ENEMIES; i++) {
+        if (world->enemies[i].needs_render && world->enemies[i].enabled) {
+            // clear(world->enemies[i]);
+            // clear_emulator_screen(1024, 768);
+            drawEntity(world->enemies[i]);
+            world->enemies[i].needs_render = true; // false default
+        } else if (world->enemies[i].needs_clear) {
+            // clear(world->enemies[i]);
+            clear_emulator_screen(1024, 768);
+            world->enemies[i].needs_clear = false;
+        }
+    }
     // if (world->player.needs_render && world->player.enabled) {
     // clear(world->player);
     // drawEntity(world->player);
@@ -253,7 +269,7 @@ void render(World *world) {
 
 void render_health(World *world) {
     int chealth = (world->player.health.current_health);
-    char *health = integer_to_character(chealth);
+    char health = integer_to_character(chealth);
     drawLine(0, 720, 1024, 720, 0x0c);
     drawChar(health, 20, 730, 0x0c);
 

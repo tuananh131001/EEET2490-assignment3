@@ -2,7 +2,7 @@
 #include "jerry_image.h"
 #include "framebf.h"
 #include "helper.h"
-
+#include "uart.h"
 // Function to display tom image
 void displayTomImage(int x, int y){
   for(int h = 0; h < tom_image_height ; h++){

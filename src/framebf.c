@@ -139,7 +139,7 @@ void clear_projectile(Position position, Dimension dimension) {
             y++;
             x = oldX;
         }
-        drawPixel(width, height, 0);
+        drawPixel(x, y, 0);
     }
 }
 void draw_projectile(Type type, Position position, Dimension dimension) {
