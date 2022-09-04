@@ -44,7 +44,6 @@ void move_player(World *world) {
         }
         if (character == 'a') {
             move_entity(&world->player, LEFT);
-
         }
         // if character = s, scroll down -> screen down
         else if (character == 'd') {
@@ -52,12 +51,13 @@ void move_player(World *world) {
 
         } else if (character == 'w') {
             move_entity(&world->player, UP);
+
         } else if (character == 's') {
             move_entity(&world->player, DOWN);
         } else if (character == ' ') {
             entity_shoot(&world->player, UP);
         }
-        printf("move");
+        render_health(world);
         update_player_position(world);
         render(world);
     }
@@ -68,18 +68,23 @@ void move_entity(Entity *entity, Direction direction) {
         case LEFT:
             entity->velocity.x =
                 (entity->type == PLAYER) ? -PLAYER_SPEED : -HORIZONTAL_SPEED;
+            entity->velocity.y = 0;
+
             entity->needs_update = true;
             break;
         case RIGHT:
             entity->velocity.x =
                 (entity->type == PLAYER) ? PLAYER_SPEED : HORIZONTAL_SPEED;
+            entity->velocity.y = 0;
             entity->needs_update = true;
             break;
         case UP:
+            entity->velocity.x = 0;
             entity->velocity.y = -VERTICAL_SPEED;
             entity->needs_update = true;
             break;
         case DOWN:
+            entity->velocity.x = 0;
             entity->velocity.y = VERTICAL_SPEED;
             entity->needs_update = true;
             break;
@@ -100,9 +105,10 @@ void move_entity(Entity *entity, Direction direction) {
 // void update_movement_system(World *world) {
 void update_player_position(World *world) {
     if (world->player.needs_update) {
-        printf("check update player pos");
         world->player.previous_pos = world->player.position;
         world->player.position.x += world->player.velocity.x;
+        world->player.position.y += world->player.velocity.y;
+
         world->player.needs_render = true;
         world->player.needs_update = false;
     }
@@ -208,7 +214,8 @@ void init_enemies(World *world) {
 void render(World *world) {
     render_health(world);
     if (world->player.needs_render && world->player.enabled) {
-        clear(world->player);
+        // clear(world->player);
+        clear_emulator_screen(1024, 768);
         drawEntity(world->player);
         world->player.needs_render = false;
     } else if (world->player.needs_clear) {
