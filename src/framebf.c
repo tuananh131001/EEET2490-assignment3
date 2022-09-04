@@ -68,11 +68,6 @@ void drawPixel(int x, int y, unsigned char attr) {
     *((unsigned int *)(fb + offs)) = vgapal[attr & 0x0f];
 }
 
-void clearPixel(int x, int y) {
-    int offs = (y * pitch) + (x * 4);
-    *((unsigned int *)(fb + offs)) = (int)0;
-}
-
 void drawRect(int x1, int y1, int x2, int y2, unsigned char attr, int fill) {
     int y = y1;
 
@@ -100,25 +95,25 @@ void drawEntity(Entity entity) {
     if (entity.type == PAWN) colorptr = (int *)pawn_sprite.image_pixels;
     // else if (entity.type == KNIGHT)
     //     colorptr = (int *)knight_sprite.image_pixels;
-    // else if (entity.type == QUEEN)
-    //     colorptr = (int *)queen_sprite.image_pixels;
+    else if (entity.type == QUEEN)
+        colorptr = (int *)queen_sprite.image_pixels;
     else if (entity.type == PLAYER)
         colorptr = (int *)blue_ship_sprite.image_pixels;
-    // else if (entity.type == BUNKER) {
-    //     if (entity.health.current_health <= BUNKER_HEALTH / 3) {
-    //         colorptr = (int *)bunker_3.image_pixels;
-    //         width = bunker_3.width;
-    //         height = bunker_3.height;
-    //     } else if (entity.health.current_health <= BUNKER_HEALTH / 2) {
-    //         colorptr = (int *)bunker_2.image_pixels;
-    //         width = bunker_2.width;
-    //         height = bunker_2.height;
-    //     } else {
-    //         colorptr = (int *)bunker_1.image_pixels;
-    //         width = bunker_1.width;
-    //         height = bunker_1.height;
-    //     }
-    // }
+    else if (entity.type == BUNKER) {
+        if (entity.health.current_health <= BUNKER_HEALTH / 3) {
+            colorptr = (int *)bunker_3.image_pixels;
+            width = bunker_3.width;
+            height = bunker_3.height;
+        } else if (entity.health.current_health <= BUNKER_HEALTH / 2) {
+            colorptr = (int *)bunker_2.image_pixels;
+            width = bunker_2.width;
+            height = bunker_2.height;
+        } else {
+            colorptr = (int *)bunker_1.image_pixels;
+            width = bunker_1.width;
+            height = bunker_1.height;
+        }
+    }
 
     // draw in 2D
     for (int i = 0; i < (width * height); i++) {
