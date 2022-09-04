@@ -10,4 +10,3 @@ void drawLine(int x1, int y1, int x2, int y2, unsigned char attr);
 
 void display_frame_image(unsigned int image[], int x, int y, int w, int h);
 void drawBar(int health, int x, int y);
-void clearPixel(int x, int y);

@@ -4,7 +4,17 @@
 #include "uart.h"
 
 #define NUM_PAWNS 30
-#define NUM_ENEMIES (NUM_PAWNS)
+#define PAWN_POINTS 5
+#define PAWN_HEALTH 1
+
+#define NUM_QUEENS 10
+#define QUEEN_POINTS 100
+#define QUEEN_HEALTH 3
+
+#define NUM_ENEMIES (NUM_PAWNS + NUM_QUEENS)
+
+#define NUM_BUNKERS 3
+#define BUNKER_HEALTH 10
 
 #define alien_initial_y 0
 #define alien_initial_x 200
@@ -42,7 +52,7 @@ typedef struct {
     float x, y;
 } Velocity;
 
-typedef enum { PLAYER = 1, PAWN = 2 } Type;
+typedef enum { PLAYER = 1, PAWN = 2 , QUEEN = 3, BUNKER = 4} Type;
 
 typedef struct {
     Position position;
@@ -73,6 +83,7 @@ typedef struct {
 typedef struct map {
     Entity player;
     Entity enemies[NUM_ENEMIES];
+    Entity bunkers[NUM_BUNKERS];
     int shooters[MAX_SHOOTERS];
     Entity life;
     int left_most_enemies[6];
@@ -113,5 +124,6 @@ void *memcpy(void *dest, const void *src, unsigned long n);
 void draw_projectile(Type type, Position position, Dimension dimension);
 void clear_projectile(Position position, Dimension dimension);
 void render_health(World *world);
-
+void update_combat_system(World *world);
+void update_collision_system(World *world);
 void clear(Entity entity);
