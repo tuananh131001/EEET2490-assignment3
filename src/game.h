@@ -11,6 +11,10 @@
 #define HORIZONTAL_OFFSET 61
 #define VERTICAL_OFFSET 61
 
+#define PLAYER_SPEED 15
+#define VERTICAL_SPEED 6
+#define HORIZONTAL_SPEED 4
+
 #define TOP_MAX 162
 #define MAX_BULLETS 10
 #define BULLET_VELOCITY 15
@@ -92,6 +96,9 @@ void init_enemies(World *world);
 void init_life(Entity *life);
 void render(World *world);  // framebf.c
 void move_player(World *world);
+void update_player_position(World *world) ;
+void move_entity(Entity *entity, Direction direction);
+void drawEntity(Entity entity);
 
 void entity_shoot(Entity *entity, Direction direction);
 Missile *create_bullet(Entity owner);

@@ -1,5 +1,6 @@
 #include "game.h"
 
+#include "framebf.h"
 #include "helper.h"
 #include "object.h"
 #include "printf.h"
@@ -14,7 +15,7 @@ void init_game(Game *world) {
 void init_map(World *world) {
     init_player(&world->player);
     init_enemies(world);
-    init_life(&world->life);
+    // init_life(&world->life);
 }
 // Setting the value for player
 void init_player(Entity *player) {
@@ -37,72 +38,49 @@ void move_player(World *world) {
     uart_puts("Press d to move right: \n");
     uart_puts("Press w to move up: \n");
     uart_puts("Press s to move down: \n");
-    char vertical = "v";
     while (1) {
         char character = uart_getc();
         if (character != '\n' && character != '\b') {
         }
         if (character == 'a') {
-            char *type = "h";
-            clear_emulator_screen(1024, 768);
             move_entity(&world->player, LEFT);
-            update_player_position(world, type);
-            drawEntity(world->player);
-            render_health(world);
+
         }
         // if character = s, scroll down -> screen down
         else if (character == 'd') {
-            char *type = "h";
-            clear_emulator_screen(1024, 768);
             move_entity(&world->player, RIGHT);
-            update_player_position(world, type);
-            drawEntity(world->player);
-            render_health(world);
 
         } else if (character == 'w') {
-            char *type = "v";
-            clear_emulator_screen(1024, 768);
             move_entity(&world->player, UP);
-            update_player_position(world, type);
-            drawEntity(world->player);
-            render_health(world);
         } else if (character == 's') {
-            char *type = "v";
-
-            clear_emulator_screen(1024, 768);
             move_entity(&world->player, DOWN);
-            update_player_position(world, type);
-            // printf("\n %f", &world->player.position.x);
-            // printf("\n %f", &world->player.position.y);
-            drawEntity(world->player);
-            render_health(world);
         } else if (character == ' ') {
-            char *type = "shoot";
             entity_shoot(&world->player, UP);
-            update_player_position(world, type);
-            drawEntity(world->player);
-            draw_projectile(world->player.type, world->player.projectile[0].position,
-                            world->player.projectile[0].dimension);
         }
+        printf("move");
+        update_player_position(world);
+        render(world);
     }
 }
 
 void move_entity(Entity *entity, Direction direction) {
     switch (direction) {
         case LEFT:
-            entity->velocity.x = -20;
+            entity->velocity.x =
+                (entity->type == PLAYER) ? -PLAYER_SPEED : -HORIZONTAL_SPEED;
             entity->needs_update = true;
             break;
         case RIGHT:
-            entity->velocity.x = (entity->type == PLAYER) ? 20 : 10;
+            entity->velocity.x =
+                (entity->type == PLAYER) ? PLAYER_SPEED : HORIZONTAL_SPEED;
             entity->needs_update = true;
             break;
         case UP:
-            entity->velocity.y = -20;
+            entity->velocity.y = -VERTICAL_SPEED;
             entity->needs_update = true;
             break;
         case DOWN:
-            entity->velocity.y = 20;
+            entity->velocity.y = VERTICAL_SPEED;
             entity->needs_update = true;
             break;
         case RESET_VERTICAL:
@@ -119,68 +97,34 @@ void move_entity(Entity *entity, Direction direction) {
             entity->needs_update = true;
     }
 }
-
 // void update_movement_system(World *world) {
-void update_player_position(World *world, char *type) {
-    // if (world->player.needs_update) {
-    // Process if the type is vertical
-    if (type == "v") {
-        // Check the current y position is at the top edge
-        if (world->player.position.y + world->player.velocity.y < 0) {
-            // Update vertical position
-            world->player.position.y = 0;
-        }
-        // Check the current y position is at the bottom edge
-        else if (world->player.position.y + world->player.velocity.y >
-                 720 - world->player.dimension.height) {
-            // Update vertical position
-            world->player.position.y = 720 - world->player.dimension.height;
-        } else {  // Update vertical position
-            world->player.position.y += world->player.velocity.y;
-        }
-        // world->player.previous_pos = world->player.position;
-        // world->player.position.y += world->player.velocity.y;
+void update_player_position(World *world) {
+    if (world->player.needs_update) {
+        printf("check update player pos");
+        world->player.previous_pos = world->player.position;
+        world->player.position.x += world->player.velocity.x;
+        world->player.needs_render = true;
+        world->player.needs_update = false;
     }
-    // Process if the type is horizontal
-    else if (type == "h") {
-        // Check  the current x position is at the left edge
 
-        if (world->player.position.x + world->player.velocity.x < 0) {
-            // updating the horizontal position
-
-            world->player.position.x = 0;
-        }
-        // Check  the current x position is at the right edge
-
-        else if (world->player.position.x + world->player.velocity.x >
-                 MAP_WIDTH - world->player.dimension.width) {
-            // updating the horizontal position
-            world->player.position.x =
-                MAP_WIDTH - world->player.dimension.width;
-        } else {
-            // updating the horizontal position
-            world->player.previous_pos = world->player.position;
-            world->player.position.x += world->player.velocity.x;
-        }
-    } else if (type == "shoot") {
-        for (int i = 0; i < MAX_BULLETS; i++) {
-            if (world->player.projectile[i].needs_update) {
-                if (world->player.projectile[i].position.y > TOP_MAX) {
-                    world->player.projectile[i].previous_pos =
-                        world->player.projectile[i].position;
-                    world->player.projectile[i].position.x +=
-                        world->player.projectile[i].velocity.x;
-                    world->player.projectile[i].position.y +=
-                        world->player.projectile[i].velocity.y;
-                    world->player.projectile[i].needs_render = true;
-                } else {
-                    world->player.projectile[i].needs_render = false;
-                    world->player.projectile[i].active = false;
-                    world->player.projectile[i].needs_clear = true;
-                }
+    for (int i = 0; i < MAX_BULLETS; i++) {
+        if (world->player.projectile[i].needs_update) {
+            if (world->player.projectile[i].position.y > TOP_MAX) {
+                world->player.projectile[i].previous_pos =
+                    world->player.projectile[i].position;
+                world->player.projectile[i].position.x +=
+                    world->player.projectile[i].velocity.x;
+                world->player.projectile[i].position.y +=
+                    world->player.projectile[i].velocity.y;
+                world->player.projectile[i].needs_render = true;
+            } else {
+                world->player.projectile[i].needs_render = false;
+                world->player.projectile[i].active = false;
+                world->player.projectile[i].needs_clear = true;
             }
         }
     }
+
     // world->player.position.x += world->player.velocity.x;
     // world->player.position.y += world->player.velocity.y;
 
@@ -262,6 +206,7 @@ void init_enemies(World *world) {
 
 // Draw the enity using the data has set
 void render(World *world) {
+    render_health(world);
     if (world->player.needs_render && world->player.enabled) {
         clear(world->player);
         drawEntity(world->player);

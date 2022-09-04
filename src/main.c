@@ -1,6 +1,7 @@
 // -----------------------------------main.c
 // -------------------------------------
 #include "framebf.h"
+#include "game.h"
 #include "mbox.h"
 #include "uart.h"
 #include "display_image.h"
@@ -28,7 +29,7 @@ void main() {
     init_game(&game);
     
     render(&game.world);
-    move_player(&game.world.player);
+    move_player(&game.world);
 
     // displayTomAndJerryVideo(x_coordinate,y_coordinate);
 
