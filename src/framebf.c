@@ -68,6 +68,11 @@ void drawPixel(int x, int y, unsigned char attr) {
     *((unsigned int *)(fb + offs)) = vgapal[attr & 0x0f];
 }
 
+void clearPixel(int x, int y) {
+    int offs = (y * pitch) + (x * 4);
+    *((unsigned int *)(fb + offs)) = (int)0;
+}
+
 void drawRect(int x1, int y1, int x2, int y2, unsigned char attr, int fill) {
     int y = y1;
 
@@ -284,3 +289,4 @@ void display_frame_image(unsigned int frame_image[], int x, int y, int width,
         x = 0;
     }
 }
+
