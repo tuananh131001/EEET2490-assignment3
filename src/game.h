@@ -26,6 +26,8 @@
 #define HORIZONTAL_SPEED 4
 
 #define TOP_MAX 162
+// #define TOP_MAX 60
+#define BOTTOM_MAX 917
 #define MAX_BULLETS 10
 #define BULLET_VELOCITY 15
 
@@ -34,6 +36,12 @@
 
 #define MAX_SHOOTERS 10
 
+#define SCORE_ORIGINX 500
+#define SCORE_ORIGINY 720
+#define SHIFT 32
+
+#define BAR_ORIGINX 1150
+#define BAR_ORIGINY 180
 
 typedef union {
     int current_health;
@@ -52,7 +60,14 @@ typedef struct {
     float x, y;
 } Velocity;
 
-typedef enum { PLAYER = 1, PAWN = 2 , QUEEN = 3, BUNKER = 4} Type;
+typedef struct {
+    int score;
+    bool needsUpdate;
+    bool needsRender;
+} Score;
+
+typedef enum { PLAYER = 1, PAWN = 2, QUEEN = 3, BUNKER = 4 } Type;
+
 
 typedef struct {
     Position position;
@@ -88,6 +103,7 @@ typedef struct map {
     Entity life;
     int left_most_enemies[6];
     int right_most_enemies[6];
+    Score playerScore;
 
 } World;
 
@@ -113,7 +129,7 @@ void init_enemies(World *world);
 void init_life(Entity *life);
 void render(World *world);  // framebf.c
 void move_player(World *world);
-void update_player_position(World *world) ;
+void update_player_position(World *world);
 void move_entity(Entity *entity, Direction direction);
 void drawEntity(Entity entity);
 
@@ -124,6 +140,12 @@ void *memcpy(void *dest, const void *src, unsigned long n);
 void draw_projectile(Type type, Position position, Dimension dimension);
 void clear_projectile(Position position, Dimension dimension);
 void render_health(World *world);
+
+void render_score(World *world);
+
 void update_combat_system(World *world);
 void update_collision_system(World *world);
 void clear(Entity entity);
+void update_score(World *world, Type type);
+void enemy_shoot(World *world);
+int rand(void);

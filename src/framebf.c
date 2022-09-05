@@ -142,15 +142,16 @@ void clear_projectile(Position position, Dimension dimension) {
         drawPixel(x, y, 0);
     }
 }
+
 void draw_projectile(Type type, Position position, Dimension dimension) {
     int *colorptr;
     int width = dimension.width;
     int height = dimension.height;
 
-    // if (type != PLAYER)
-    colorptr = (int *)green_laser.image_pixels;
-    // else
-    //     colorptr = (int *)red_laser.image_pixels;
+    if (type != PLAYER)
+        colorptr = (int *)green_laser.image_pixels;
+    else
+        colorptr = (int *)red_laser.image_pixels;
 
     int x = position.x;
     int oldX = x;
@@ -182,6 +183,47 @@ void drawBar(int health, int x, int y) {
     }
 }
 
+void drawScore(int num, int x, int y) {
+    printf("num is %d \n", num);
+
+    int *colorptr;
+    int width = 32;
+    int height = 51;
+    if (num == 1)
+        colorptr = (int *)ONE_IMAGE.image_pixels;
+    else if (num == 2)
+        colorptr = (int *)TWO_IMAGE.image_pixels;
+    else if (num == 3)
+        colorptr = (int *)THREE_IMAGE.image_pixels;
+    else if (num == 4)
+        colorptr = (int *)FOUR_IMAGE.image_pixels;
+    else if (num == 5)
+        colorptr = (int *)FIVE_IMAGE.image_pixels;
+    else if (num == 6)
+        colorptr = (int *)SIX_IMAGE.image_pixels;
+    else if (num == 7)
+        colorptr = (int *)SEVEN_IMAGE.image_pixels;
+    else if (num == 8)
+        colorptr = (int *)EIGHT_IMAGE.image_pixels;
+    else if (num == 9) {
+        colorptr = (int *)NINE_IMAGE.image_pixels;
+    }
+
+    else if (num == 0) {
+        colorptr = (int *)ZERO_IMAGE.image_pixels;
+    }
+
+    int oldX = x;
+
+    for (int i = 0; i < (width * height); i++) {
+        x++;
+        if (i % width == 0) {
+            y++;
+            x = oldX;
+        }
+        drawPixel(x, y, colorptr[i]);
+    }
+}
 
 void drawLine(int x1, int y1, int x2, int y2, unsigned char attr) {
     int dx, dy, p, x, y;
@@ -284,4 +326,3 @@ void display_frame_image(unsigned int frame_image[], int x, int y, int width,
         x = 0;
     }
 }
-
