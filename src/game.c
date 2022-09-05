@@ -116,7 +116,7 @@ void move_player(World *world) {
     uart_puts("Press s to move down: \n");
 
     while (1) {
-        char character = uart_getc();
+        char character = uart_getc_game();
         if (character != '\n' && character != '\b') {
         }
         if (character == 'a') {
