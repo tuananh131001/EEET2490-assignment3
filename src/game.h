@@ -19,14 +19,17 @@
 #define alien_initial_y 0
 #define alien_initial_x 200
 #define HORIZONTAL_OFFSET 60
-#define VERTICAL_OFFSET 0
+#define VERTICAL_OFFSET 60
+
+#define ENEMIES_VERTICAL_MAX (1080 - 262 - VERTICAL_OFFSET)
 
 #define PLAYER_SPEED 15
 #define VERTICAL_SPEED 6
 #define HORIZONTAL_SPEED 4
 
-#define TOP_MAX 162
-// #define TOP_MAX 60
+#define LEFT_MAX 400
+#define RIGHT_MAX 1520
+#define TOP_MAX 62
 #define BOTTOM_MAX 917
 #define MAX_BULLETS 10
 #define BULLET_VELOCITY 15
@@ -121,6 +124,8 @@ typedef enum {
     RESET_HORIZONTAL
 } Direction;
 
+static bool travel_right = true;
+
 void init_game(Game *world);
 void init_map(World *world);
 
@@ -149,3 +154,6 @@ void clear(Entity entity);
 void update_score(World *world, Type type);
 void enemy_shoot(World *world);
 int rand(void);
+
+void update_AI_system(World *world);
+bool enemies_at_bottom(World *world);
