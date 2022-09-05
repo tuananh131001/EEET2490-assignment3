@@ -137,6 +137,7 @@ void move_player(World *world) {
         update_combat_system(world);
         update_player_position(world);
         enemy_shoot(world);
+        update_AI_system(world);
         render(world);
     }
 }
@@ -190,6 +191,15 @@ void update_player_position(World *world) {
         world->player.needs_update = false;
     }
 
+    for (int i = 0; i < NUM_ENEMIES; i++) {
+        if (world->enemies[i].needs_update) {
+            world->enemies[i].previous_pos = world->enemies[i].position;
+            world->enemies[i].position.x += world->enemies[i].velocity.x;
+            world->enemies[i].position.y += world->enemies[i].velocity.y;
+            world->enemies[i].needs_render = true;
+            world->enemies[i].needs_update = false;
+        }
+    }
     for (int i = 0; i < MAX_BULLETS; i++) {
         if (world->player.projectile[i].needs_update) {
             if (world->player.projectile[i].position.y > TOP_MAX) {
@@ -278,7 +288,42 @@ void entity_shoot(Entity *entity, Direction direction) {
         }
     }
 }
+void update_AI_system(World *world) {
+    /* vertical reset */
+    for (int i = 0; i < NUM_ENEMIES; i++)
+        move_entity(&world->enemies[i], RESET_VERTICAL);
 
+    /* check wall collisions */
+    for (int i = 0; i < 6; i++) {
+        if ((world->enemies[world->right_most_enemies[i]].position.x +
+             world->enemies[world->right_most_enemies[i]].dimension.width) >=
+            (RIGHT_MAX)) {
+            travel_right = false;
+            if (!enemies_at_bottom(world)) {
+                for (int j = 0; j < NUM_ENEMIES; j++) {
+                    move_entity(&world->enemies[j], DOWN);
+                }
+            }
+        } else if ((world->enemies[world->left_most_enemies[i]].position.x) <=
+                   (LEFT_MAX)) {
+            travel_right = true;
+            if (!enemies_at_bottom(world)) {
+                for (int j = 0; j < NUM_ENEMIES; j++) {
+                    move_entity(&world->enemies[j], DOWN);
+                }
+            }
+        }
+    }
+
+    /* move enemies right or left */
+    for (int i = 0; i < NUM_ENEMIES; i++) {
+        if (travel_right) {
+            move_entity(&world->enemies[i], RIGHT);
+        } else {
+            move_entity(&world->enemies[i], LEFT);
+        }
+    }
+}
 void move_bullet(Missile *projectile, Direction direction) {
     switch (direction) {
         case UP:
@@ -409,7 +454,18 @@ void update_combat_system(World *world) {
     //     }
     // }
 }
-
+bool enemies_at_bottom(World *world) {
+    int bottom_most = 0;
+    for (int i = 0; i < 10; i++) {
+        if (world->enemies[bottom_most].position.y <
+            world->enemies[i].position.y) {
+            bottom_most = world->shooters[i];
+        }
+    }
+    return (world->enemies[bottom_most].position.y +
+            world->enemies[bottom_most].dimension.height) >
+           ENEMIES_VERTICAL_MAX;
+}
 // Draw the enity using the data has set
 void render(World *world) {
     wait_msec(10000);
