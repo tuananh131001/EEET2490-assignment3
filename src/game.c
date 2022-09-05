@@ -588,12 +588,3 @@ void clear(Entity entity) {
     }
 }
 
-// Create the stage
-void init_map(World *world)
-{
-    init_player(&world->player);
-    init_enemies(world);
-    init_bunkers(world->bunkers);
-
-    init_life(&world->life);
-}
