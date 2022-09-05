@@ -38,6 +38,7 @@
         "streambuf": "c",
         "tuple": "c",
         "typeinfo": "c",
-        "framebf.h": "c"
+        "framebf.h": "c",
+        "uart.h": "c"
     }
 }
