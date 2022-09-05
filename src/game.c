@@ -14,6 +14,7 @@ void init_game(Game *world) {
 // Setting the value for aliens
 void init_enemies(World *world) {
     for (int i = 0, j = 0; i < NUM_ENEMIES; i++) {
+
         if (i < NUM_PAWNS) {
             if (i < 10) {
                 world->enemies[i].position.x =
@@ -25,6 +26,7 @@ void init_enemies(World *world) {
                     alien_initial_x + (HORIZONTAL_OFFSET * (i % 10));
                 world->enemies[i].position.y =
                     alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 4);
+
             } else {
                 world->enemies[i].position.x =
                     alien_initial_x + (HORIZONTAL_OFFSET * (i % 20));
@@ -52,7 +54,9 @@ void init_enemies(World *world) {
             world->enemies[i].health.current_health = QUEEN_HEALTH;
             world->enemies[i].type = QUEEN;
             j++;
+
         }
+
         world->enemies[i].needs_render = true;
         world->enemies[i].needs_update = true;
         world->enemies[i].enabled = true;
@@ -75,7 +79,9 @@ void init_player(Entity *player) {
     player->dimension.width = blue_ship_sprite.width;
     player->position.x = (MAP_WIDTH / 2) - (player->dimension.width / 2);
     player->position.y = MAP_HEIGHT - 100;
+
     player->health.current_health = 3;
+
     player->type = PLAYER;
     player->needs_update = true;
     player->needs_render = true;
@@ -303,6 +309,7 @@ void update_right_most(World *world, int index) {
 }
 
 bool intersectAABB(Missile *projectile, Entity *entity) {
+
     return projectile->position.x <
                (entity->position.x + entity->dimension.width) &&
            (projectile->position.x + projectile->dimension.width) >
@@ -317,6 +324,7 @@ void resolve_collisions(Missile *projectile, Entity *entity) {
     bool isEnabled = entity->enabled;
     bool intersects = intersectAABB(projectile, entity);
     if (isEnabled && intersects) {
+
         projectile->active = false;
         projectile->needs_update = false;
         projectile->needs_render = false;
@@ -329,6 +337,7 @@ void update_collision_system(World *world) {
     Entity *player = &world->player;
     Entity *enemy = world->enemies;
     Entity *bunker = world->bunkers;
+
 
     for (int i = 0; i < MAX_BULLETS; i++) {
         if (player->projectile[i].active) {
@@ -375,7 +384,9 @@ void update_combat_system(World *world) {
     for (int i = 0; i < NUM_BUNKERS; i++) {
         if (world->bunkers[i].combat_update) {
             world->bunkers[i].health.current_health -= 1;
+
             printf("Health: %d \n", world->bunkers[i].health.current_health);
+
 
             if (world->bunkers[i].health.current_health <= 0) {
                 world->bunkers[i].enabled = false;
@@ -451,6 +462,7 @@ void render(World *world) {
             drawEntity(world->bunkers[i]);
         } else if (world->bunkers[i].needs_clear) {
             clear(world->bunkers[i]);
+
             drawEntity(world->player);
             world->bunkers[i].needs_clear = false;
         }
@@ -474,6 +486,7 @@ void render(World *world) {
             }
         }
     }
+
     // if (world->player.needs_render && world->player.enabled) {
     // clear(world->player);
     // drawEntity(world->player);
@@ -524,6 +537,7 @@ void render_score(World *world) {
 }
 
 void init_life(Entity *life) {
+
     life->health.player_health = 5;
     life->needs_update = false;
     life->needs_render = true;
@@ -570,5 +584,16 @@ void clear(Entity entity) {
             x = oldX;
         }
         drawPixel(x, y, 0);
+
     }
+}
+
+// Create the stage
+void init_map(World *world)
+{
+    init_player(&world->player);
+    init_enemies(world);
+    init_bunkers(world->bunkers);
+
+    init_life(&world->life);
 }

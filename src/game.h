@@ -68,6 +68,7 @@ typedef struct {
 
 typedef enum { PLAYER = 1, PAWN = 2, QUEEN = 3, BUNKER = 4 } Type;
 
+
 typedef struct {
     Position position;
     Position previous_pos;
@@ -139,7 +140,9 @@ void *memcpy(void *dest, const void *src, unsigned long n);
 void draw_projectile(Type type, Position position, Dimension dimension);
 void clear_projectile(Position position, Dimension dimension);
 void render_health(World *world);
+
 void render_score(World *world);
+
 void update_combat_system(World *world);
 void update_collision_system(World *world);
 void clear(Entity entity);
