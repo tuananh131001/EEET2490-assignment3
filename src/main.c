@@ -1,39 +1,27 @@
 // -----------------------------------main.c
 // -------------------------------------
 
-#include "display_image.h"
-#include "display_video.h"
 #include "framebf.h"
 #include "game.h"
 #include "mbox.h"
 #include "uart.h"
-#include "select.h"
 void main() {
     uart_init();
     fb_init();
-    int x_coordinate = 50;
-    int y_coordinate = 200;
-    // drawRect(150, 150, 400, 400, 0x03, 0);
-    // drawRect(300, 300, 350, 350, 0x2e, 1);
-
-    // drawCircle(960, 540, 250, 0x0e, 0);
-    // drawCircle(960, 540, 50, 0x13, 1);
 
     // drawPixel(250, 250, 0x0e);
 
-    // controlTomJerryImage(x_coordinate,y_coordinate);
-
     // echo everything back
-    while (1) {
-        // read each char
-        get_command();
-    }
+
+    // read each char
     Game game;
 
     init_game(&game);
 
     // render(&game.world);
     move_player(&game.world);
+
+    get_command();
 
     // displayTomAndJerryVideo(x_coordinate,y_coordinate);
 

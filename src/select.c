@@ -1,91 +1,71 @@
+#include "select.h"
+
+#include "display_image.h"
+#include "display_video.h"
+#include "framebf.h"
+#include "game.h"
+#include "mbox.h"
+#include "uart.h"
 
 void get_command() {
-    uart_puts("\n\n");
-
+    
+    displayMenu();
+    uart_puts("\n");
     // declaring variables
     int count = 0;
     char str[40];  // char array to store user inputs
 
     // Taking input commands
-    uart_puts("Ypl OS >>> ");
     while (1) {
+        int x_coordinate = 50;
+        int y_coordinate = 200;
         // read each char
-        char c = uart_getc();
+        uart_puts("\n\n");
 
-        // if user presses ENTER, break the loop and execute a command
-        if (c == 10) {
-            uart_puts("\n");
-            break;
+        uart_puts("YplOS>>> ");
+
+        char command = uart_getc();
+
+        uart_sendc(command);
+        uart_sendc('\n');
+
+        if (command == '1') {
+            drawRect(150, 150, 400, 400, 0x03, 0);
+            drawRect(300, 300, 350, 350, 0x2e, 1);
+
+            drawCircle(960, 540, 250, 0x0e, 0);
+            drawCircle(960, 540, 50, 0x13, 1);
+            drawString(100, 100, "Nguyen Tuan Anh - s3864077", 0x0f);
+            drawString(100, 120, "Vo Quoc Huy - s3823236", 0x0f);
+
+        } else if (command == '2') {
+            displayTomImage(x_coordinate, y_coordinate);
+        } else if (command == '3') {
+            controlTomJerryImage(x_coordinate, y_coordinate);
+        } else if (command == '4') {
+            displayTomAndJerryVideo(x_coordinate, y_coordinate);
+        } else if (command == '5') {
+            // render(&game.world);
+            // move_player();
+        } else if (command == '0') {
+            clear_emulator_screen(1920, 1080);
+        } else {
+            uart_puts("Invalid command. Please try again");
         }
-
-        // add each character into the string
-        else if (c != 8) {
-            uart_sendc(c);
-            str[count] = c;
-            count++;
-        }
-
-        // delete each character when user press BackSpace each time
-        else if (c == 8 && count > 0) {
-            uart_sendc(c);
-            uart_sendc(32);
-            uart_sendc(8);
-            count--;
-            str[count] = 0;  // make the element at that index in the string to
-                             // be whitespace
-        }
-    }
-
-    uart_puts("Execute command: ");
-    uart_puts(str);
-    uart_puts("\n");
-
-    // uart_puts(split);
-
-    // ----- COMMANDS -----//
-    if (str[0] == '\0') {
-        uart_puts("");
-    }
-
-    // command 1: help <command>
-    else if (compare_str(str, "printfont") == 0) {
-        drawString(100, 100, "Nguyen Tuan Anh - s3864077", 0x0f);
-        drawString(100, 120, "Vo Quoc Huy - s3823236", 0x0f);
-    }
-
-    // Invalid command
-    else {
-        uart_puts("'");
-        uart_puts(str);
-        uart_puts("'");
-        uart_puts(" is an invalid command. Please check again. \n");
-    }
-
-    // reset string arrays
-    for (int k = 0; k < 40; k++) {
-        // Reset string input
-        str[k] = '\0';
     }
 }
 
 /**
  * Comparing 2 strings.
  */
-int compare_str(char *a, char *b) {
-    int flag = 0;
-    while (*a != '\0' && *b != '\0')  // while loop
-    {
-        for (int i = 0; i < sizeof(a); i++) {
-            if (*a != *b) {
-                flag = 1;
-            }
-            a++;
-            b++;
-        }
-    }
-    if (flag == 0) {
-        return 0;
-    } else {
-        return 1;
-    }
+
+void displayMenu() {
+    uart_puts(
+        "\n\n\tEnter a number to choose command:\n"
+        "\t1.\tDisplay text on screen\n"
+        "\t2.\tDisplay a small image\n"
+        "\t3.\tDisplay a scrollable large image\n"
+        "\t4.\tDisplay a video\n"
+        "\t5.\tPlay game\n"
+        "\t0.\tClear the screen\n");
 }

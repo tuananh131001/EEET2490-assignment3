@@ -34,8 +34,8 @@
 #define MAX_BULLETS 10
 #define BULLET_VELOCITY 15
 
-#define MAP_WIDTH 1024
-#define MAP_HEIGHT 768
+#define MAP_WIDTH 1920
+#define MAP_HEIGHT 1080
 
 #define MAX_SHOOTERS 10
 
@@ -133,7 +133,9 @@ void init_player(Entity *player);
 void init_enemies(World *world);
 void init_life(Entity *life);
 void render(World *world);  // framebf.c
+// void move_player(World *world);
 void move_player(World *world);
+
 void update_player_position(World *world);
 void move_entity(Entity *entity, Direction direction);
 void drawEntity(Entity entity);
