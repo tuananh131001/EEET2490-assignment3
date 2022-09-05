@@ -14,7 +14,6 @@ void init_game(Game *world) {
 // Setting the value for aliens
 void init_enemies(World *world) {
     for (int i = 0, j = 0; i < NUM_ENEMIES; i++) {
-
         if (i < NUM_PAWNS) {
             if (i < 10) {
                 world->enemies[i].position.x =
@@ -54,7 +53,6 @@ void init_enemies(World *world) {
             world->enemies[i].health.current_health = QUEEN_HEALTH;
             world->enemies[i].type = QUEEN;
             j++;
-
         }
 
         world->enemies[i].needs_render = true;
@@ -110,13 +108,14 @@ void init_bunkers(Entity bunkers[]) {
 
 // Move player
 void move_player(World *world) {
+
     uart_puts("Press a to move left: \n");
     uart_puts("Press d to move right: \n");
     uart_puts("Press w to move up: \n");
     uart_puts("Press s to move down: \n");
 
     while (1) {
-        char character = uart_getc();
+        char character = uart_getc_game();
         if (character != '\n' && character != '\b') {
         }
         if (character == 'a') {
@@ -354,7 +353,6 @@ void update_right_most(World *world, int index) {
 }
 
 bool intersectAABB(Missile *projectile, Entity *entity) {
-
     return projectile->position.x <
                (entity->position.x + entity->dimension.width) &&
            (projectile->position.x + projectile->dimension.width) >
@@ -369,7 +367,6 @@ void resolve_collisions(Missile *projectile, Entity *entity) {
     bool isEnabled = entity->enabled;
     bool intersects = intersectAABB(projectile, entity);
     if (isEnabled && intersects) {
-
         projectile->active = false;
         projectile->needs_update = false;
         projectile->needs_render = false;
@@ -382,7 +379,6 @@ void update_collision_system(World *world) {
     Entity *player = &world->player;
     Entity *enemy = world->enemies;
     Entity *bunker = world->bunkers;
-
 
     for (int i = 0; i < MAX_BULLETS; i++) {
         if (player->projectile[i].active) {
@@ -431,7 +427,6 @@ void update_combat_system(World *world) {
             world->bunkers[i].health.current_health -= 1;
 
             printf("Health: %d \n", world->bunkers[i].health.current_health);
-
 
             if (world->bunkers[i].health.current_health <= 0) {
                 world->bunkers[i].enabled = false;
@@ -505,7 +500,7 @@ void render(World *world) {
             world->enemies[i].needs_render = true;  // false default
         } else if (world->enemies[i].needs_clear) {
             // clear(world->enemies[i]);
-            clear_emulator_screen(1024, 768);
+            clear_emulator_screen(1920, 1080);
             // clear_emulator_screen(1024, 768);
             drawEntity(world->player);
             world->enemies[i].needs_clear = false;
@@ -557,7 +552,7 @@ void render(World *world) {
 void render_health(World *world) {
     int chealth = (world->player.health.current_health);
     char health = integer_to_character(chealth);
-    drawLine(0, 720, 1024, 720, 0x0c);
+    drawLine(0, 1080, 1920, 1080, 0x0c);
     drawChar(health, 20, 730, 0x0c);
 
     if (chealth == 3) {
@@ -593,7 +588,6 @@ void render_score(World *world) {
 }
 
 void init_life(Entity *life) {
-
     life->health.player_health = 5;
     life->needs_update = false;
     life->needs_render = true;
@@ -640,7 +634,5 @@ void clear(Entity entity) {
             x = oldX;
         }
         drawPixel(x, y, 0);
-
     }
 }
-
