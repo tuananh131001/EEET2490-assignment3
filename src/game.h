@@ -19,18 +19,23 @@
 #define alien_initial_y 0
 #define alien_initial_x 200
 #define HORIZONTAL_OFFSET 60
-#define VERTICAL_OFFSET 0
+#define VERTICAL_OFFSET 60
+
+#define ENEMIES_VERTICAL_MAX (1080 - 262 - VERTICAL_OFFSET)
 
 #define PLAYER_SPEED 15
 #define VERTICAL_SPEED 6
 #define HORIZONTAL_SPEED 4
 
-#define TOP_MAX 162
+#define LEFT_MAX 400
+#define RIGHT_MAX 1520
+#define TOP_MAX 62
+#define BOTTOM_MAX 917
 #define MAX_BULLETS 10
 #define BULLET_VELOCITY 15
 
-#define MAP_WIDTH 1024
-#define MAP_HEIGHT 768
+#define MAP_WIDTH 1920
+#define MAP_HEIGHT 1080
 
 #define MAX_SHOOTERS 10
 
@@ -64,7 +69,8 @@ typedef struct {
     bool needsRender;
 } Score;
 
-typedef enum { PLAYER = 1, PAWN = 2 , QUEEN = 3, BUNKER = 4} Type;
+typedef enum { PLAYER = 1, PAWN = 2, QUEEN = 3, BUNKER = 4 } Type;
+
 
 typedef struct {
     Position position;
@@ -102,7 +108,6 @@ typedef struct map {
     int right_most_enemies[6];
     Score playerScore;
 
-
 } World;
 
 typedef struct {
@@ -119,6 +124,8 @@ typedef enum {
     RESET_HORIZONTAL
 } Direction;
 
+static bool travel_right = true;
+
 void init_game(Game *world);
 void init_map(World *world);
 
@@ -126,8 +133,10 @@ void init_player(Entity *player);
 void init_enemies(World *world);
 void init_life(Entity *life);
 void render(World *world);  // framebf.c
+// void move_player(World *world);
 void move_player(World *world);
-void update_player_position(World *world) ;
+
+void update_player_position(World *world);
 void move_entity(Entity *entity, Direction direction);
 void drawEntity(Entity entity);
 
@@ -138,8 +147,15 @@ void *memcpy(void *dest, const void *src, unsigned long n);
 void draw_projectile(Type type, Position position, Dimension dimension);
 void clear_projectile(Position position, Dimension dimension);
 void render_health(World *world);
+
 void render_score(World *world);
+
 void update_combat_system(World *world);
 void update_collision_system(World *world);
 void clear(Entity entity);
 void update_score(World *world, Type type);
+void enemy_shoot(World *world);
+int rand(void);
+
+void update_AI_system(World *world);
+bool enemies_at_bottom(World *world);
