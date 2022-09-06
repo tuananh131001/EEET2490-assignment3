@@ -184,7 +184,6 @@ void drawBar(int health, int x, int y) {
 }
 
 void drawScore(int num, int x, int y) {
-    printf("num is %d \n", num);
 
     int *colorptr;
     int width = 32;
