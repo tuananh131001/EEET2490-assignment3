@@ -465,17 +465,20 @@ void update_collision_system(World *world)
                 resolve_collisions(&player->projectile[i], &bunker[k]);
         }
     }
-    // for (int i = 0; i < 10; i++) {
-    //     int index = world->shooters[i];
-    //     for (int j = 0; j < MAX_BULLETS; j++) {
-    //         if (enemy[index].projectile[j].active) {
-    //             resolve_collisions(&enemy[index].projectile[j], player);
-    //             // for (int k = 0; k < NUM_BUNKERS; k++)
-    //             //     resolve_collisions(&enemy[index].projectile[j],
-    //             &bunker[k]);
-    //         }
-    //     }
-    // }
+    for (int i = 0; i < 10; i++)
+    {
+        int index = world->shooters[i];
+        for (int j = 0; j < MAX_BULLETS; j++)
+        {
+            if (enemy[index].projectile[j].active)
+            {
+                resolve_collisions(&enemy[index].projectile[j], player);
+                for (int k = 0; k < NUM_BUNKERS; k++)
+                    resolve_collisions(&enemy[index].projectile[j],
+                                       &bunker[k]);
+            }
+        }
+    }
 }
 
 void update_combat_system(World *world)
@@ -509,8 +512,6 @@ void update_combat_system(World *world)
         {
             world->bunkers[i].health.current_health -= 1;
 
-            printf("Health: %d \n", world->bunkers[i].health.current_health);
-
             if (world->bunkers[i].health.current_health <= 0)
             {
                 world->bunkers[i].enabled = false;
@@ -520,18 +521,20 @@ void update_combat_system(World *world)
         }
     }
 
-    // if (world->player.combat_update) {
-    //     world->life.needs_render = true;
-    //     world->player.health.current_health -= 1;
-    //     if (world->player.health.current_health <= 0) {
-    //         world->player.enabled = false;
-    //         world->player.needs_clear = true;
-    //     }
-    //     world->player.combat_update = false;
-    //     if (world->player.health.current_health == 0) {
-    //         endScreen(0);
-    //     }
-    // }
+    if (world->player.combat_update)
+    {
+        world->life.needs_render = true;
+        world->player.health.current_health -= 1;
+        if (world->player.health.current_health <= 0)
+        {
+            world->player.enabled = false;
+            clear(world->player);
+        }
+        world->player.combat_update = false;
+        // if (world->player.health.current_health == 0) {
+        //     endScreen(0);
+        // }
+    }
 }
 bool enemies_at_bottom(World *world)
 {
@@ -552,19 +555,7 @@ bool enemies_at_bottom(World *world)
 void render(World *world)
 {
     wait_msec(10000);
-    render_health(world);
-    if (world->player.needs_render && world->player.enabled)
-    {
-        clear(world->player);
-        // clear_emulator_screen(1024, 768);
-        drawEntity(world->player);
-        world->player.needs_render = false;
-    }
-    else if (world->player.needs_clear)
-    {
-        clear(world->player);
-        world->player.needs_clear = false;
-    }
+
     for (int i = 0; i < MAX_BULLETS; i++)
     {
         Type type = world->player.type;
@@ -598,8 +589,8 @@ void render(World *world)
         }
         else if (world->enemies[i].needs_clear)
         {
-            // clear(world->enemies[i]);
-            clear_emulator_screen(1920, 1080);
+            clear(world->enemies[i]);
+            // clear_emulator_screen(1920, 1080);
             // clear_emulator_screen(1024, 768);
             drawEntity(world->player);
             world->enemies[i].needs_clear = false;
@@ -646,12 +637,24 @@ void render(World *world)
         }
     }
 
-    // if (world->player.needs_render && world->player.enabled) {
-    // clear(world->player);
-    // drawEntity(world->player);
-    // world->player.needs_render = false;
-    // }
+    if (world->player.needs_render && world->player.enabled)
+    {
+        clear(world->player);
+        drawEntity(world->player);
+        world->player.needs_render = false;
+    }
+    else if (world->player.needs_clear)
+    {
+        video_wait_ms(60000);
+        clear(world->player);
+        drawEntity(world->player);
+        world->player.needs_clear = false;
+    }
 
+    if (world->life.needs_render)
+    {
+        render_health(world);
+    }
     if (world->playerScore.needsRender)
     {
         render_score(world);
@@ -660,30 +663,22 @@ void render(World *world)
 
 void render_health(World *world)
 {
-    int chealth = (world->player.health.current_health);
-    char health = integer_to_character(chealth);
-    drawLine(0, 1080, 1920, 1080, 0x0f);
-    drawChar(health, 20, 730, 0x0f);
+    int clife = (world->player.health.current_health);
+    drawString(90, 90, "TOTAL LIVES:", 0x0f);
 
-    if (chealth == 3)
+    if (clife == 0)
     {
-        drawBar(5, 60, 720);
-        drawBar(5, 110, 720);
-        drawBar(5, 160, 720);
+        drawString(200, 90, "0", 0x0f);
+        clear(world->player);
     }
-    else if (chealth == 2)
+
+    else
     {
-        drawBar(5, 60, 720);
-        drawBar(5, 110, 720);
+        char life[10];
+        integer_to_string(clife, life);
+        drawString(200, 90, life, 0x0f);
     }
-    else if (chealth == 1)
-    {
-        drawBar(5, 60, 720);
-    }
-    else if (chealth == 0)
-    {
-        clear_emulator_screen(60, 720);
-    }
+    world->life.needs_render = false;
 }
 
 void render_score(World *world)
@@ -693,24 +688,20 @@ void render_score(World *world)
 
     if (score == 0)
     {
-        drawString(90, 80, "0", 0x0f);
+        drawString(140, 50, "0", 0x0f);
     }
     else
     {
         char snum[10];
-        char scoreWord[20];
         integer_to_string(score, snum);
-        drawString(90, 80, snum, 0x0f);
+        drawString(140, 50, snum, 0x0f);
     }
-
-    // drawString(120, 50,"215",0x0f);
-
     world->playerScore.needsRender = false;
 }
 
 void init_life(Entity *life)
 {
-    life->health.player_health = 5;
+    life->health.player_health = 3;
     life->needs_update = false;
     life->needs_render = true;
 }
