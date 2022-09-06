@@ -173,7 +173,8 @@ int array_length(char arr[10][20])
   return i;
 }
 
-// Generate a function convert integer to string
+// Generate a function convert integer to string and return string
+
 void integer_to_string(int n, char *str)
 {
   int i = 0;
@@ -203,5 +204,8 @@ char integer_to_character(int n)
 {
   return n + '0';
 }
+
+
+
 
 

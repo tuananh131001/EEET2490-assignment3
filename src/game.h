@@ -34,8 +34,8 @@
 #define MAX_BULLETS 10
 #define BULLET_VELOCITY 15
 
-#define MAP_WIDTH 1920
-#define MAP_HEIGHT 1080
+#define MAP_WIDTH 1024
+#define MAP_HEIGHT 768
 
 #define MAX_SHOOTERS 10
 

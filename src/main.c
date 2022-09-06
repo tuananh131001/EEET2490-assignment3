@@ -5,6 +5,9 @@
 #include "game.h"
 #include "mbox.h"
 #include "uart.h"
+#include "display_image.h"
+#include "display_video.h"
+#include "helper.h"
 void displayMenu();
 void main() {
     // declaring variables
