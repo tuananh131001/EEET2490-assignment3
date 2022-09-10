@@ -18,8 +18,8 @@
 
 #define alien_initial_y 0
 #define alien_initial_x 200
-#define HORIZONTAL_OFFSET 60
-#define VERTICAL_OFFSET 60
+#define HORIZONTAL_OFFSET 61
+#define VERTICAL_OFFSET 61
 
 #define ENEMIES_VERTICAL_MAX (1080 - 262 - VERTICAL_OFFSET)
 
@@ -29,13 +29,13 @@
 
 #define LEFT_MAX 400
 #define RIGHT_MAX 1520
-#define TOP_MAX 62
+#define TOP_MAX 162
 #define BOTTOM_MAX 917
 #define MAX_BULLETS 10
 #define BULLET_VELOCITY 15
 
-#define MAP_WIDTH 1024
-#define MAP_HEIGHT 768
+#define MAP_WIDTH 1920
+#define MAP_HEIGHT 1080
 
 #define MAX_SHOOTERS 10
 
