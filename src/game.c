@@ -126,9 +126,11 @@ void move_player(World *world) {
             world->player.velocity.y = 0;
         } else if (character == 'w') {
             world->player.velocity.y = -VERTICAL_SPEED;
+            world->player.velocity.x = 0;
             world->player.needs_update = true;
         } else if (character == 's') {
             world->player.velocity.y = VERTICAL_SPEED;
+            world->player.velocity.x = 0;
             world->player.needs_update = true;
         } else if (character == ' ') {
             entity_shoot(&world->player, UP);
@@ -399,7 +401,13 @@ void update_collision_system(World *world) {
         }
     }
 }
-
+void update_shooters(World *world, int index) {
+    for (int i = 0; i < MAX_SHOOTERS; i++) {
+        if (world->shooters[i] == index) {
+            world->shooters[i] += 10;
+        }
+    }
+}
 void update_combat_system(World *world) {
     for (int i = 0; i < NUM_ENEMIES; i++) {
         if (world->enemies[i].combat_update) {
@@ -409,10 +417,10 @@ void update_combat_system(World *world) {
                 world->enemies[i].needs_clear = true;
                 world->playerScore.needsRender = true;
                 update_score(world, world->enemies[i].type);
-                // update_shooters(world, i);
+                update_shooters(world, i);
                 // update_left_most(world, i);
                 // update_right_most(world, i);
-                // world->enemies_alive -= 1;
+                world->enemies_alive -= 1;
             }
             world->enemies[i].combat_update = false;
             // if (world->enemies_alive == 0) {
@@ -605,6 +613,7 @@ void init_map(World *world) {
     init_bunkers(world->bunkers);
     init_playerScore(&world->playerScore);
     init_life(&world->life);
+    world->enemies_alive = NUM_ENEMIES;
 }
 
 void clear(Entity entity) {

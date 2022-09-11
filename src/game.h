@@ -107,6 +107,7 @@ typedef struct map {
     int left_most_enemies[6];
     int right_most_enemies[6];
     Score playerScore;
+    int enemies_alive;
 
 } World;
 
@@ -159,3 +160,4 @@ int rand(void);
 
 void update_AI_system(World *world);
 bool enemies_at_bottom(World *world);
+void update_shooters(World *world, int index);
