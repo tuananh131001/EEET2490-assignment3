@@ -118,14 +118,18 @@ void move_player(World *world) {
         }
         if (character == 'a') {
             move_entity(&world->player, LEFT);
+            world->player.velocity.y = 0;
         }
         // if character = s, scroll down -> screen down
         else if (character == 'd') {
             move_entity(&world->player, RIGHT);
+            world->player.velocity.y = 0;
         } else if (character == 'w') {
-            move_entity(&world->player, UP);
+            world->player.velocity.y = -VERTICAL_SPEED;
+            world->player.needs_update = true;
         } else if (character == 's') {
-            move_entity(&world->player, DOWN);
+            world->player.velocity.y = VERTICAL_SPEED;
+            world->player.needs_update = true;
         } else if (character == ' ') {
             entity_shoot(&world->player, UP);
         }
@@ -150,22 +154,22 @@ void move_entity(Entity *entity, Direction direction) {
         case LEFT:
             entity->velocity.x =
                 (entity->type == PLAYER) ? -PLAYER_SPEED : -HORIZONTAL_SPEED;
-            entity->velocity.y = 0;
+            // entity->velocity.y = 0;
             entity->needs_update = true;
             break;
         case RIGHT:
             entity->velocity.x =
                 (entity->type == PLAYER) ? PLAYER_SPEED : HORIZONTAL_SPEED;
-            entity->velocity.y = 0;
+            
             entity->needs_update = true;
             break;
         case UP:
-            entity->velocity.x = 0;
+            // entity->velocity.x = 0;
             entity->velocity.y = -VERTICAL_SPEED;
             entity->needs_update = true;
             break;
         case DOWN:
-            entity->velocity.x = 0;
+            // entity->velocity.x = 0;
             entity->velocity.y = VERTICAL_SPEED;
             entity->needs_update = true;
             break;
@@ -241,12 +245,6 @@ void update_player_position(World *world) {
         }
     }
 
-    // world->player.position.x += world->player.velocity.x;
-    // world->player.position.y += world->player.velocity.y;
-
-    // world->player.needs_render = true;
-    // world->player.needs_update = false;
-    // }
 }
 void enemy_shoot(World *world) {
     // if (clock() < before) return;
@@ -266,7 +264,6 @@ void entity_shoot(Entity *entity, Direction direction) {
     // if (clock() < entity->timer) return;
 
     // entity->timer = clock() + CLOCKS_PER_SEC / 2;
-    wait_msec(30000);
     for (int i = 0; i < MAX_BULLETS; i++) {
         if (!entity->projectile[i].active) {
             // Initial a bullet
@@ -297,8 +294,8 @@ void update_AI_system(World *world) {
 
     /* check wall collisions */
     for (int i = 0; i < 6; i++) {
-        if ((world->enemies[world->right_most_enemies[i]].position.x +
-             world->enemies[world->right_most_enemies[i]].dimension.width) >=
+        if ((world->enemies[9].position.x +
+             world->enemies[9].dimension.width) >=
             (RIGHT_MAX)) {
             travel_right = false;
             if (!enemies_at_bottom(world)) {
@@ -306,7 +303,7 @@ void update_AI_system(World *world) {
                     move_entity(&world->enemies[j], DOWN);
                 }
             }
-        } else if ((world->enemies[world->left_most_enemies[i]].position.x) <=
+        } else if ((world->enemies[0].position.x) <=
                    (LEFT_MAX)) {
             travel_right = true;
             if (!enemies_at_bottom(world)) {
@@ -463,7 +460,7 @@ bool enemies_at_bottom(World *world) {
 }
 // Draw the enity using the data has set
 void render(World *world) {
-    wait_msec(50000);
+    wait_msec(10000);
 
     for (int i = 0; i < MAX_BULLETS; i++) {
         Type type = world->player.type;
