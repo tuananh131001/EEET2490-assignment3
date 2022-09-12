@@ -46,6 +46,12 @@
 #define BAR_ORIGINX 1150
 #define BAR_ORIGINY 180
 
+static bool travel_right = true;
+
+bool quitGame;
+bool restartGame;
+bool pauseGame;
+
 typedef union {
     int current_health;
     int player_health;
@@ -97,22 +103,37 @@ typedef struct {
     bool combat_update;
     bool enabled;
 } Entity;
+typedef struct {
+    int game_menu_option;
+    bool on_gameMenu_menu;
+} GameMenu;
+
+typedef struct {
+    bool game_start_menu;
+    bool on_game_menu;
+} MainMenu;
 
 typedef struct map {
     Entity player;
-    Entity enemies[NUM_ENEMIES];
     Entity bunkers[NUM_BUNKERS];
+    Entity enemies[NUM_ENEMIES];
     int shooters[MAX_SHOOTERS];
-    Entity life;
     int left_most_enemies[6];
     int right_most_enemies[6];
-    Score playerScore;
     int enemies_alive;
+    bool game_over;
+    Score playerScore;
+    Entity life;
+    GameMenu game_menu;
 
 } World;
 
 typedef struct {
     World world;
+    bool game_win;
+    bool game_over;
+    bool game_start;
+    MainMenu main_menu;
 } Game;
 
 typedef enum {
@@ -125,7 +146,7 @@ typedef enum {
     RESET_HORIZONTAL
 } Direction;
 
-static bool travel_right = true;
+
 
 void init_game(Game *world);
 void init_map(World *world);
@@ -161,3 +182,6 @@ int rand(void);
 void update_AI_system(World *world);
 bool enemies_at_bottom(World *world);
 void update_shooters(World *world, int index);
+void drawGameMenu(World *game);
+void drawMainMenu(Game *game);
+void show_game_menu(World *world);

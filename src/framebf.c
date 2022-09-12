@@ -325,3 +325,54 @@ void display_frame_image(unsigned int frame_image[], int x, int y, int width,
         x = 0;
     }
 }
+void drawBackground() {
+    int width = RIGHT_MAX - LEFT_MAX;
+    int height = BOTTOM_MAX - TOP_MAX + 60;
+    int x = LEFT_MAX;
+    int y = TOP_MAX;
+    for (int i = 0; i < (width * height); i++) {
+        x++;
+        if (i % width == 0) {
+            y++;
+            x = LEFT_MAX;
+        }
+        drawPixel(x, y, 1);
+    }
+}
+void drawLogo() {
+    int *colorptrLogo = (int *)LOGO.image_pixels;
+    int widthLogo = LOGO.width;
+    int heightLogo = LOGO.height;
+
+    int xLogo = (int)((MAP_WIDTH / 2) - (widthLogo / 2));
+    int yLogo = TOP_MAX;
+
+    for (int i = 0; i < (widthLogo * heightLogo); i++) {
+        xLogo++;
+        if (i % widthLogo == 0) {
+            yLogo++;
+            xLogo = (int)((MAP_WIDTH / 2) - (widthLogo / 2));
+        }
+        drawPixel(xLogo, yLogo, colorptrLogo[i]);
+    }
+}
+
+
+void drawAuthors() {
+    int *colorptrNames;
+    int widthNames = authors.width;
+    int heightNames = authors.height;
+    colorptrNames = (int *)authors.image_pixels;
+
+    int xMenu = (int)((MAP_WIDTH / 2) - (widthNames / 2));
+    int yMenu = TOP_MAX + LOGO.height + main_menu_quit.height;
+
+    for (int i = 0; i < (widthNames * heightNames); i++) {
+        xMenu++;
+        if (i % widthNames == 0) {
+            yMenu++;
+            xMenu = (int)((MAP_WIDTH / 2) - (widthNames / 2));
+        }
+        drawPixel(xMenu, yMenu, colorptrNames[i]);
+    }
+}
