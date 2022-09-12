@@ -55,10 +55,13 @@ void main() {
             init_game(&game);
             show_main_menu(&game);
             if (game.game_start) {
-                move_player(&game);
+                while (!quitGame) {
+                    restart_game(&game);
+                    move_player(&game);
+                }
             }
             // render(&game.world);
-            
+
         } else if (command == '0') {
             clear_emulator_screen(1920, 1080);
         } else {
@@ -66,6 +69,7 @@ void main() {
         }
     }
 }
+
 void displayMenu() {
     uart_puts(
         "\n\n\tEnter a number to choose command:\n"

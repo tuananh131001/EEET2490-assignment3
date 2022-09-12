@@ -10,11 +10,13 @@ void init_game(Game *world) {
     world->game_over = false;
     world->game_start = false;
     world->main_menu.on_game_menu = true;
-    world->main_menu.game_start_menu = false;
+    world->main_menu.game_start_menu = true;
     world->game_win = false;
     restartGame = false;
     pauseGame = false;
     quitGame = false;
+    
+
     init_map(&world->world);
     fb_init();
 }
@@ -38,6 +40,7 @@ void restart_game(Game *world) {
     world->main_menu.game_start_menu = true;
     world->game_win = false;
     restartGame = false;
+    clear_emulator_screen(1920, 1080);
     pauseGame = false;
     quitGame = false;
 }
@@ -46,8 +49,8 @@ void init_player(Entity *player) {
     player->dimension.height = blue_ship_sprite.height;
     player->dimension.width = blue_ship_sprite.width;
     player->position.x = (MAP_WIDTH / 2) - (player->dimension.width / 2);
-    player->position.y = MAP_HEIGHT - 100;
-
+    player->position.y = MAP_HEIGHT - 162;
+    for (int i = 0; i < MAX_BULLETS; i++) player->projectile[i].active = false;
     player->health.current_health = 3;
 
     player->type = PLAYER;
@@ -143,45 +146,46 @@ void move_player(World *world) {
     uart_puts("Press S to move down: \n");
     uart_puts("Press SPACE to move down: \n");
     uart_puts("Press P to stop: \n");
-    while (1) {
-        char character = uart_getc_game();
-        if (character != '\n' && character != '\b') {
+    while (!quitGame && !restartGame) {
+        while (!pauseGame) {
+            char character = uart_getc_game();
+            if (character != '\n' && character != '\b') {
+            }
+            if (character == 'a') {
+                move_entity(&world->player, LEFT);
+                world->player.velocity.y = 0;
+            }
+            // if character = s, scroll down -> screen down
+            else if (character == 'd') {
+                move_entity(&world->player, RIGHT);
+                world->player.velocity.y = 0;
+            } else if (character == 'w') {
+                world->player.velocity.y = -VERTICAL_SPEED;
+                world->player.velocity.x = 0;
+                world->player.needs_update = true;
+            } else if (character == 's') {
+                world->player.velocity.y = VERTICAL_SPEED;
+                world->player.velocity.x = 0;
+                world->player.needs_update = true;
+            } else if (character == ' ') {
+                entity_shoot(&world->player, UP);
+            } else if (character == 'p') {
+                show_game_menu(&world);
+            }
+            update_AI_system(world);
+            update_collision_system(world);
+            update_combat_system(world);
+            update_player_position(world);
+            render(world);
+            if (wait_time_shoot == 50) {
+                enemy_shoot(world);
+                wait_time_shoot = 0;
+            }
+            { wait_time_shoot++; }
         }
-        if (character == 'a') {
-            move_entity(&world->player, LEFT);
-            world->player.velocity.y = 0;
-        }
-        // if character = s, scroll down -> screen down
-        else if (character == 'd') {
-            move_entity(&world->player, RIGHT);
-            world->player.velocity.y = 0;
-        } else if (character == 'w') {
-            world->player.velocity.y = -VERTICAL_SPEED;
-            world->player.velocity.x = 0;
-            world->player.needs_update = true;
-        } else if (character == 's') {
-            world->player.velocity.y = VERTICAL_SPEED;
-            world->player.velocity.x = 0;
-            world->player.needs_update = true;
-        } else if (character == ' ') {
-            entity_shoot(&world->player, UP);
-        }else if (character == 'p') {
-            show_game_menu(&world);
-        }
-        
-        update_AI_system(world);
-        update_collision_system(world);
-        update_combat_system(world);
-        update_player_position(world);
-        if (wait_time_shoot == 50) {
-            enemy_shoot(world);
-            wait_time_shoot = 0;
-        }
-        { wait_time_shoot++; }
-
-        render(world);
     }
 }
+
 void show_main_menu(Game *game) {
     uart_puts("Press s to move down: \n");
     uart_puts("Press w to move up: \n");
@@ -191,11 +195,11 @@ void show_main_menu(Game *game) {
     drawMainMenu(game);
     while (game->main_menu.on_game_menu) {
         char character = uart_getc_game();
-        if (character == 's') {
-            game->main_menu.game_start_menu = false;
+        if (character == 'w') {
+            game->main_menu.game_start_menu = true;  // select start
             drawMainMenu(game);
-        } else if (character == 'w') {
-            game->main_menu.game_start_menu = true;
+        } else if (character == 's') {
+            game->main_menu.game_start_menu = false;  // select quit
             drawMainMenu(game);
         }
 
@@ -210,7 +214,7 @@ void show_main_menu(Game *game) {
     }
 }
 void show_game_menu(World *world) {
-    world->game_menu.game_menu_option = 0;
+    world->game_menu.game_menu_option = 1;
     world->game_menu.on_gameMenu_menu = true;
     pauseGame = true;
     while (world->game_menu.on_gameMenu_menu) {
@@ -220,32 +224,36 @@ void show_game_menu(World *world) {
 
         drawGameMenu(world);
         char character = uart_getc_game();
+        printf("\n%d", world->game_menu.game_menu_option);
         if (character == 'w')  // up
         {
-            if (world->game_menu.game_menu_option == 1) {
-                world->game_menu.game_menu_option = 0;
-            } else if (world->game_menu.game_menu_option == 2) {
-                world->game_menu.game_menu_option = 1;
+            if (world->game_menu.game_menu_option < 2) {
+                world->game_menu.game_menu_option++;
             }
+
         } else if (character == 's')  // down
         {
-            if (world->game_menu.game_menu_option == 0)
-                world->game_menu.game_menu_option = 1;
-            else if (world->game_menu.game_menu_option == 1)
-                world->game_menu.game_menu_option = 2;
+            if (world->game_menu.game_menu_option > 0) {
+                world->game_menu.game_menu_option--;
+            }
         } else if (character == ' ')  // B
         {
-            if (world->game_menu.game_menu_option == 0) {
+            if (world->game_menu.game_menu_option == 2) {
                 world->game_menu.on_gameMenu_menu = false;
-                drawBackground();
+                clear_emulator_screen(1920, 1080);
+                printf("\nSELECT: Pause");
+                world->life.needs_render = true;
+                world->playerScore.needsRender = true;
+                world->player.needs_render = true;
                 pauseGame = false;
-
             } else if (world->game_menu.game_menu_option == 1) {
-                drawBackground();
+                clear_emulator_screen(1920, 1080);
+                printf("\nSELECT: Restart");
                 restartGame = true;
                 return;
-            } else if (world->game_menu.game_menu_option == 2) {
-                drawBackground();
+            } else if (world->game_menu.game_menu_option == 0) {
+                clear_emulator_screen(1920, 1080);
+                printf("\nSELECT: Quit");
                 quitGame = true;
                 return;
             }
@@ -638,9 +646,7 @@ void render(World *world) {
         drawEntity(world->player);
         world->player.needs_render = false;
     } else if (world->player.needs_clear) {
-        video_wait_ms(60000);
         clear(world->player);
-        drawEntity(world->player);
         world->player.needs_clear = false;
     }
 
@@ -728,11 +734,11 @@ void drawGameMenu(World *game) {
     int *colorptrMenu;
     int widthMenu = game_menu_pause.width;
     int heightMenu = game_menu_pause.height;
-    if (game->game_menu.game_menu_option == 0)
+    if (game->game_menu.game_menu_option == 2)
         colorptrMenu = (int *)game_menu_pause.image_pixels;
     else if (game->game_menu.game_menu_option == 1)
         colorptrMenu = (int *)game_menu_restart.image_pixels;
-    else
+    else if (game->game_menu.game_menu_option == 0)
         colorptrMenu = (int *)game_menu_quit.image_pixels;
 
     int xMenu = (int)((MAP_WIDTH / 2) - (widthMenu / 2));

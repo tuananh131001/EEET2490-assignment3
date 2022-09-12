@@ -336,7 +336,7 @@ void drawBackground() {
             y++;
             x = LEFT_MAX;
         }
-        drawPixel(x, y, 1);
+        drawPixel(x, y, 0);
     }
 }
 void drawLogo() {
