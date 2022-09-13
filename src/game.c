@@ -7,8 +7,58 @@
 #include "string_manipulation.h"
 int wait_time_shoot = 50;
 void init_game(Game *world) {
+    world->game_over = false;
+    world->game_start = false;
+    world->main_menu.on_game_menu = true;
+    world->main_menu.game_start_menu = true;
+    world->game_win = false;
+    restartGame = false;
+    pauseGame = false;
+    quitGame = false;
+    
+
     init_map(&world->world);
     fb_init();
+}
+// Create the stage
+void init_map(World *world) {
+    init_player(&world->player);
+    init_enemies(world);
+    init_bunkers(world->bunkers);
+    init_playerScore(&world->playerScore);
+    init_life(&world->life);
+    world->enemies_alive = NUM_ENEMIES;
+    world->game_menu.game_menu_option = 0;
+    world->game_menu.on_gameMenu_menu = false;
+    world->game_over = false;
+}
+void restart_game(Game *world) {
+    init_map(&world->world);
+    world->game_over = false;
+    world->game_start = false;
+    world->main_menu.on_game_menu = true;
+    world->main_menu.game_start_menu = true;
+    world->game_win = false;
+    restartGame = false;
+    clear_emulator_screen(1920, 1080);
+    pauseGame = false;
+    quitGame = false;
+}
+// Setting the value for player
+void init_player(Entity *player) {
+    player->dimension.height = blue_ship_sprite.height;
+    player->dimension.width = blue_ship_sprite.width;
+    player->position.x = (MAP_WIDTH / 2) - (player->dimension.width / 2);
+    player->position.y = MAP_HEIGHT - 162;
+    for (int i = 0; i < MAX_BULLETS; i++) player->projectile[i].active = false;
+    player->health.current_health = 3;
+
+    player->type = PLAYER;
+    player->needs_update = true;
+    player->needs_render = false;
+    player->needs_clear = false;
+    player->combat_update = false;
+    player->enabled = true;
 }
 
 // Setting the value for aliens
@@ -54,7 +104,7 @@ void init_enemies(World *world) {
             j++;
         }
 
-        world->enemies[i].needs_render = true;
+        world->enemies[i].needs_render = false;
         world->enemies[i].needs_update = true;
         world->enemies[i].enabled = true;
         world->enemies[i].combat_update = false;
@@ -69,22 +119,6 @@ void init_enemies(World *world) {
     for (int i = 0; i < MAX_SHOOTERS; i++) {
         world->shooters[i] = i;
     }
-}
-// Setting the value for player
-void init_player(Entity *player) {
-    player->dimension.height = blue_ship_sprite.height;
-    player->dimension.width = blue_ship_sprite.width;
-    player->position.x = (MAP_WIDTH / 2) - (player->dimension.width / 2);
-    player->position.y = MAP_HEIGHT - 100;
-
-    player->health.current_health = 3;
-
-    player->type = PLAYER;
-    player->needs_update = true;
-    player->needs_render = true;
-    player->needs_clear = false;
-    player->combat_update = false;
-    player->enabled = true;
 }
 
 // Setting the value for bunker
@@ -104,45 +138,128 @@ void init_bunkers(Entity bunkers[]) {
         bunkers[i].combat_update = false;
     }
 }
-
 // Move player
 void move_player(World *world) {
-    uart_puts("Press a to move left: \n");
-    uart_puts("Press d to move right: \n");
-    uart_puts("Press w to move up: \n");
-    uart_puts("Press s to move down: \n");
-
-    while (1) {
-        char character = uart_getc_game();
-        if (character != '\n' && character != '\b') {
+    uart_puts("Press A to move left: \n");
+    uart_puts("Press D to move right: \n");
+    uart_puts("Press W to move up: \n");
+    uart_puts("Press S to move down: \n");
+    uart_puts("Press SPACE to move down: \n");
+    uart_puts("Press P to stop: \n");
+    while (!quitGame && !restartGame) {
+        while (!pauseGame) {
+            char character = uart_getc_game();
+            if (character != '\n' && character != '\b') {
+            }
+            if (character == 'a') {
+                move_entity(&world->player, LEFT);
+                world->player.velocity.y = 0;
+            }
+            // if character = s, scroll down -> screen down
+            else if (character == 'd') {
+                move_entity(&world->player, RIGHT);
+                world->player.velocity.y = 0;
+            } else if (character == 'w') {
+                world->player.velocity.y = -VERTICAL_SPEED;
+                world->player.velocity.x = 0;
+                world->player.needs_update = true;
+            } else if (character == 's') {
+                world->player.velocity.y = VERTICAL_SPEED;
+                world->player.velocity.x = 0;
+                world->player.needs_update = true;
+            } else if (character == ' ') {
+                entity_shoot(&world->player, UP);
+            } else if (character == 'p') {
+                show_game_menu(&world);
+            }
+            update_AI_system(world);
+            update_collision_system(world);
+            update_combat_system(world);
+            update_player_position(world);
+            render(world);
+            if (wait_time_shoot == 50) {
+                enemy_shoot(world);
+                wait_time_shoot = 0;
+            }
+            { wait_time_shoot++; }
         }
-        if (character == 'a') {
-            move_entity(&world->player, LEFT);
-        }
-        // if character = s, scroll down -> screen down
-        else if (character == 'd') {
-            move_entity(&world->player, RIGHT);
-        } else if (character == 'w') {
-            move_entity(&world->player, UP);
-        } else if (character == 's') {
-            move_entity(&world->player, DOWN);
-        } else if (character == ' ') {
-            entity_shoot(&world->player, UP);
-        }
-
-        update_collision_system(world);
-        update_combat_system(world);
-        update_player_position(world);
-        if (wait_time_shoot == 50) {
-            enemy_shoot(world);
-            wait_time_shoot = 0;
-        }{
-            wait_time_shoot++;
-        }
-
-        update_AI_system(world);
-        render(world);
     }
+}
+
+void show_main_menu(Game *game) {
+    uart_puts("Press s to move down: \n");
+    uart_puts("Press w to move up: \n");
+    uart_puts("Press space to choose: \n");
+    drawBackground();
+    drawLogo();
+    drawMainMenu(game);
+    while (game->main_menu.on_game_menu) {
+        char character = uart_getc_game();
+        if (character == 'w') {
+            game->main_menu.game_start_menu = true;  // select start
+            drawMainMenu(game);
+        } else if (character == 's') {
+            game->main_menu.game_start_menu = false;  // select quit
+            drawMainMenu(game);
+        }
+
+        else if (character == ' ') {
+            game->main_menu.on_game_menu = false;
+            if (game->main_menu.game_start_menu)
+                game->game_start = true;
+            else
+                game->game_start = false;
+            drawBackground();
+        }
+    }
+}
+void show_game_menu(World *world) {
+    world->game_menu.game_menu_option = 1;
+    world->game_menu.on_gameMenu_menu = true;
+    pauseGame = true;
+    while (world->game_menu.on_gameMenu_menu) {
+        //    while (clock() < menu_timer)
+        //         ;
+        //     menu_timer = clock() + CLOCKS_PER_SEC / 4;
+
+        drawGameMenu(world);
+        char character = uart_getc_game();
+        printf("\n%d", world->game_menu.game_menu_option);
+        if (character == 'w')  // up
+        {
+            if (world->game_menu.game_menu_option < 2) {
+                world->game_menu.game_menu_option++;
+            }
+
+        } else if (character == 's')  // down
+        {
+            if (world->game_menu.game_menu_option > 0) {
+                world->game_menu.game_menu_option--;
+            }
+        } else if (character == ' ')  // B
+        {
+            if (world->game_menu.game_menu_option == 2) {
+                world->game_menu.on_gameMenu_menu = false;
+                clear_emulator_screen(1920, 1080);
+                printf("\nSELECT: Pause");
+                world->life.needs_render = true;
+                world->playerScore.needsRender = true;
+                world->player.needs_render = true;
+                pauseGame = false;
+            } else if (world->game_menu.game_menu_option == 1) {
+                clear_emulator_screen(1920, 1080);
+                printf("\nSELECT: Restart");
+                restartGame = true;
+                return;
+            } else if (world->game_menu.game_menu_option == 0) {
+                clear_emulator_screen(1920, 1080);
+                printf("\nSELECT: Quit");
+                quitGame = true;
+                return;
+            }
+        }
+    }
+    return;
 }
 
 void move_entity(Entity *entity, Direction direction) {
@@ -150,22 +267,22 @@ void move_entity(Entity *entity, Direction direction) {
         case LEFT:
             entity->velocity.x =
                 (entity->type == PLAYER) ? -PLAYER_SPEED : -HORIZONTAL_SPEED;
-            entity->velocity.y = 0;
+            // entity->velocity.y = 0;
             entity->needs_update = true;
             break;
         case RIGHT:
             entity->velocity.x =
                 (entity->type == PLAYER) ? PLAYER_SPEED : HORIZONTAL_SPEED;
-            entity->velocity.y = 0;
+
             entity->needs_update = true;
             break;
         case UP:
-            entity->velocity.x = 0;
+            // entity->velocity.x = 0;
             entity->velocity.y = -VERTICAL_SPEED;
             entity->needs_update = true;
             break;
         case DOWN:
-            entity->velocity.x = 0;
+            // entity->velocity.x = 0;
             entity->velocity.y = VERTICAL_SPEED;
             entity->needs_update = true;
             break;
@@ -240,13 +357,6 @@ void update_player_position(World *world) {
             }
         }
     }
-
-    // world->player.position.x += world->player.velocity.x;
-    // world->player.position.y += world->player.velocity.y;
-
-    // world->player.needs_render = true;
-    // world->player.needs_update = false;
-    // }
 }
 void enemy_shoot(World *world) {
     // if (clock() < before) return;
@@ -266,7 +376,6 @@ void entity_shoot(Entity *entity, Direction direction) {
     // if (clock() < entity->timer) return;
 
     // entity->timer = clock() + CLOCKS_PER_SEC / 2;
-    wait_msec(30000);
     for (int i = 0; i < MAX_BULLETS; i++) {
         if (!entity->projectile[i].active) {
             // Initial a bullet
@@ -297,17 +406,15 @@ void update_AI_system(World *world) {
 
     /* check wall collisions */
     for (int i = 0; i < 6; i++) {
-        if ((world->enemies[world->right_most_enemies[i]].position.x +
-             world->enemies[world->right_most_enemies[i]].dimension.width) >=
-            (RIGHT_MAX)) {
+        if ((world->enemies[9].position.x +
+             world->enemies[9].dimension.width) >= (RIGHT_MAX)) {
             travel_right = false;
             if (!enemies_at_bottom(world)) {
                 for (int j = 0; j < NUM_ENEMIES; j++) {
                     move_entity(&world->enemies[j], DOWN);
                 }
             }
-        } else if ((world->enemies[world->left_most_enemies[i]].position.x) <=
-                   (LEFT_MAX)) {
+        } else if ((world->enemies[0].position.x) <= (LEFT_MAX)) {
             travel_right = true;
             if (!enemies_at_bottom(world)) {
                 for (int j = 0; j < NUM_ENEMIES; j++) {
@@ -402,7 +509,13 @@ void update_collision_system(World *world) {
         }
     }
 }
-
+void update_shooters(World *world, int index) {
+    for (int i = 0; i < MAX_SHOOTERS; i++) {
+        if (world->shooters[i] == index) {
+            world->shooters[i] += 10;
+        }
+    }
+}
 void update_combat_system(World *world) {
     for (int i = 0; i < NUM_ENEMIES; i++) {
         if (world->enemies[i].combat_update) {
@@ -412,10 +525,10 @@ void update_combat_system(World *world) {
                 world->enemies[i].needs_clear = true;
                 world->playerScore.needsRender = true;
                 update_score(world, world->enemies[i].type);
-                // update_shooters(world, i);
+                update_shooters(world, i);
                 // update_left_most(world, i);
                 // update_right_most(world, i);
-                // world->enemies_alive -= 1;
+                world->enemies_alive -= 1;
             }
             world->enemies[i].combat_update = false;
             // if (world->enemies_alive == 0) {
@@ -463,7 +576,7 @@ bool enemies_at_bottom(World *world) {
 }
 // Draw the enity using the data has set
 void render(World *world) {
-    wait_msec(50000);
+    wait_msec(10000);
 
     for (int i = 0; i < MAX_BULLETS; i++) {
         Type type = world->player.type;
@@ -533,9 +646,7 @@ void render(World *world) {
         drawEntity(world->player);
         world->player.needs_render = false;
     } else if (world->player.needs_clear) {
-        video_wait_ms(60000);
         clear(world->player);
-        drawEntity(world->player);
         world->player.needs_clear = false;
     }
 
@@ -601,15 +712,6 @@ void *memcpy(void *dest, const void *src, unsigned long n) {
     }
 }
 
-// Create the stage
-void init_map(World *world) {
-    init_player(&world->player);
-    init_enemies(world);
-    init_bunkers(world->bunkers);
-    init_playerScore(&world->playerScore);
-    init_life(&world->life);
-}
-
 void clear(Entity entity) {
     int width = entity.dimension.width;
     int height = entity.dimension.height;
@@ -626,4 +728,51 @@ void clear(Entity entity) {
         }
         drawPixel(x, y, 0);
     }
+}
+
+void drawGameMenu(World *game) {
+    int *colorptrMenu;
+    int widthMenu = game_menu_pause.width;
+    int heightMenu = game_menu_pause.height;
+    if (game->game_menu.game_menu_option == 2)
+        colorptrMenu = (int *)game_menu_pause.image_pixels;
+    else if (game->game_menu.game_menu_option == 1)
+        colorptrMenu = (int *)game_menu_restart.image_pixels;
+    else if (game->game_menu.game_menu_option == 0)
+        colorptrMenu = (int *)game_menu_quit.image_pixels;
+
+    int xMenu = (int)((MAP_WIDTH / 2) - (widthMenu / 2));
+    int yMenu = TOP_MAX;
+
+    for (int i = 0; i < (widthMenu * heightMenu); i++) {
+        xMenu++;
+        if (i % widthMenu == 0) {
+            yMenu++;
+            xMenu = (int)((MAP_WIDTH / 2) - (widthMenu / 2));
+        }
+        drawPixel(xMenu, yMenu, colorptrMenu[i]);
+    }
+}
+void drawMainMenu(Game *game) {
+    int *colorptrMenu;
+    int widthMenu = main_menu_quit.width;
+    int heightMenu = main_menu_quit.height;
+
+    if ((game->main_menu.game_start_menu))
+        colorptrMenu = (int *)main_menu_quit.image_pixels;
+    else
+        colorptrMenu = (int *)main_menu_start.image_pixels;
+
+    int xMenu = (int)((MAP_WIDTH / 2) - (widthMenu / 2));
+    int yMenu = TOP_MAX + LOGO.height;
+
+    for (int i = 0; i < (widthMenu * heightMenu); i++) {
+        xMenu++;
+        if (i % widthMenu == 0) {
+            yMenu++;
+            xMenu = (int)((MAP_WIDTH / 2) - (widthMenu / 2));
+        }
+        drawPixel(xMenu, yMenu, colorptrMenu[i]);
+    }
+    drawAuthors();
 }

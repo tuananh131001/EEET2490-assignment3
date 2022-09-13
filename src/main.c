@@ -1,13 +1,13 @@
 // -----------------------------------main.c
 // -------------------------------------
 
-#include "framebf.h"
-#include "game.h"
-#include "mbox.h"
-#include "uart.h"
 #include "display_image.h"
 #include "display_video.h"
+#include "framebf.h"
+#include "game.h"
 #include "helper.h"
+#include "mbox.h"
+#include "uart.h"
 void displayMenu();
 void main() {
     // declaring variables
@@ -53,9 +53,15 @@ void main() {
             // move_player();
 
             init_game(&game);
-
+            show_main_menu(&game);
+            if (game.game_start) {
+                while (!quitGame) {
+                    restart_game(&game);
+                    move_player(&game);
+                }
+            }
             // render(&game.world);
-            move_player(&game.world);
+
         } else if (command == '0') {
             clear_emulator_screen(1920, 1080);
         } else {
@@ -63,6 +69,7 @@ void main() {
         }
     }
 }
+
 void displayMenu() {
     uart_puts(
         "\n\n\tEnter a number to choose command:\n"
