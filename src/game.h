@@ -35,13 +35,13 @@
 #define RIGHT_MAX 1520
 #define TOP_MAX 162
 #define BOTTOM_MAX 917
-#define MAX_BULLETS 30
+#define MAX_BULLETS 1
 #define BULLET_VELOCITY 15
 
 #define MAP_WIDTH 1024
 #define MAP_HEIGHT 768
 
-#define MAX_SHOOTERS 40
+#define MAX_SHOOTERS 10
 
 #define SCORE_ORIGINX 500
 #define SCORE_ORIGINY 720
