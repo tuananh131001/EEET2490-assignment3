@@ -81,7 +81,6 @@ typedef struct {
 
 typedef enum { PLAYER = 1, PAWN = 2, QUEEN = 3, BUNKER = 4,KNIGHT = 5} Type;
 
-
 typedef struct {
     Position position;
     Position previous_pos;
@@ -150,8 +149,6 @@ typedef enum {
     RESET_HORIZONTAL
 } Direction;
 
-
-
 void init_game(Game *world);
 void init_map(World *world);
 
@@ -189,3 +186,9 @@ void update_shooters(World *world, int index);
 void drawGameMenu(World *game);
 void drawMainMenu(Game *game);
 void show_game_menu(World *world);
+void show_main_menu(Game *game) ;
+
+void init_bunkers(Entity bunkers[]);
+void init_playerScore(Score *playerScore);
+void endScreen(bool won) ;
+void restart_game(Game *world);

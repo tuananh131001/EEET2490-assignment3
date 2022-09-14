@@ -53,8 +53,7 @@ void init_player(Entity *player)
     player->dimension.width = 50;
     player->position.x = (MAP_WIDTH / 2) - (player->dimension.width / 2);
     player->position.y = MAP_HEIGHT - 162;
-    for (int i = 0; i < MAX_BULLETS; i++)
-        player->projectile[i].active = false;
+    for (int i = 0; i < MAX_BULLETS; i++) player->projectile[i].active = false;
     player->health.current_health = 3;
     player->type = PLAYER;
     player->needs_update = true;
@@ -456,7 +455,7 @@ void enemy_shoot(World *world)
 {
     // if (clock() < before) return;
     // before = clock() + CLOCKS_PER_SEC / 2;
-    set_wait_timer(0, 10000);
+    wait_msec(1000);
 
     int random = (rand() % 100) % 10;
     // printf("\n%d", random);
@@ -471,7 +470,7 @@ int rand(void)
 void entity_shoot(Entity *entity, Direction direction)
 {
     // if (clock() < entity->timer) return;
-
+    wait_msec(1000);
     // entity->timer = clock() + CLOCKS_PER_SEC / 2;
     for (int i = 0; i < MAX_BULLETS; i++)
     {
