@@ -31,7 +31,7 @@
 #define RIGHT_MAX 1520
 #define TOP_MAX 162
 #define BOTTOM_MAX 917
-#define MAX_BULLETS 10
+#define MAX_BULLETS 1
 #define BULLET_VELOCITY 15
 
 #define MAP_WIDTH 1920
