@@ -7,7 +7,7 @@
 #include "game_win.h"
 #include "authors.h"
 #include "spaceship.h"
-
+#include "life.h"
 // Function to display tom image
 void displayTomImage(int x, int y){
   for(int h = 0; h < tom_image_height ; h++){
@@ -30,12 +30,36 @@ void displayGameOverImage(int x, int y){
 void displaySpaceShipImage(int x, int y){
   for(int h = 0; h < space_ship_height ; h++){
     for (int w = 0; w < space_ship_width; w++){
-      drawPixel(x + w, y + h, space_ship[ h * space_ship_width + w]);
+      drawPixelARGB32(x + w, y + h, space_ship[ h * space_ship_width + w]);
     }
   }
 }
 
+// Function to display space ship level 2 image
+void displaySpaceShipImageLevel2(int x, int y){
+  for(int h = 0; h < space_ship_height2 ; h++){
+    for (int w = 0; w < space_ship_width2; w++){
+      drawPixelARGB32(x + w, y + h, space_ship2[ h * space_ship_width2 + w]);
+    }
+  }
+}
 
+// Function to display space ship level 3 image
+void displaySpaceShipImageLevel3(int x, int y){
+  for(int h = 0; h < space_ship_height3 ; h++){
+    for (int w = 0; w < space_ship_width3; w++){
+      drawPixelARGB32(x + w, y + h, space_ship3[ h * space_ship_width3 + w]);
+    }
+  }
+}
+// Function to display space ship level 4 image
+void displaySpaceShipImageLevel4(int x, int y){
+  for(int h = 0; h < space_ship_height4 ; h++){
+    for (int w = 0; w < space_ship_width4; w++){
+      drawPixelARGB32(x + w, y + h, space_ship4[ h * space_ship_width4 + w]);
+    }
+  }
+}
 
 // // Function to display game win image
 void displayGameWinImage(int x, int y){
@@ -55,6 +79,22 @@ void displayAuthorsImage (int x, int y){
   for(int h = 0; h < authors_height_image ; h++){
     for (int w = 0; w < authors_width_image; w++){
       drawPixelARGB32(x + w, y + h, authors_image[ h * authors_width_image + w]);
+    }
+  }
+}
+
+void displayPlayerLife(int x,int y){
+  for(int h = 0; h < life_height ; h++){
+    for (int w = 0; w < life_width; w++){
+      drawPixelARGB32(x + w, y + h, life_image[ h * life_width + w]);
+    }
+  }
+}
+
+void clearPlayerLife(int x,int y){
+  for(int h = 0; h < life_height ; h++){
+    for (int w = 0; w < life_width; w++){
+      drawPixelARGB32(x + w, y + h, 0);
     }
   }
 }
