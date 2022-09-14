@@ -5,7 +5,6 @@
 #include "helper.h"
 #include "object.h"
 #include "printf.h"
-#include "string_manipulation.h"
 int wait_time_shoot = 50;
 void init_game(Game *world) {
     world->game_over = false;
