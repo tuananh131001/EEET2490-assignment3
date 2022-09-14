@@ -3,15 +3,19 @@
 #include "mbox.h"
 #include "uart.h"
 
-#define NUM_PAWNS 30
+#define NUM_PAWNS 20
 #define PAWN_POINTS 5
 #define PAWN_HEALTH 1
 
+#define NUM_KNIGHTS 10
+#define KNIGHT_POINTS 10
+#define KNIGHT_HEALTH 3
+
 #define NUM_QUEENS 10
 #define QUEEN_POINTS 100
-#define QUEEN_HEALTH 3
+#define QUEEN_HEALTH 5
 
-#define NUM_ENEMIES (NUM_PAWNS + NUM_QUEENS)
+#define NUM_ENEMIES (NUM_PAWNS + NUM_QUEENS + NUM_KNIGHTS)
 
 #define NUM_BUNKERS 3
 #define BUNKER_HEALTH 10
@@ -34,8 +38,8 @@
 #define MAX_BULLETS 1
 #define BULLET_VELOCITY 15
 
-#define MAP_WIDTH 1920
-#define MAP_HEIGHT 1080
+#define MAP_WIDTH 1024
+#define MAP_HEIGHT 768
 
 #define MAX_SHOOTERS 10
 
@@ -75,7 +79,7 @@ typedef struct {
     bool needsRender;
 } Score;
 
-typedef enum { PLAYER = 1, PAWN = 2, QUEEN = 3, BUNKER = 4 } Type;
+typedef enum { PLAYER = 1, PAWN = 2, QUEEN = 3, BUNKER = 4,KNIGHT = 5} Type;
 
 typedef struct {
     Position position;

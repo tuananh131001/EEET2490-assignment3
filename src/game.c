@@ -67,41 +67,49 @@ void init_enemies(World *world) {
                 world->enemies[i].position.x =
                     alien_initial_x + (HORIZONTAL_OFFSET * i);
                 world->enemies[i].position.y =
-                    alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 5);
+                    alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 3);
             } else if (i < 20) {
                 world->enemies[i].position.x =
                     alien_initial_x + (HORIZONTAL_OFFSET * (i % 10));
                 world->enemies[i].position.y =
-                    alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 4);
+                    alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 2);
+
             } else {
                 world->enemies[i].position.x =
                     alien_initial_x + (HORIZONTAL_OFFSET * (i % 20));
                 world->enemies[i].position.y =
-                    alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 3);
+                    alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 1);
             }
             world->enemies[i].dimension.height = pawn_sprite.height;
             world->enemies[i].dimension.width = pawn_sprite.width;
             world->enemies[i].health.current_health = PAWN_HEALTH;
             world->enemies[i].type = PAWN;
-        } else if (i < 50) {
+        } else if (i < 30) {
             if (j < 10) {
                 world->enemies[i].position.x =
-                    alien_initial_x + (HORIZONTAL_OFFSET * (i % 30));
+                    alien_initial_x + (HORIZONTAL_OFFSET * (i % 20));
                 world->enemies[i].position.y =
-                    alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 2);
+                    alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 1);
             } else {
                 world->enemies[i].position.x =
                     alien_initial_x + (HORIZONTAL_OFFSET * (i % 40));
                 world->enemies[i].position.y =
-                    alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 1);
+                    alien_initial_y + (VERTICAL_OFFSET + (30 + 20) * 2);
             }
+            world->enemies[i].dimension.height = knight_sprite.height;
+            world->enemies[i].dimension.width = knight_sprite.width;
+            world->enemies[i].health.current_health = KNIGHT_HEALTH;
+            world->enemies[i].type = KNIGHT;
+            j++;
+        } else if (i >= 30) {
+            world->enemies[i].position.x =
+                alien_initial_x + (HORIZONTAL_OFFSET * (i % 30));
+            world->enemies[i].position.y = alien_initial_y + (VERTICAL_OFFSET);
             world->enemies[i].dimension.height = queen_sprite.height;
             world->enemies[i].dimension.width = queen_sprite.width;
             world->enemies[i].health.current_health = QUEEN_HEALTH;
             world->enemies[i].type = QUEEN;
-            j++;
         }
-
         world->enemies[i].needs_render = false;
         world->enemies[i].needs_update = true;
         world->enemies[i].enabled = true;
