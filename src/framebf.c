@@ -448,7 +448,7 @@ void drawAuthors()
     }
 }
 
-void gameEndDisplay(bool win)
+void gameWinEndDisplay()
 {
     int *colorptr;
     int width = game_win_logo.width;
