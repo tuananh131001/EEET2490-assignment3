@@ -18,11 +18,11 @@ void main() {
     Game game;
     uart_init();
     fb_init();
-    displayMenu();
-    uart_puts("\n");
 
     // Taking input commands
     while (1) {
+        displayMenu();
+        uart_puts("\n");
         // read each char
         uart_puts("\n\n");
 
