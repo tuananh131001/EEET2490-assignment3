@@ -17,4 +17,4 @@ void drawAuthors();
 
 void drawLogo();
 void drawBackground();
-void gameEndDisplay();
+void gameWinEndDisplay();
