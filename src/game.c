@@ -211,7 +211,7 @@ void move_player(World *world)
             }
             else if (character == 'p')
             {
-                show_game_menu(&world);
+                show_game_menu(world);
             }
             update_AI_system(world);
             update_collision_system(world);

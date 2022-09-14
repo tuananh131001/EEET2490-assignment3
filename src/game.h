@@ -192,3 +192,4 @@ void init_bunkers(Entity bunkers[]);
 void init_playerScore(Score *playerScore);
 void endScreen(bool won) ;
 void restart_game(Game *world);
+void drawSpaceShip(Entity entity, World *world);

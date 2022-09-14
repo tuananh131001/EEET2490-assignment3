@@ -11,4 +11,5 @@ void clearPlayerLife(int x,int y);
 void displaySpaceShipImageLevel2(int x, int y);
 void displaySpaceShipImageLevel3(int x, int y);
 void displaySpaceShipImageLevel4(int x, int y);
+void displayBackgroundText(int x, int y);
 
