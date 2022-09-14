@@ -21,7 +21,7 @@ void displayTomImage(int x, int y){
 void displayGameOverImage(int x, int y){
   for(int h = 0; h < game_over_height_image ; h++){
     for (int w = 0; w < game_over_width_image; w++){
-      drawPixel(x + w, y + h, game_over_image[ h * game_over_width_image + w]);
+      drawPixelARGB32(x + w, y + h, game_over_image[ h * game_over_width_image + w]);
     }
   }
 }
@@ -61,9 +61,13 @@ void displaySpaceShipImageLevel4(int x, int y){
   }
 }
 
-// // Function to display game win image
+// Function to display game win image
 void displayGameWinImage(int x, int y){
-  display_frame_image(game_win_image, 0, y, game_win_width_image, game_win_height_image+y);
+  for(int h = 0; h < game_win_height_image ; h++){
+    for (int w = 0; w < game_win_width_image; w++){
+      drawPixelARGB32(x + w, y + h, game_win_image[ h * game_win_width_image + w]);
+    }
+  }
 }
 
 // Function to display tom jerry image (oversize image)

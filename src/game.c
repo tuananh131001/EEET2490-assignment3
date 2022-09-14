@@ -700,7 +700,7 @@ void update_combat_system(World *world)
         if (world->player.health.current_health == 0)
         {
             clearPlayerLife(170, 20);
-            drawString(170, 20, "0", 0x0f);
+            drawString(170, 30, "0", 0x0f);
             endScreen(0);
         }
     }
@@ -835,7 +835,7 @@ void render_health(World *world)
 
     if (clife == 0)
     {
-        clearPlayerLife(170, 20);
+        clearPlayerLife(170, 30);
         drawString(170, 20, "0", 0x0f);
     }
 
@@ -984,12 +984,12 @@ void endScreen(bool won)
     drawBackground();
     if (won)
     {
-        gameWinEndDisplay();
-        // displayGameWinImage(1000,300);
+        // gameWinEndDisplay();
+        displayGameWinImage(300,150);
     }
     else
     {
-        displayGameOverImage(600, 300);
+        displayGameOverImage(280, 120);
     }
     while (!restartGame)
     {
