@@ -574,7 +574,7 @@ bool enemies_at_bottom(World *world) {
 }
 // Draw the enity using the data has set
 void render(World *world) {
-    wait_msec(10000);
+    wait_msec(30000);
 
     for (int i = 0; i < MAX_BULLETS; i++) {
         Type type = world->player.type;
