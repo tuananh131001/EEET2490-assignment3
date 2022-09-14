@@ -55,8 +55,7 @@ void init_player(Entity *player)
     player->position.y = MAP_HEIGHT - 162;
     for (int i = 0; i < MAX_BULLETS; i++)
         player->projectile[i].active = false;
-    player->health.current_health = 1;
-
+    player->health.current_health = 3;
     player->type = PLAYER;
     player->needs_update = true;
     player->needs_render = false;
@@ -638,8 +637,6 @@ void update_combat_system(World *world)
                 world->playerScore.needsRender = true;
                 update_score(world, world->enemies[i].type);
                 update_shooters(world, i);
-                // update_left_most(world, i);
-                // update_right_most(world, i);
                 world->enemies_alive -= 1;
             }
             world->enemies[i].combat_update = false;
@@ -665,18 +662,16 @@ void update_combat_system(World *world)
         }
     }
 
-    if (world->player.combat_update)
-    {
+      if (world->player.combat_update) {
         world->life.needs_render = true;
         world->player.health.current_health -= 1;
-        if (world->player.health.current_health <= 0)
-        {
+        if (world->player.health.current_health <= 0) {
             world->player.enabled = false;
-            clear(world->player);
+            world->player.needs_clear = true;
         }
         world->player.combat_update = false;
-        if (world->player.health.current_health == 0)
-        {
+        if (world->player.health.current_health == 0) {
+            drawString(200, 90, "0", 0x0f);
             endScreen(0);
         }
     }
@@ -811,7 +806,6 @@ void render_health(World *world)
     if (clife == 0)
     {
         drawString(200, 90, "0", 0x0f);
-        clear(world->player);
     }
 
     else
@@ -943,7 +937,7 @@ void drawMainMenu(Game *game)
         drawPixel(xMenu, yMenu, colorptrMenu[i]);
     }
     // drawAuthors();
-    displayAuthorsImage(50, 500);
+    displayAuthorsImage(400, 900);
 }
 
 void endScreen(bool won)
@@ -952,7 +946,7 @@ void endScreen(bool won)
     uart_puts("Press o to out: \n");
     uart_puts("Press r to restart: \n");
     drawBackground();
-    if (!won)
+    if (won)
     {
         gameEndDisplay();
         // displayGameWinImage(1000,300);
