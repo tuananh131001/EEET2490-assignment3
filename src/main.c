@@ -13,8 +13,8 @@ void main() {
     // declaring variables
     int count = 0;
     char str[40];  // char array to store user inputs
-    int x_coordinate = 50;
-    int y_coordinate = 200;
+    int x_coordinate = 400;
+    int y_coordinate = 300;
     Game game;
     uart_init();
     fb_init();
@@ -35,13 +35,20 @@ void main() {
 
         if (command == '1') {
             clear_emulator_screen(1920, 1080);
-            drawRect(150, 150, 400, 400, 0x03, 0);
-            drawRect(300, 300, 350, 350, 0x2e, 1);
+            // drawRect(150, 150, 400, 400, 0x03, 0);
+            // drawRect(300, 300, 350, 350, 0x2e, 1);
 
-            drawCircle(960, 540, 250, 0x0e, 0);
-            drawCircle(960, 540, 50, 0x13, 1);
-            drawString(1920 / 2 - 200, 100, "Nguyen Tuan Anh - s3864077", 0xa);
-            drawString(1920 / 2 - 200, 120, "Vo Quoc Huy - s3823236", 0x2);
+            // drawCircle(960, 540, 250, 0x0e, 0);
+            // drawCircle(960, 540, 50, 0x13, 1);
+            drawString(100, 100, "NGUYEN TUAN ANH", 0xa);
+            drawString(100, 150, "S3864077", 0xa);
+
+            drawString(100, 200, "VO QUOC HUY", 0x2);
+            drawString(100, 250, "S3823236", 0x2);
+
+            
+            // drawChar('A', 1920 / 2 - 200, 100, 0x0e);
+            // drawChar('B', 1920 / 2 - 200, 200, 0x0e);
 
         } else if (command == '2') {
             clear_emulator_screen(1920, 1080);
