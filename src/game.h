@@ -18,20 +18,20 @@
 
 #define alien_initial_y 0
 #define alien_initial_x 200
-#define HORIZONTAL_OFFSET 60
-#define VERTICAL_OFFSET 60
+#define HORIZONTAL_OFFSET 61
+#define VERTICAL_OFFSET 61
 
 #define ENEMIES_VERTICAL_MAX (1080 - 262 - VERTICAL_OFFSET)
 
 #define PLAYER_SPEED 15
-#define VERTICAL_SPEED 6
+#define VERTICAL_SPEED 30
 #define HORIZONTAL_SPEED 4
 
-#define LEFT_MAX 400
+#define LEFT_MAX 190
 #define RIGHT_MAX 1520
-#define TOP_MAX 62
+#define TOP_MAX 162
 #define BOTTOM_MAX 917
-#define MAX_BULLETS 10
+#define MAX_BULLETS 1
 #define BULLET_VELOCITY 15
 
 #define MAP_WIDTH 1920
@@ -45,6 +45,12 @@
 
 #define BAR_ORIGINX 1150
 #define BAR_ORIGINY 180
+
+static bool travel_right = true;
+
+bool quitGame;
+bool restartGame;
+bool pauseGame;
 
 typedef union {
     int current_health;
@@ -97,21 +103,37 @@ typedef struct {
     bool combat_update;
     bool enabled;
 } Entity;
+typedef struct {
+    int game_menu_option;
+    bool on_gameMenu_menu;
+} GameMenu;
+
+typedef struct {
+    bool game_start_menu;
+    bool on_game_menu;
+} MainMenu;
 
 typedef struct map {
     Entity player;
-    Entity enemies[NUM_ENEMIES];
     Entity bunkers[NUM_BUNKERS];
+    Entity enemies[NUM_ENEMIES];
     int shooters[MAX_SHOOTERS];
-    Entity life;
     int left_most_enemies[6];
     int right_most_enemies[6];
+    int enemies_alive;
+    bool game_over;
     Score playerScore;
+    Entity life;
+    GameMenu game_menu;
 
 } World;
 
 typedef struct {
     World world;
+    bool game_win;
+    bool game_over;
+    bool game_start;
+    MainMenu main_menu;
 } Game;
 
 typedef enum {
@@ -124,7 +146,7 @@ typedef enum {
     RESET_HORIZONTAL
 } Direction;
 
-static bool travel_right = true;
+
 
 void init_game(Game *world);
 void init_map(World *world);
@@ -159,3 +181,7 @@ int rand(void);
 
 void update_AI_system(World *world);
 bool enemies_at_bottom(World *world);
+void update_shooters(World *world, int index);
+void drawGameMenu(World *game);
+void drawMainMenu(Game *game);
+void show_game_menu(World *world);

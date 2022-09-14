@@ -1,8 +1,11 @@
 // -----------------------------------main.c
 // -------------------------------------
 
+#include "display_image.h"
+#include "display_video.h"
 #include "framebf.h"
 #include "game.h"
+#include "helper.h"
 #include "mbox.h"
 #include "uart.h"
 void displayMenu();
@@ -15,11 +18,11 @@ void main() {
     Game game;
     uart_init();
     fb_init();
-    displayMenu();
-    uart_puts("\n");
 
     // Taking input commands
     while (1) {
+        displayMenu();
+        uart_puts("\n");
         // read each char
         uart_puts("\n\n");
 
@@ -50,9 +53,15 @@ void main() {
             // move_player();
 
             init_game(&game);
-
+            show_main_menu(&game);
+            if (game.game_start) {
+                while (!quitGame) {
+                    restart_game(&game);
+                    move_player(&game);
+                }
+            }
             // render(&game.world);
-            move_player(&game.world);
+
         } else if (command == '0') {
             clear_emulator_screen(1920, 1080);
         } else {
@@ -60,6 +69,7 @@ void main() {
         }
     }
 }
+
 void displayMenu() {
     uart_puts(
         "\n\n\tEnter a number to choose command:\n"

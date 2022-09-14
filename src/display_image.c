@@ -3,6 +3,10 @@
 #include "framebf.h"
 #include "helper.h"
 #include "uart.h"
+#include "game_over.h"
+#include "game_win.h"
+#include "authors.h"
+
 // Function to display tom image
 void displayTomImage(int x, int y){
   for(int h = 0; h < tom_image_height ; h++){
@@ -12,11 +16,36 @@ void displayTomImage(int x, int y){
   }
 }
 
+// Function to display game over image
+void displayGameOverImage(int x, int y){
+  for(int h = 0; h < game_over_height_image ; h++){
+    for (int w = 0; w < game_over_width_image; w++){
+      drawPixel(x + w, y + h, game_over_image[ h * game_over_width_image + w]);
+    }
+  }
+}
+
+
+
+
+// // Function to display game win image
+void displayGameWinImage(int x, int y){
+  display_frame_image(game_win_image, 0, y, game_win_width_image, game_win_height_image+y);
+}
+
 // Function to display tom jerry image (oversize image)
 void displayTomJerryImage (int x, int y){
   for(int h = 0; h < jerry_height_image ; h++){
     for (int w = 0; w < jerry_width_image; w++){
       drawPixel(x + w, y + h, jerry_image[ h * jerry_width_image + w]);
+    }
+  }
+}
+
+void displayAuthorsImage (int x, int y){
+  for(int h = 0; h < authors_height_image ; h++){
+    for (int w = 0; w < authors_width_image; w++){
+      drawPixel(x + w, y + h, authors_image[ h * authors_width_image + w]);
     }
   }
 }
