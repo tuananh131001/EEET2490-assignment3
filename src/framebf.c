@@ -335,10 +335,11 @@ void drawChar(unsigned char ch, int x, int y, unsigned char attr) {
             unsigned char *glyph =
                 (unsigned char *)&epd_bitmap_allArray[index]
                                                      [i * FONT_WIDTH + j];
-            unsigned char mask = 0xffff;
-            unsigned char col =
-                (*glyph & mask) ? (attr & 0x0f) : (attr & 0xf0) >> 4;
-
+            unsigned long mask = 0xffff;
+            unsigned char col = (*glyph & mask) ? (attr & 0x0f) : 1;
+            if (col == 1) {
+                continue;
+            }
             drawPixel(x + j, y + i, col);
             // drawPixel(x + j, y + i, letterA[i * FONT_WIDTH + j]);
         }

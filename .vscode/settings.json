@@ -39,6 +39,7 @@
         "tuple": "c",
         "typeinfo": "c",
         "framebf.h": "c",
-        "uart.h": "c"
+        "uart.h": "c",
+        "background_text.h": "c"
     }
 }
