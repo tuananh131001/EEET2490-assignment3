@@ -4,15 +4,15 @@
 #include "uart.h"
 
 #define NUM_PAWNS 20
-#define PAWN_POINTS 5
+#define PAWN_POINTS 1
 #define PAWN_HEALTH 1
 
 #define NUM_KNIGHTS 10
-#define KNIGHT_POINTS 10
+#define KNIGHT_POINTS 3
 #define KNIGHT_HEALTH 3
 
 #define NUM_QUEENS 10
-#define QUEEN_POINTS 100
+#define QUEEN_POINTS 5
 #define QUEEN_HEALTH 5
 
 #define NUM_ENEMIES (NUM_PAWNS + NUM_QUEENS + NUM_KNIGHTS)
