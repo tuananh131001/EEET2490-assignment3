@@ -12,15 +12,16 @@ unsigned char *fb;
 // Pixel Order: BGR in memory order (little endian --> RGB in byte order)
 #define PIXEL_ORDER 0
 
-void fb_init() {
-    mBuf[0] = 35 * 4;  // Length of message in bytes
+void fb_init()
+{
+    mBuf[0] = 35 * 4; // Length of message in bytes
     mBuf[1] = MBOX_REQUEST;
 
     mBuf[2] = MBOX_TAG_SETPHYWH;  // Tag identifier
     mBuf[3] = 8;                  // Value size in bytes
     mBuf[4] = 0;
-    mBuf[5] = 1024;  // Value(width)
-    mBuf[6] = 768;   // Value(height)
+    mBuf[5] = 1024; // Value(width)
+    mBuf[6] = 768;  // Value(height)
 
     mBuf[7] = MBOX_TAG_SETVIRTWH;
     mBuf[8] = 8;
@@ -74,7 +75,8 @@ void drawPixel(int x, int y, unsigned char attr) {
     *((unsigned int *)(fb + offs)) = vgapal[attr & 0x0f];
 }
 
-void drawPixelARGB32(int x, int y, unsigned int attr) {
+void drawPixelARGB32(int x, int y, unsigned int attr)
+{
     int offs = (y * pitch) + (COLOR_DEPTH / 8 * x);
 
     /* //Access and assign each byte
@@ -88,7 +90,8 @@ void drawPixelARGB32(int x, int y, unsigned int attr) {
     *((unsigned int *)(fb + offs)) = attr;
 }
 
-void drawRect(int x1, int y1, int x2, int y2, unsigned char attr, int fill) {
+void drawRect(int x1, int y1, int x2, int y2, unsigned char attr, int fill)
+{
     int y = y1;
 
     while (y <= y2) {
@@ -112,7 +115,8 @@ void drawEntity(Entity entity) {
     int x = entity.position.x;
     int oldX = x;
     int y = entity.position.y;
-    if (entity.type == PAWN) {
+    if (entity.type == PAWN)
+    {
         colorptr = (int *)pawn_sprite.image_pixels;
     } else if (entity.type == KNIGHT)
         colorptr = (int *)knight_sprite.image_pixels;
@@ -146,7 +150,10 @@ void drawEntity(Entity entity) {
         drawPixelARGB32(x, y, colorptr[i]);
     }
 }
-void clear_projectile(Position position, Dimension dimension) {
+
+
+void clear_projectile(Position position, Dimension dimension)
+{
     int width = dimension.width;
     int height = dimension.height;
 
@@ -448,3 +455,4 @@ void gameWinEndDisplay() {
         drawPixel(x, y, colorptr[i]);
     }
 }
+
