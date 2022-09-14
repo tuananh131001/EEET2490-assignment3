@@ -2,9 +2,15 @@
 #include "mbox.h"
 #include "object.h"
 #include "terminal.h"
+#include "display_image.h"
 
 unsigned int width, height, pitch, isrgb;
 unsigned char *fb;
+//Use RGBA32 (32 bits for each pixel) 
+#define COLOR_DEPTH 32 
+ 
+//Pixel Order: BGR in memory order (little endian --> RGB in byte order) 
+#define PIXEL_ORDER 0 
 
 void fb_init()
 {
@@ -14,14 +20,14 @@ void fb_init()
     mBuf[2] = MBOX_TAG_SETPHYWH; // Tag identifier
     mBuf[3] = 8;                 // Value size in bytes
     mBuf[4] = 0;
-    mBuf[5] = 1920; // Value(width)
-    mBuf[6] = 1080; // Value(height)
+    mBuf[5] = 1024; // Value(width)
+    mBuf[6] = 768; // Value(height)
 
     mBuf[7] = MBOX_TAG_SETVIRTWH;
     mBuf[8] = 8;
     mBuf[9] = 8;
-    mBuf[10] = 1920;
-    mBuf[11] = 1080;
+    mBuf[10] = 1024;
+    mBuf[11] = 768;
 
     mBuf[12] = MBOX_TAG_SETVIRTOFF;
     mBuf[13] = 8;
@@ -32,12 +38,12 @@ void fb_init()
     mBuf[17] = MBOX_TAG_SETDEPTH;
     mBuf[18] = 4;
     mBuf[19] = 4;
-    mBuf[20] = 32; // Bits per pixel
+    mBuf[20] = COLOR_DEPTH; // Bits per pixel
 
     mBuf[21] = MBOX_TAG_SETPXLORDR;
     mBuf[22] = 4;
     mBuf[23] = 4;
-    mBuf[24] = 1; // RGB
+    mBuf[24] = PIXEL_ORDER; // RGB
 
     mBuf[25] = MBOX_TAG_GETFB;
     mBuf[26] = 8;
@@ -71,6 +77,21 @@ void drawPixel(int x, int y, unsigned char attr)
     *((unsigned int *)(fb + offs)) = vgapal[attr & 0x0f];
 }
 
+void drawPixelARGB32(int x, int y, unsigned int attr) 
+{ 
+ int offs = (y * pitch) + (COLOR_DEPTH/8 * x); 
+ 
+/* //Access and assign each byte 
+    *(fb + offs    ) = (attr >> 0 ) & 0xFF; //BLUE 
+    *(fb + offs + 1) = (attr >> 8 ) & 0xFF; //GREEN 
+    *(fb + offs + 2) = (attr >> 16) & 0xFF; //RED 
+    *(fb + offs + 3) = (attr >> 24) & 0xFF; //ALPHA 
+*/ 
+ 
+ //Access 32-bit together 
+ *((unsigned int*)(fb + offs)) = attr; 
+} 
+
 void drawRect(int x1, int y1, int x2, int y2, unsigned char attr, int fill)
 {
     int y = y1;
@@ -99,10 +120,11 @@ void drawEntity(Entity entity)
     int x = entity.position.x;
     int oldX = x;
     int y = entity.position.y;
-    if (entity.type == PAWN)
+    if (entity.type == PAWN){
         colorptr = (int *)pawn_sprite.image_pixels;
-    // else if (entity.type == KNIGHT)
-    //     colorptr = (int *)knight_sprite.image_pixels;
+    }
+    else if (entity.type == KNIGHT)
+        colorptr = (int *)knight_sprite.image_pixels;
     else if (entity.type == QUEEN)
         colorptr = (int *)queen_sprite.image_pixels;
     else if (entity.type == PLAYER)
@@ -138,7 +160,7 @@ void drawEntity(Entity entity)
             y++;
             x = oldX;
         }
-        drawPixel(x, y, colorptr[i]);
+        drawPixelARGB32(x, y, colorptr[i]);
     }
 }
 void clear_projectile(Position position, Dimension dimension)

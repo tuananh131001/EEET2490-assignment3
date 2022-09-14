@@ -6,12 +6,13 @@
 #include "game_over.h"
 #include "game_win.h"
 #include "authors.h"
+#include "spaceship.h"
 
 // Function to display tom image
 void displayTomImage(int x, int y){
   for(int h = 0; h < tom_image_height ; h++){
     for (int w = 0; w < tom_image_width; w++){
-      drawPixel(x + w, y + h, tom_image[ h * tom_image_width + w]);
+      drawPixelARGB32(x + w, y + h, tom_image[ h * tom_image_width + w]);
     }
   }
 }
@@ -25,6 +26,14 @@ void displayGameOverImage(int x, int y){
   }
 }
 
+// Function to display space ship image
+void displaySpaceShipImage(int x, int y){
+  for(int h = 0; h < space_ship_height ; h++){
+    for (int w = 0; w < space_ship_width; w++){
+      drawPixel(x + w, y + h, space_ship[ h * space_ship_width + w]);
+    }
+  }
+}
 
 
 
@@ -37,7 +46,7 @@ void displayGameWinImage(int x, int y){
 void displayTomJerryImage (int x, int y){
   for(int h = 0; h < jerry_height_image ; h++){
     for (int w = 0; w < jerry_width_image; w++){
-      drawPixel(x + w, y + h, jerry_image[ h * jerry_width_image + w]);
+      drawPixelARGB32(x + w, y + h, jerry_image[ h * jerry_width_image + w]);
     }
   }
 }
@@ -45,7 +54,7 @@ void displayTomJerryImage (int x, int y){
 void displayAuthorsImage (int x, int y){
   for(int h = 0; h < authors_height_image ; h++){
     for (int w = 0; w < authors_width_image; w++){
-      drawPixel(x + w, y + h, authors_image[ h * authors_width_image + w]);
+      drawPixelARGB32(x + w, y + h, authors_image[ h * authors_width_image + w]);
     }
   }
 }

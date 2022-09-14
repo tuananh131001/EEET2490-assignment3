@@ -31,15 +31,16 @@ void displayTomAndJerryVideo(int x, int y)
     // Keep displaying the video until the user press s
     while (character != 's')
     {
-        // loop through all the frame image video
+        // // loop through all the frame image video
         for (int i = 0; i < 15; i ++) {
             // display each frame image
             display_frame_image(tom_jerry_video[i], x, y, tom_jerry_video_width, tom_jerry_video_height+y);
             video_wait_ms(100000);
             }
-     
-        character = uart_get_char();
     }
+
+    character = uart_get_char();
+
     // Add message to announce the user
     uart_puts("\nStopping video ...");
 }

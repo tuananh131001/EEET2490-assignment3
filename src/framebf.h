@@ -18,3 +18,4 @@ void drawAuthors();
 void drawLogo();
 void drawBackground();
 void gameWinEndDisplay();
+void drawPixelARGB32(int x, int y, unsigned int attr);

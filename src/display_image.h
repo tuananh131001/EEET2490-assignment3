@@ -5,3 +5,4 @@ void controlTomJerryImage(int x, int y);
 void displayGameOverImage(int x, int y);
 void displayGameWinImage(int x, int y);
 void displayAuthorsImage (int x, int y);
+void displaySpaceShipImage(int x, int y);
