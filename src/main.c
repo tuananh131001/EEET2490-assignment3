@@ -34,24 +34,28 @@ void main() {
         uart_sendc('\n');
 
         if (command == '1') {
+            clear_emulator_screen(1920, 1080);
             drawRect(150, 150, 400, 400, 0x03, 0);
             drawRect(300, 300, 350, 350, 0x2e, 1);
 
             drawCircle(960, 540, 250, 0x0e, 0);
             drawCircle(960, 540, 50, 0x13, 1);
-            drawString(1920/2 - 200, 100, "Nguyen Tuan Anh - s3864077", 0xa);
-            drawString(1920/2 - 200, 120, "Vo Quoc Huy - s3823236", 0x2);
+            drawString(1920 / 2 - 200, 100, "Nguyen Tuan Anh - s3864077", 0xa);
+            drawString(1920 / 2 - 200, 120, "Vo Quoc Huy - s3823236", 0x2);
 
         } else if (command == '2') {
+            clear_emulator_screen(1920, 1080);
             displayTomImage(x_coordinate, y_coordinate);
         } else if (command == '3') {
+            clear_emulator_screen(1920, 1080);
             controlTomJerryImage(x_coordinate, y_coordinate);
         } else if (command == '4') {
+            clear_emulator_screen(1920, 1080);
             displayTomAndJerryVideo(x_coordinate, y_coordinate);
         } else if (command == '5') {
             // render(&game.world);
             // move_player();
-
+            clear_emulator_screen(1920, 1080);
             init_game(&game);
             show_main_menu(&game);
             if (game.game_start) {

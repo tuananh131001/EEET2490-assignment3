@@ -223,7 +223,6 @@ void show_game_menu(World *world) {
 
         drawGameMenu(world);
         char character = uart_getc_game();
-        printf("\n%d", world->game_menu.game_menu_option);
         if (character == 'w')  // up
         {
             if (world->game_menu.game_menu_option < 2) {
@@ -359,7 +358,7 @@ void update_player_position(World *world) {
 void enemy_shoot(World *world) {
     // if (clock() < before) return;
     // before = clock() + CLOCKS_PER_SEC / 2;
-    set_wait_timer(0, 10000);
+    wait_msec(1000);
 
     int random = (rand() % 100) % 10;
     // printf("\n%d", random);
@@ -372,7 +371,7 @@ int rand(void) {
 }
 void entity_shoot(Entity *entity, Direction direction) {
     // if (clock() < entity->timer) return;
-
+    wait_msec(1000);
     // entity->timer = clock() + CLOCKS_PER_SEC / 2;
     for (int i = 0; i < MAX_BULLETS; i++) {
         if (!entity->projectile[i].active) {
