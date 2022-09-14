@@ -49,8 +49,7 @@ void init_player(Entity *player) {
     player->dimension.width = blue_ship_sprite.width;
     player->position.x = (MAP_WIDTH / 2) - (player->dimension.width / 2);
     player->position.y = MAP_HEIGHT - 162;
-    for (int i = 0; i < MAX_BULLETS; i++)
-        player->projectile[i].active = false;
+    for (int i = 0; i < MAX_BULLETS; i++) player->projectile[i].active = false;
     player->health.current_health = 3;
     player->type = PLAYER;
     player->needs_update = true;
@@ -169,7 +168,7 @@ void move_player(World *world) {
             } else if (character == ' ') {
                 entity_shoot(&world->player, UP);
             } else if (character == 'p') {
-                show_game_menu(&world);
+                show_game_menu(world);
             }
             update_AI_system(world);
             update_collision_system(world);
@@ -223,7 +222,6 @@ void show_game_menu(World *world) {
 
         drawGameMenu(world);
         char character = uart_getc_game();
-        printf("\n%d", world->game_menu.game_menu_option);
         if (character == 'w')  // up
         {
             if (world->game_menu.game_menu_option < 2) {
@@ -359,7 +357,7 @@ void update_player_position(World *world) {
 void enemy_shoot(World *world) {
     // if (clock() < before) return;
     // before = clock() + CLOCKS_PER_SEC / 2;
-    set_wait_timer(0, 10000);
+    wait_msec(1000);
 
     int random = (rand() % 100) % 10;
     // printf("\n%d", random);
@@ -372,7 +370,7 @@ int rand(void) {
 }
 void entity_shoot(Entity *entity, Direction direction) {
     // if (clock() < entity->timer) return;
-
+    wait_msec(1000);
     // entity->timer = clock() + CLOCKS_PER_SEC / 2;
     for (int i = 0; i < MAX_BULLETS; i++) {
         if (!entity->projectile[i].active) {
@@ -545,7 +543,7 @@ void update_combat_system(World *world) {
         }
     }
 
-      if (world->player.combat_update) {
+    if (world->player.combat_update) {
         world->life.needs_render = true;
         world->player.health.current_health -= 1;
         if (world->player.health.current_health <= 0) {
