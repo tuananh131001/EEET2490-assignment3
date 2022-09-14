@@ -50,8 +50,7 @@ void init_player(Entity *player) {
     player->dimension.width = blue_ship_sprite.width;
     player->position.x = (MAP_WIDTH / 2) - (player->dimension.width / 2);
     player->position.y = MAP_HEIGHT - 162;
-    for (int i = 0; i < MAX_BULLETS; i++)
-        player->projectile[i].active = false;
+    for (int i = 0; i < MAX_BULLETS; i++) player->projectile[i].active = false;
     player->health.current_health = 3;
     player->type = PLAYER;
     player->needs_update = true;
@@ -170,7 +169,7 @@ void move_player(World *world) {
             } else if (character == ' ') {
                 entity_shoot(&world->player, UP);
             } else if (character == 'p') {
-                show_game_menu(&world);
+                show_game_menu(world);
             }
             update_AI_system(world);
             update_collision_system(world);
@@ -546,7 +545,7 @@ void update_combat_system(World *world) {
         }
     }
 
-      if (world->player.combat_update) {
+    if (world->player.combat_update) {
         world->life.needs_render = true;
         world->player.health.current_health -= 1;
         if (world->player.health.current_health <= 0) {

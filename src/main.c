@@ -39,8 +39,8 @@ void main() {
 
             drawCircle(960, 540, 250, 0x0e, 0);
             drawCircle(960, 540, 50, 0x13, 1);
-            drawString(100, 100, "Nguyen Tuan Anh - s3864077", 0x0f);
-            drawString(100, 120, "Vo Quoc Huy - s3823236", 0x0f);
+            drawString(1920/2 - 200, 100, "Nguyen Tuan Anh - s3864077", 0xa);
+            drawString(1920/2 - 200, 120, "Vo Quoc Huy - s3823236", 0x2);
 
         } else if (command == '2') {
             displayTomImage(x_coordinate, y_coordinate);
@@ -57,7 +57,7 @@ void main() {
             if (game.game_start) {
                 while (!quitGame) {
                     restart_game(&game);
-                    move_player(&game);
+                    move_player(&game.world);
                 }
             }
             // render(&game.world);
