@@ -31,8 +31,8 @@
 #define VERTICAL_SPEED 30
 #define HORIZONTAL_SPEED 4
 
-#define LEFT_MAX 190
-#define RIGHT_MAX 1520
+#define LEFT_MAX 50
+#define RIGHT_MAX (MAP_WIDTH - 50) 
 #define TOP_MAX 162
 #define BOTTOM_MAX 917
 #define MAX_BULLETS 1
