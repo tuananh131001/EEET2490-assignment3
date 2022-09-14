@@ -5,7 +5,6 @@
 #include "helper.h"
 #include "object.h"
 #include "printf.h"
-#include "string_manipulation.h"
 int wait_time_shoot = 50;
 void init_game(Game *world) {
     world->game_over = false;
@@ -574,7 +573,7 @@ bool enemies_at_bottom(World *world) {
 }
 // Draw the enity using the data has set
 void render(World *world) {
-    wait_msec(10000);
+    wait_msec(30000);
 
     for (int i = 0; i < MAX_BULLETS; i++) {
         Type type = world->player.type;
