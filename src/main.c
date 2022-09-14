@@ -13,8 +13,8 @@ void main() {
     // declaring variables
     int count = 0;
     char str[40];  // char array to store user inputs
-    int x_coordinate = 50;
-    int y_coordinate = 200;
+    int x_coordinate = 400;
+    int y_coordinate = 300;
     Game game;
     uart_init();
     fb_init();
