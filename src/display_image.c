@@ -9,6 +9,7 @@
 #include "spaceship.h"
 #include "life.h"
 #include "background_text.h"
+#include "background.h"
 
 #include "game_image.h"
 // Function to display tom image
@@ -368,6 +369,16 @@ void controlTomJerryImage(int x, int y)
       // Prompt message for user
       uart_puts("\n\nSuccessfully out!\n");
       return;
+    }
+  }
+}
+
+void displayGameBackground(int x, int y){
+  for (int h = 0; h < background_height; h++)
+  {
+    for (int w = 0; w < background_width; w++)
+    {
+      drawPixelARGB32(x + w, y + h, background_image[h * background_width + w]);
     }
   }
 }
