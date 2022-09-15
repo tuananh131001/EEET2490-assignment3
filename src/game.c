@@ -729,8 +729,14 @@ void update_combat_system(World *world)
 
     if (world->player.combat_update)
     {
+<<<<<<< HEAD
         drawExplosion(world->player);
         wait_msec(80000);
+=======
+        // wait_msec(1000);
+        drawExplosion(world->player);
+        wait_msec(100000);
+>>>>>>> huy
         drawSpaceShip(world->player, world);
         world->life.needs_render = true;
         world->player.health.current_health -= 1;
@@ -1133,6 +1139,11 @@ void drawExplosion(Entity entity)
     }
 }
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> huy
 void drawSpaceShip(Entity entity, World *world)
 {
     int score = world->playerScore.score;
