@@ -40,11 +40,12 @@ void main() {
 
             // drawCircle(960, 540, 250, 0x0e, 0);
             // drawCircle(960, 540, 50, 0x13, 1);
-            drawString(100, 100, "NGUYEN TUAN ANH", 0xa);
-            drawString(100, 150, "S3864077", 0xa);
+            displayBackgroundText(0, 0);
+            drawString(150, 200, "NGUYEN TUAN ANH", 0xa);
+            drawString(290, 250, "S3864077", 0x3);
 
-            drawString(100, 200, "VO QUOC HUY", 0x2);
-            drawString(100, 250, "S3823236", 0x2);
+            drawString(230, 350, "VO QUOC HUY", 0x2);
+            drawString(290, 400, "S3823236", 0xF);
 
             
             // drawChar('A', 1920 / 2 - 200, 100, 0x0e);
