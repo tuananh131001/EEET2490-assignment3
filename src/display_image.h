@@ -26,3 +26,4 @@ void displayScore9(int x, int y);
 void clearScore(int num, int x, int y);
 void displayExplosion(int x, int y);
 void displayExplosion2(int x, int y);
+void displayGameBackground(int x, int y);

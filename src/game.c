@@ -8,6 +8,7 @@
 int wait_time_shoot = 50;
 void init_game(Game *world)
 {
+
     world->game_over = false;
     world->game_start = false;
     world->main_menu.on_game_menu = true;
@@ -233,10 +234,10 @@ void move_player(World *world)
 
 void show_main_menu(Game *game)
 {
+
     uart_puts("Press s to move down: \n");
     uart_puts("Press w to move up: \n");
     uart_puts("Press space to choose: \n");
-    drawBackground();
     drawLogo();
     drawMainMenu(game);
     while (game->main_menu.on_game_menu)
@@ -297,7 +298,7 @@ void show_game_menu(World *world)
             if (world->game_menu.game_menu_option == 2)
             {
                 world->game_menu.on_gameMenu_menu = false;
-                clear_emulator_screen(1920, 1080);
+                clear_emulator_screen(1024, 768);
                 printf("\nSELECT: Pause");
                 world->life.needs_render = true;
                 world->playerScore.needsRender = true;
@@ -436,7 +437,7 @@ void update_player_position(World *world)
             world->enemies[i].position.y + world->enemies[i].dimension.height >
                 world->player.position.y)
         {
-            endScreen(0);
+            endScreen(0, world);
         }
     }
     for (int i = 0; i < MAX_BULLETS; i++)
@@ -704,7 +705,7 @@ void update_combat_system(World *world)
             world->enemies[i].combat_update = false;
             if (world->enemies_alive == 0)
             {
-                endScreen(1);
+                endScreen(1, world);
             }
         }
     }
@@ -745,7 +746,7 @@ void update_combat_system(World *world)
         {
             clearPlayerLife(170, 20);
             displayScore0(170, 10);
-            endScreen(0);
+            endScreen(0, world);
         }
     }
 }
@@ -768,6 +769,7 @@ bool enemies_at_bottom(World *world)
 void render(World *world)
 {
     wait_msec(30000);
+
     for (int i = 0; i < MAX_BULLETS; i++)
     {
         Type type = world->player.type;
@@ -872,49 +874,67 @@ void render(World *world)
     }
     if (world->playerScore.needsRender)
     {
-        int ones = (world->playerScore.score % 10);
-        int tens = (world->playerScore.score % 100) / 10;
-        int hundreds = (world->playerScore.score % 1000) / 100;
-        int thousands = (world->playerScore.score % 10000) / 1000;
-
-        int score = world->playerScore.score;
-        if (score >= 0 && score < 10)
-        {
-            clearScore(ones, SCORE_ORIGINX, SCORE_ORIGINY);
-            render_score(ones, SCORE_ORIGINX, SCORE_ORIGINY);
-        }
-        else if (score >= 10 && score < 100)
-        {
-            clearScore(tens, SCORE_ORIGINX, SCORE_ORIGINY);
-            clearScore(ones, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
-            render_score(tens, SCORE_ORIGINX, SCORE_ORIGINY);
-            render_score(ones, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
-        }
-        else if (score >= 100 && score < 1000)
-        {
-            clearScore(hundreds, SCORE_ORIGINX, SCORE_ORIGINY);
-            clearScore(tens, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
-            clearScore(ones, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
-            render_score(hundreds, SCORE_ORIGINX, SCORE_ORIGINY);
-            render_score(tens, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
-            render_score(ones, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
-        }
-        else if (score >= 1000)
-        {
-            clearScore(thousands, SCORE_ORIGINX, SCORE_ORIGINY);
-            clearScore(hundreds, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
-            clearScore(tens, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
-            clearScore(ones, SCORE_ORIGINX + SHIFT + SHIFT + SHIFT,
-                       SCORE_ORIGINY);
-
-            render_score(thousands, SCORE_ORIGINX, SCORE_ORIGINY);
-            render_score(hundreds, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
-            render_score(tens, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
-            render_score(ones, SCORE_ORIGINX + SHIFT + SHIFT + SHIFT,
-                         SCORE_ORIGINY);
-        }
-
+        char *type = "";
+        drawScore(world, type);
         world->playerScore.needsRender = false;
+    }
+}
+
+void drawScore(World *world, char *type)
+{
+    int x = 0;
+    int y = 0;
+    if (type == "d")
+    {
+        x = 350;
+        y = 500;
+        displayScore(770 - x, 10 + y);
+    }
+    if (type == "")
+    {
+        displayScore(770, 10);
+    }
+
+    int ones = (world->playerScore.score % 10);
+    int tens = (world->playerScore.score % 100) / 10;
+    int hundreds = (world->playerScore.score % 1000) / 100;
+    int thousands = (world->playerScore.score % 10000) / 1000;
+
+    int score = world->playerScore.score;
+    if (score >= 0 && score < 10)
+    {
+        clearScore(ones, SCORE_ORIGINX - x, SCORE_ORIGINY + y);
+        render_score(ones, SCORE_ORIGINX - x, SCORE_ORIGINY + y);
+    }
+    else if (score >= 10 && score < 100)
+    {
+        clearScore(tens, SCORE_ORIGINX - x, SCORE_ORIGINY + y);
+        clearScore(ones, SCORE_ORIGINX - x + SHIFT, SCORE_ORIGINY + y);
+        render_score(tens, SCORE_ORIGINX - x, SCORE_ORIGINY + y);
+        render_score(ones, SCORE_ORIGINX - x + SHIFT, SCORE_ORIGINY + y);
+    }
+    else if (score >= 100 && score < 1000)
+    {
+        clearScore(hundreds, SCORE_ORIGINX - x, SCORE_ORIGINY + y);
+        clearScore(tens, SCORE_ORIGINX - x + SHIFT, SCORE_ORIGINY + y);
+        clearScore(ones, SCORE_ORIGINX - x + SHIFT + SHIFT, SCORE_ORIGINY + y);
+        render_score(hundreds, SCORE_ORIGINX - x, SCORE_ORIGINY + y);
+        render_score(tens, SCORE_ORIGINX - x + SHIFT, SCORE_ORIGINY + y);
+        render_score(ones, SCORE_ORIGINX - x + SHIFT + SHIFT, SCORE_ORIGINY + y);
+    }
+    else if (score >= 1000)
+    {
+        clearScore(thousands, SCORE_ORIGINX, SCORE_ORIGINY);
+        clearScore(hundreds, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
+        clearScore(tens, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
+        clearScore(ones, SCORE_ORIGINX + SHIFT + SHIFT + SHIFT,
+                   SCORE_ORIGINY);
+
+        render_score(thousands, SCORE_ORIGINX, SCORE_ORIGINY);
+        render_score(hundreds, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
+        render_score(tens, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
+        render_score(ones, SCORE_ORIGINX + SHIFT + SHIFT + SHIFT,
+                     SCORE_ORIGINY);
     }
 }
 
@@ -964,7 +984,6 @@ void clear_health(int x, int y)
 
 void render_score(int num, int x, int y)
 {
-    displayScore(770, 10);
 
     if (num == 1)
         displayScore1(x, y);
@@ -1071,25 +1090,30 @@ void drawMainMenu(Game *game)
         drawPixel(xMenu, yMenu, colorptrMenu[i]);
     }
     // drawAuthors();
-    displayAuthorsImage(400, 900);
+    displayAuthorsImage(80, 650);
 }
 
-void endScreen(bool won)
+void endScreen(bool won, World *world)
 {
+
     pauseGame = true;
     uart_puts("\n\n");
     uart_puts("Press o to out: \n");
     uart_puts("Press r to restart: \n");
+    char *type = "d";
     // drawBackground();
+
     clear_emulator_screen(1024, 768);
-    if (won)
+
+    if (!won)
     {
-        // gameWinEndDisplay();
-        displayGameWinImage(300, 150);
+        drawScore(world, type);
+        displayGameWinImage(300, 100);
     }
     else
     {
-        displayGameOverImage(280, 120);
+        drawScore(world, type);
+        displayGameOverImage(300, 100);
     }
     while (!restartGame)
     {
@@ -1108,11 +1132,13 @@ void endScreen(bool won)
     }
     if (won)
     {
+        drawScore(world, type);
         gameWinEndDisplay();
-        // displayGameWinImage(1000,300);
+        displayGameWinImage(300, 150);
     }
     else
     {
+        drawScore(world, type);
         displayGameOverImage(600, 300);
     }
     return;
@@ -1188,4 +1214,3 @@ void clear(Entity entity)
         drawPixelARGB32(x, y, 0);
     }
 }
-

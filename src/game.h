@@ -187,9 +187,9 @@ void drawGameMenu(World *game);
 void drawMainMenu(Game *game);
 void show_game_menu(World *world);
 void show_main_menu(Game *game) ;
-
+void drawScore(World *world,char *type);
 void init_bunkers(Entity bunkers[]);
 void init_playerScore(Score *playerScore);
-void endScreen(bool won) ;
+void endScreen(bool won, World *world) ;
 void restart_game(Game *world);
 void drawSpaceShip(Entity entity, World *world);
