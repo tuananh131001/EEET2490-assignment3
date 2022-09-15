@@ -540,6 +540,8 @@ void update_combat_system(World *world) {
             if (world->enemies[i].health.current_health <= 0) {
                 world->enemies[i].enabled = false;
                 world->enemies[i].needs_clear = true;
+                drawExplosion(world->enemies[i]);
+                wait_msec(80000);
                 world->playerScore.needsRender = true;
                 update_score(world, world->enemies[i].type);
                 update_shooters(world, i);
@@ -574,7 +576,7 @@ void update_combat_system(World *world) {
         world->player.combat_update = false;
         if (world->player.health.current_health == 0) {
             clearPlayerLife(170, 20);
-            drawString(170, 30, "0", 0x0f);
+            displayScore0(170, 10);
             endScreen(0);
         }
     }
@@ -676,18 +678,53 @@ void render(World *world) {
         render_health(world);
     }
     if (world->playerScore.needsRender) {
-        render_score(world);
+        int ones = (world->playerScore.score % 10);
+        int tens = (world->playerScore.score % 100) / 10;
+        int hundreds = (world->playerScore.score % 1000) / 100;
+        int thousands = (world->playerScore.score % 10000) / 1000;
+
+        int score = world->playerScore.score;
+        if (score >= 0 && score < 10) {
+            clearScore(ones, SCORE_ORIGINX, SCORE_ORIGINY);
+            render_score(ones, SCORE_ORIGINX, SCORE_ORIGINY);
+        } else if (score >= 10 && score < 100) {
+            clearScore(tens, SCORE_ORIGINX, SCORE_ORIGINY);
+            clearScore(ones, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
+            render_score(tens, SCORE_ORIGINX, SCORE_ORIGINY);
+            render_score(ones, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
+        } else if (score >= 100 && score < 1000) {
+            clearScore(hundreds, SCORE_ORIGINX, SCORE_ORIGINY);
+            clearScore(tens, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
+            clearScore(ones, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
+            render_score(hundreds, SCORE_ORIGINX, SCORE_ORIGINY);
+            render_score(tens, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
+            render_score(ones, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
+        } else if (score >= 1000) {
+            clearScore(thousands, SCORE_ORIGINX, SCORE_ORIGINY);
+            clearScore(hundreds, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
+            clearScore(tens, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
+            clearScore(ones, SCORE_ORIGINX + SHIFT + SHIFT + SHIFT,
+                       SCORE_ORIGINY);
+
+            render_score(thousands, SCORE_ORIGINX, SCORE_ORIGINY);
+            render_score(hundreds, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
+            render_score(tens, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
+            render_score(ones, SCORE_ORIGINX + SHIFT + SHIFT + SHIFT,
+                         SCORE_ORIGINY);
+        }
+
+        world->playerScore.needsRender = false;
     }
 }
 
 void render_health(World *world) {
     int clife = (world->player.health.current_health);
     printf("health: %d\n", clife);
-    displayWordPlayerLife(100,10);
+    displayWordPlayerLife(100, 10);
 
     if (clife == 0) {
         clearPlayerLife(170, 30);
-        drawString(170, 20, "0", 0x1);
+        displayScore0(170, 10);
     }
 
     if (clife == 1) {
@@ -716,21 +753,29 @@ void clear_health(int x, int y) {
     }
 }
 
-void render_score(World *world) {
-    int score = world->playerScore.score;
-    // drawString(500, 50, "SCORE:", 0x0f);
+void render_score(int num, int x, int y) {
+    displayScore(770, 10);
 
-    if (score == 0)
-    {
-        // drawString(550, 50, "0", 0x0f);
-    }
-    else
-    {
-        char snum[10];
-        integer_to_string(score, snum);
-        drawString(550, 50, snum, 0x0f);
-    }
-    world->playerScore.needsRender = false;
+    if (num == 1)
+        displayScore1(x, y);
+    else if (num == 2)
+        displayScore2(x, y);
+    else if (num == 3)
+        displayScore3(x, y);
+    else if (num == 4)
+        displayScore4(x, y);
+    else if (num == 5)
+        displayScore5(x, y);
+    else if (num == 6)
+        displayScore6(x, y);
+    else if (num == 7)
+        displayScore7(x, y);
+    else if (num == 8)
+        displayScore8(x, y);
+    else if (num == 9)
+        displayScore9(x, y);
+    else if (num == 0)
+        displayScore0(x, y);
 }
 
 void init_life(Entity *life) {
@@ -838,6 +883,13 @@ void endScreen(bool won) {
     return;
 }
 
+void drawExplosion(Entity entity) {
+    int x = entity.position.x;
+    int oldX = x;
+    int y = entity.position.y;
+    displayExplosion(x, y);
+}
+
 void drawSpaceShip(Entity entity, World *world) {
     int score = world->playerScore.score;
     int width = entity.dimension.width;
@@ -880,3 +932,7 @@ void clear(Entity entity) {
         drawPixelARGB32(x, y, 0);
     }
 }
+
+// void render_score(int x ,int y){
+
+// }

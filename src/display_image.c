@@ -10,6 +10,7 @@
 #include "life.h"
 #include "background_text.h"
 
+#include "game_image.h"
 // Function to display tom image
 void displayTomImage(int x, int y){
   for(int h = 0; h < tom_image_height ; h++){
@@ -115,6 +116,114 @@ void displayPlayerLife(int x,int y){
 void clearPlayerLife(int x,int y){
   for(int h = 0; h < life_height ; h++){
     for (int w = 0; w < life_width; w++){
+      drawPixelARGB32(x + w, y + h, 0);
+    }
+  }
+}
+
+// Function display score
+void displayScore(int x, int y){
+  for(int h = 0; h < word_score_height ; h++){
+    for (int w = 0; w < word_score_width; w++){
+      drawPixelARGB32(x + w, y + h, word_score_image[ h * word_score_width + w]);
+    }
+  }
+}
+
+// Function display score
+void displayScore1(int x, int y){
+  for(int h = 0; h < score_1_height ; h++){
+    for (int w = 0; w < score_1_width; w++){
+      drawPixelARGB32(x + w, y + h, score_1_image[ h * score_1_width + w]);
+    }
+  }
+}
+// Function display score
+void displayScore2(int x, int y){
+  for(int h = 0; h < score_2_height ; h++){
+    for (int w = 0; w < score_2_width; w++){
+      drawPixelARGB32(x + w, y + h, score_2_image[ h * score_2_width + w]);
+    }
+  }
+}
+// Function display score
+void displayScore3(int x, int y){
+  for(int h = 0; h < score_3_height ; h++){
+    for (int w = 0; w < score_3_width; w++){
+      drawPixelARGB32(x + w, y + h, score_3_image[ h * score_3_width + w]);
+    }
+  }
+}
+// Function display score
+void displayScore4(int x, int y){
+  for(int h = 0; h < score_4_height ; h++){
+    for (int w = 0; w < score_4_width; w++){
+      drawPixelARGB32(x + w, y + h, score_4_image[ h * score_4_width + w]);
+    }
+  }
+}
+// Function display score
+void displayScore5(int x, int y){
+  for(int h = 0; h < score_5_height ; h++){
+    for (int w = 0; w < score_5_width; w++){
+      drawPixelARGB32(x + w, y + h, score_5_image[ h * score_5_width + w]);
+    }
+  }
+}
+// Function display score
+void displayScore6(int x, int y){
+  for(int h = 0; h < score_6_height ; h++){
+    for (int w = 0; w < score_6_width; w++){
+      drawPixelARGB32(x + w, y + h, score_6_image[ h * score_6_width + w]);
+    }
+  }
+}
+// Function display score
+void displayScore7(int x, int y){
+  for(int h = 0; h < score_7_height ; h++){
+    for (int w = 0; w < score_7_width; w++){
+      drawPixelARGB32(x + w, y + h, score_7_image[ h * score_7_width + w]);
+    }
+  }
+}
+// Function display score
+void displayScore8(int x, int y){
+  for(int h = 0; h < score_8_height ; h++){
+    for (int w = 0; w < score_8_width; w++){
+      drawPixelARGB32(x + w, y + h, score_8_image[ h * score_8_width + w]);
+    }
+  }
+}
+// Function display score
+void displayScore9(int x, int y){
+  for(int h = 0; h < score_9_height ; h++){
+    for (int w = 0; w < score_9_width; w++){
+      drawPixelARGB32(x + w, y + h, score_9_image[ h * score_9_width + w]);
+    }
+  }
+}
+
+void displayScore0(int x, int y){
+  for(int h = 0; h < score_0_height ; h++){
+    for (int w = 0; w < score_0_width; w++){
+      drawPixelARGB32(x + w, y + h, score_0_image[ h * score_0_width + w]);
+    }
+  }
+}
+
+void displayExplosion(int x, int y){
+  for(int h = 0; h < explosion_height ; h++){
+    for (int w = 0; w < explosion_width; w++){
+      drawPixelARGB32(x + w, y + h, explosion_image[ h * explosion_width + w]);
+      // wait_msec(100000);
+      // drawPixelARGB32(x + w, y + h, 0);
+    }
+  }
+}
+
+void clearScore(int num, int x, int y){
+  for(int h = 0; h < score_0_height ; h++){
+    for (int w = 0; w < score_0_height; w++){
       drawPixelARGB32(x + w, y + h, 0);
     }
   }
