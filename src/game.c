@@ -1105,7 +1105,7 @@ void endScreen(bool won, World *world)
 
     clear_emulator_screen(1024, 768);
 
-    if (!won)
+    if (won)
     {
         drawScore(world, type);
         displayGameWinImage(300, 100);
@@ -1133,13 +1133,12 @@ void endScreen(bool won, World *world)
     if (won)
     {
         drawScore(world, type);
-        gameWinEndDisplay();
-        displayGameWinImage(300, 150);
+        displayGameWinImage(300, 100);
     }
     else
     {
         drawScore(world, type);
-        displayGameOverImage(600, 300);
+        displayGameOverImage(300, 100);
     }
     return;
 }
