@@ -202,6 +202,16 @@ void displayScore0(int x, int y){
   }
 }
 
+void displayExplosion(int x, int y){
+  for(int h = 0; h < explosion_height ; h++){
+    for (int w = 0; w < explosion_width; w++){
+      drawPixelARGB32(x + w, y + h, explosion_image[ h * explosion_width + w]);
+      // wait_msec(100000);
+      // drawPixelARGB32(x + w, y + h, 0);
+    }
+  }
+}
+
 void clearScore(int num, int x, int y){
   for(int h = 0; h < score_0_height ; h++){
     for (int w = 0; w < score_0_height; w++){

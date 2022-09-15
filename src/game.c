@@ -659,6 +659,8 @@ void update_combat_system(World *world)
             {
                 world->enemies[i].enabled = false;
                 world->enemies[i].needs_clear = true;
+                drawExplosion(world->enemies[i]);
+                wait_msec(80000);
                 world->playerScore.needsRender = true;
                 update_score(world, world->enemies[i].type);
                 update_shooters(world, i);
@@ -1065,6 +1067,13 @@ void endScreen(bool won)
         displayGameOverImage(600, 300);
     }
     return;
+}
+
+void drawExplosion(Entity entity){
+    int x = entity.position.x;
+    int oldX = x;
+    int y = entity.position.y;
+    displayExplosion(x, y);
 }
 
 void drawSpaceShip(Entity entity, World *world)
