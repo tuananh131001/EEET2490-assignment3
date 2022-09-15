@@ -566,7 +566,12 @@ void update_combat_system(World *world) {
         }
     }
 
-    if (world->player.combat_update) {
+    if (world->player.combat_update)
+    {
+        // wait_msec(1000);
+        drawExplosion(world->player);
+        wait_msec(100000);
+        drawSpaceShip(world->player, world);
         world->life.needs_render = true;
         world->player.health.current_health -= 1;
         if (world->player.health.current_health <= 0) {
@@ -883,14 +888,26 @@ void endScreen(bool won) {
     return;
 }
 
-void drawExplosion(Entity entity) {
+void drawExplosion(Entity entity)
+{
     int x = entity.position.x;
     int oldX = x;
     int y = entity.position.y;
-    displayExplosion(x, y);
+    if (entity.type == PLAYER)
+    {
+        uart_puts("Choó Sir");
+        displayExplosion2(x, y);
+    }
+    else
+    {
+        displayExplosion(x, y);
+    }
 }
 
-void drawSpaceShip(Entity entity, World *world) {
+
+
+void drawSpaceShip(Entity entity, World *world)
+{
     int score = world->playerScore.score;
     int width = entity.dimension.width;
     int height = entity.dimension.height;
