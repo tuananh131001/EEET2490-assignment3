@@ -696,7 +696,7 @@ void update_combat_system(World *world)
                 world->enemies[i].enabled = false;
                 world->enemies[i].needs_clear = true;
                 drawExplosion(world->enemies[i]);
-                wait_msec(80000);
+                wait_msec(500);
                 world->playerScore.needsRender = true;
                 update_score(world, world->enemies[i].type);
                 update_shooters(world, i);
@@ -731,7 +731,7 @@ void update_combat_system(World *world)
     if (world->player.combat_update)
     {
         drawExplosion(world->player);
-        wait_msec(80000);
+        wait_msec(500);
 
         drawSpaceShip(world->player, world);
         world->life.needs_render = true;
