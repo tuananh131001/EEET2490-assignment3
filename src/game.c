@@ -830,12 +830,12 @@ void render_health(World *world)
 {
     int clife = (world->player.health.current_health);
     printf("health: %d\n", clife);
-    drawString(70, 30, "TOTAL LIVES:", 0x0f);
+    displayWordPlayerLife(100,10);
 
     if (clife == 0)
     {
         clearPlayerLife(170, 30);
-        drawString(170, 20, "0", 0x0f);
+        drawString(170, 20, "0", 0x1);
     }
 
     if (clife == 1)
@@ -873,11 +873,11 @@ void clear_health(int x, int y)
 void render_score(World *world)
 {
     int score = world->playerScore.score;
-    drawString(500, 50, "SCORE:", 0x0f);
+    // drawString(500, 50, "SCORE:", 0x0f);
 
     if (score == 0)
     {
-        drawString(550, 50, "0", 0x0f);
+        // drawString(550, 50, "0", 0x0f);
     }
     else
     {

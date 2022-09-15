@@ -87,6 +87,14 @@ void displayAuthorsImage (int x, int y){
   }
 }
 
+void displayWordPlayerLife(int x,int y){
+  for(int h = 0; h < word_lives_height ; h++){
+    for (int w = 0; w < word_lives_width; w++){
+      drawPixelARGB32(x + w, y + h, word_lives_image[ h * word_lives_width + w]);
+    }
+  }
+}
+
 void displayPlayerLife(int x,int y){
   for(int h = 0; h < life_height ; h++){
     for (int w = 0; w < life_width; w++){
