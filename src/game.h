@@ -43,9 +43,9 @@
 
 #define MAX_SHOOTERS 10
 
-#define SCORE_ORIGINX 500
-#define SCORE_ORIGINY 720
-#define SHIFT 32
+#define SCORE_ORIGINX 850
+#define SCORE_ORIGINY 5
+#define SHIFT 35
 
 #define BAR_ORIGINX 1150
 #define BAR_ORIGINY 180
@@ -171,7 +171,7 @@ void draw_projectile(Type type, Position position, Dimension dimension);
 void clear_projectile(Position position, Dimension dimension);
 void render_health(World *world);
 
-void render_score(World *world);
+void render_score(int num,int x, int y);
 
 void update_combat_system(World *world);
 void update_collision_system(World *world);
