@@ -8,12 +8,21 @@
 #include "authors.h"
 #include "spaceship.h"
 #include "life.h"
+#include "background_text.h"
+
 #include "game_image.h"
 // Function to display tom image
 void displayTomImage(int x, int y){
   for(int h = 0; h < tom_image_height ; h++){
     for (int w = 0; w < tom_image_width; w++){
       drawPixelARGB32(x + w, y + h, tom_image[ h * tom_image_width + w]);
+    }
+  }
+}
+void displayBackgroundText(int x, int y){
+  for(int h = 0; h < bg_image_height ; h++){
+    for (int w = 0; w < bg_image_width; w++){
+      drawPixelARGB32(x + w, y + h, background_text_display[ h * bg_image_width + w]);
     }
   }
 }
