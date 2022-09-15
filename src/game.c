@@ -722,7 +722,7 @@ bool enemies_at_bottom(World *world)
 // Draw the enity using the data has set
 void render(World *world)
 {
-    wait_msec(30000);
+    wait_msec(25000);
 
     for (int i = 0; i < MAX_BULLETS; i++)
     {
