@@ -52,18 +52,18 @@ void main() {
             // drawChar('B', 1920 / 2 - 200, 200, 0x0e);
 
         } else if (command == '2') {
-            clear_emulator_screen(1920, 1080);
+            clear_emulator_screen(1024, 768);
             displayTomImage(x_coordinate, y_coordinate);
         } else if (command == '3') {
-            clear_emulator_screen(1920, 1080);
-            controlTomJerryImage(x_coordinate, y_coordinate);
+            clear_emulator_screen(1024, 768);
+            controlTomJerryImage(20, y_coordinate);
         } else if (command == '4') {
-            clear_emulator_screen(1920, 1080);
+            clear_emulator_screen(1024, 768);
             displayTomAndJerryVideo(x_coordinate, y_coordinate);
         } else if (command == '5') {
             // render(&game.world);
             // move_player();
-            clear_emulator_screen(1920, 1080);
+            clear_emulator_screen(1024, 768);
             init_game(&game);
             show_main_menu(&game);
             if (game.game_start) {
@@ -75,7 +75,7 @@ void main() {
             // render(&game.world);
 
         } else if (command == '0') {
-            clear_emulator_screen(1920, 1080);
+            clear_emulator_screen(1024, 768);
         } else {
             uart_puts("Invalid command. Please try again");
         }

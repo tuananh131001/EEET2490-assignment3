@@ -31,21 +31,21 @@
 #define VERTICAL_SPEED 30
 #define HORIZONTAL_SPEED 4
 
-#define LEFT_MAX 190
-#define RIGHT_MAX 1520
+#define LEFT_MAX 50
+#define RIGHT_MAX (MAP_WIDTH - 50) 
 #define TOP_MAX 162
 #define BOTTOM_MAX 917
-#define MAX_BULLETS 30
+#define MAX_BULLETS 5
 #define BULLET_VELOCITY 15
 
 #define MAP_WIDTH 1024
 #define MAP_HEIGHT 768
 
-#define MAX_SHOOTERS 40
+#define MAX_SHOOTERS 10
 
-#define SCORE_ORIGINX 500
-#define SCORE_ORIGINY 720
-#define SHIFT 32
+#define SCORE_ORIGINX 850
+#define SCORE_ORIGINY 5
+#define SHIFT 35
 
 #define BAR_ORIGINX 1150
 #define BAR_ORIGINY 180
@@ -171,7 +171,7 @@ void draw_projectile(Type type, Position position, Dimension dimension);
 void clear_projectile(Position position, Dimension dimension);
 void render_health(World *world);
 
-void render_score(World *world);
+void render_score(int num,int x, int y);
 
 void update_combat_system(World *world);
 void update_collision_system(World *world);
