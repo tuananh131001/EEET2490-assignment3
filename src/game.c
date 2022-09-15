@@ -49,8 +49,7 @@ void init_player(Entity *player) {
     player->dimension.width = 50;
     player->position.x = (MAP_WIDTH / 2) - (player->dimension.width / 2);
     player->position.y = MAP_HEIGHT - 162;
-    for (int i = 0; i < MAX_BULLETS; i++)
-        player->projectile[i].active = false;
+    for (int i = 0; i < MAX_BULLETS; i++) player->projectile[i].active = false;
     player->health.current_health = 3;
     player->type = PLAYER;
     player->needs_update = true;
@@ -577,7 +576,7 @@ void update_combat_system(World *world) {
         world->player.combat_update = false;
         if (world->player.health.current_health == 0) {
             clearPlayerLife(170, 20);
-            displayScore0(170,10);
+            displayScore0(170, 10);
             endScreen(0);
         }
     }
@@ -678,46 +677,40 @@ void render(World *world) {
     if (world->life.needs_render) {
         render_health(world);
     }
-    if (world->playerScore.needsRender)
-    {
+    if (world->playerScore.needsRender) {
         int ones = (world->playerScore.score % 10);
         int tens = (world->playerScore.score % 100) / 10;
         int hundreds = (world->playerScore.score % 1000) / 100;
         int thousands = (world->playerScore.score % 10000) / 1000;
 
         int score = world->playerScore.score;
-        if (score >= 0 && score < 10)
-        {
+        if (score >= 0 && score < 10) {
             clearScore(ones, SCORE_ORIGINX, SCORE_ORIGINY);
             render_score(ones, SCORE_ORIGINX, SCORE_ORIGINY);
-        }
-        else if (score >= 10 && score < 100)
-        {
+        } else if (score >= 10 && score < 100) {
             clearScore(tens, SCORE_ORIGINX, SCORE_ORIGINY);
             clearScore(ones, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
-            render_score(tens, SCORE_ORIGINX , SCORE_ORIGINY);
+            render_score(tens, SCORE_ORIGINX, SCORE_ORIGINY);
             render_score(ones, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
-        }
-        else if (score >= 100 && score < 1000)
-        {
+        } else if (score >= 100 && score < 1000) {
             clearScore(hundreds, SCORE_ORIGINX, SCORE_ORIGINY);
             clearScore(tens, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
             clearScore(ones, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
-            render_score(hundreds, SCORE_ORIGINX , SCORE_ORIGINY);
-            render_score(tens, SCORE_ORIGINX + SHIFT , SCORE_ORIGINY);
-            render_score(ones, SCORE_ORIGINX + SHIFT + SHIFT , SCORE_ORIGINY);
-        }
-        else if (score >= 1000)
-        {
+            render_score(hundreds, SCORE_ORIGINX, SCORE_ORIGINY);
+            render_score(tens, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
+            render_score(ones, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
+        } else if (score >= 1000) {
             clearScore(thousands, SCORE_ORIGINX, SCORE_ORIGINY);
             clearScore(hundreds, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
             clearScore(tens, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
-            clearScore(ones, SCORE_ORIGINX + SHIFT + SHIFT + SHIFT, SCORE_ORIGINY);
+            clearScore(ones, SCORE_ORIGINX + SHIFT + SHIFT + SHIFT,
+                       SCORE_ORIGINY);
 
             render_score(thousands, SCORE_ORIGINX, SCORE_ORIGINY);
             render_score(hundreds, SCORE_ORIGINX + SHIFT, SCORE_ORIGINY);
             render_score(tens, SCORE_ORIGINX + SHIFT + SHIFT, SCORE_ORIGINY);
-            render_score(ones, SCORE_ORIGINX + SHIFT + SHIFT + SHIFT, SCORE_ORIGINY);
+            render_score(ones, SCORE_ORIGINX + SHIFT + SHIFT + SHIFT,
+                         SCORE_ORIGINY);
         }
 
         world->playerScore.needsRender = false;
@@ -760,8 +753,7 @@ void clear_health(int x, int y) {
     }
 }
 
-void render_score(int num, int x, int y)
-{
+void render_score(int num, int x, int y) {
     displayScore(770, 10);
 
     if (num == 1)
@@ -868,10 +860,6 @@ void endScreen(bool won) {
         // gameWinEndDisplay();
         displayGameWinImage(300, 150);
     } else {
-        displayGameWinImage(300, 150);
-    }
-    else
-    {
         displayGameOverImage(280, 120);
     }
     while (!restartGame) {
@@ -895,16 +883,14 @@ void endScreen(bool won) {
     return;
 }
 
-void drawSpaceShip(Entity entity, World *world) {
-void drawExplosion(Entity entity){
+void drawExplosion(Entity entity) {
     int x = entity.position.x;
     int oldX = x;
     int y = entity.position.y;
     displayExplosion(x, y);
 }
 
-void drawSpaceShip(Entity entity, World *world)
-{
+void drawSpaceShip(Entity entity, World *world) {
     int score = world->playerScore.score;
     int width = entity.dimension.width;
     int height = entity.dimension.height;
