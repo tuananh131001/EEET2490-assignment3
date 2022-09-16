@@ -9,11 +9,11 @@
 
 #define NUM_KNIGHTS 10
 #define KNIGHT_POINTS 30
-#define KNIGHT_HEALTH 3
+#define KNIGHT_HEALTH 2
 
 #define NUM_QUEENS 10
 #define QUEEN_POINTS 50
-#define QUEEN_HEALTH 5
+#define QUEEN_HEALTH 3
 
 #define NUM_ENEMIES (NUM_PAWNS + NUM_QUEENS + NUM_KNIGHTS)
 
@@ -29,13 +29,13 @@
 
 #define PLAYER_SPEED 15
 #define VERTICAL_SPEED 30
-#define HORIZONTAL_SPEED 4
+#define HORIZONTAL_SPEED 1
 
 #define LEFT_MAX 50
 #define RIGHT_MAX (MAP_WIDTH - 50) 
 #define TOP_MAX 162
 #define BOTTOM_MAX 917
-#define MAX_BULLETS 5
+#define MAX_BULLETS 1
 #define BULLET_VELOCITY 15
 
 #define MAP_WIDTH 1024
@@ -187,9 +187,9 @@ void drawGameMenu(World *game);
 void drawMainMenu(Game *game);
 void show_game_menu(World *world);
 void show_main_menu(Game *game) ;
-
+void drawScore(World *world,char *type);
 void init_bunkers(Entity bunkers[]);
 void init_playerScore(Score *playerScore);
-void endScreen(bool won) ;
+void endScreen(bool won, World *world) ;
 void restart_game(Game *world);
 void drawSpaceShip(Entity entity, World *world);
