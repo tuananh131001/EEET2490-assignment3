@@ -15,7 +15,6 @@
 #define QUEEN_POINTS 50
 #define QUEEN_HEALTH 3
 
-#define NUM_ENEMIES (NUM_PAWNS + NUM_QUEENS + NUM_KNIGHTS)
 
 #define NUM_BUNKERS 3
 #define BUNKER_HEALTH 10
@@ -26,6 +25,7 @@
 #define VERTICAL_OFFSET 61
 
 #define ENEMIES_VERTICAL_MAX (1080 - 262 - VERTICAL_OFFSET)
+#define NUM_ENEMIES  (NUM_PAWNS + NUM_QUEENS + NUM_KNIGHTS)
 
 #define PLAYER_SPEED 15
 #define VERTICAL_SPEED 30
@@ -51,6 +51,7 @@
 #define BAR_ORIGINY 180
 
 static bool travel_right = true;
+
 
 static bool quitGame;
 static bool restartGame;
