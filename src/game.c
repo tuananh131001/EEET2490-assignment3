@@ -310,7 +310,17 @@ void update_player_position(World *world) {
         world->player.previous_pos = world->player.position;
         world->player.position.x += world->player.velocity.x;
         world->player.position.y += world->player.velocity.y;
-
+        // Stop moving at edge
+        if (world->player.position.x < 0) {
+            world->player.position.x = 0;
+        } else if (world->player.position.x > MAP_WIDTH - world->player.dimension.width) {
+            world->player.position.x = MAP_WIDTH - world->player.dimension.width;
+        }
+         if (world->player.position.y < 0) {
+            world->player.position.y = 0;
+        } else if (world->player.position.y > MAP_HEIGHT - world->player.dimension.height) {
+            world->player.position.y = MAP_HEIGHT - world->player.dimension.height;
+        }
         world->player.needs_render = true;
         world->player.needs_update = false;
     }
