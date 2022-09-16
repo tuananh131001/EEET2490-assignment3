@@ -953,6 +953,7 @@ void drawGameMenu(World *game) {
     }
 }
 void drawMainMenu(Game *game) {
+    
     int *colorptrMenu;
     int widthMenu = main_menu_quit.width;
     int heightMenu = main_menu_quit.height;
@@ -974,7 +975,7 @@ void drawMainMenu(Game *game) {
         drawPixel(xMenu, yMenu, colorptrMenu[i]);
     }
     // drawAuthors();
-    displayAuthorsImage(80, 650);
+    displayAuthorsImage(80, 620);
 }
 
 void endScreen(bool won, World *world) {

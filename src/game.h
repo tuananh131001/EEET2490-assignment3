@@ -33,7 +33,7 @@
 
 #define LEFT_MAX 50
 #define RIGHT_MAX (MAP_WIDTH - 50) 
-#define TOP_MAX 162
+#define TOP_MAX 20
 #define BOTTOM_MAX 917
 #define MAX_BULLETS 1
 #define BULLET_VELOCITY 15
@@ -52,10 +52,9 @@
 
 static bool travel_right = true;
 
-
-static bool quitGame;
-static bool restartGame;
-static bool pauseGame;
+bool quitGame;
+bool restartGame;
+bool pauseGame;
 typedef union {
     int current_health;
     int player_health;
