@@ -4,16 +4,16 @@
 #include "uart.h"
 
 #define NUM_PAWNS 20
-#define PAWN_POINTS 1
+#define PAWN_POINTS 10
 #define PAWN_HEALTH 1
 
 #define NUM_KNIGHTS 10
-#define KNIGHT_POINTS 3
-#define KNIGHT_HEALTH 3
+#define KNIGHT_POINTS 30
+#define KNIGHT_HEALTH 2
 
 #define NUM_QUEENS 10
-#define QUEEN_POINTS 5
-#define QUEEN_HEALTH 5
+#define QUEEN_POINTS 50
+#define QUEEN_HEALTH 3
 
 #define NUM_ENEMIES (NUM_PAWNS + NUM_QUEENS + NUM_KNIGHTS)
 
@@ -29,10 +29,10 @@
 
 #define PLAYER_SPEED 15
 #define VERTICAL_SPEED 30
-#define HORIZONTAL_SPEED 4
+#define HORIZONTAL_SPEED 1
 
-#define LEFT_MAX 190
-#define RIGHT_MAX 1520
+#define LEFT_MAX 50
+#define RIGHT_MAX (MAP_WIDTH - 50) 
 #define TOP_MAX 162
 #define BOTTOM_MAX 917
 #define MAX_BULLETS 1
@@ -43,9 +43,9 @@
 
 #define MAX_SHOOTERS 10
 
-#define SCORE_ORIGINX 500
-#define SCORE_ORIGINY 720
-#define SHIFT 32
+#define SCORE_ORIGINX 850
+#define SCORE_ORIGINY 5
+#define SHIFT 35
 
 #define BAR_ORIGINX 1150
 #define BAR_ORIGINY 180
@@ -171,7 +171,7 @@ void draw_projectile(Type type, Position position, Dimension dimension);
 void clear_projectile(Position position, Dimension dimension);
 void render_health(World *world);
 
-void render_score(World *world);
+void render_score(int num,int x, int y);
 
 void update_combat_system(World *world);
 void update_collision_system(World *world);
@@ -187,8 +187,9 @@ void drawGameMenu(World *game);
 void drawMainMenu(Game *game);
 void show_game_menu(World *world);
 void show_main_menu(Game *game) ;
-
+void drawScore(World *world,char *type);
 void init_bunkers(Entity bunkers[]);
 void init_playerScore(Score *playerScore);
-void endScreen(bool won) ;
+void endScreen(bool won, World *world) ;
 void restart_game(Game *world);
+void drawSpaceShip(Entity entity, World *world);
