@@ -40,6 +40,7 @@
         "typeinfo": "c",
         "framebf.h": "c",
         "uart.h": "c",
-        "background_text.h": "c"
+        "background_text.h": "c",
+        "display_image.h": "c"
     }
 }

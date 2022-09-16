@@ -52,10 +52,9 @@
 
 static bool travel_right = true;
 
-bool quitGame;
-bool restartGame;
-bool pauseGame;
-
+static bool quitGame;
+static bool restartGame;
+static bool pauseGame;
 typedef union {
     int current_health;
     int player_health;
