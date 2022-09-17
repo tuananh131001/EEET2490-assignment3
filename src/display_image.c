@@ -321,7 +321,7 @@ void moveVerticalScreen(int width, int height, int x, int y)
   {
     for (int w = 0; w < width; w++)
     {
-      drawPixel(x + w, y + h, 0);
+      drawPixelARGB32(x + w, y + h, 0);
     }
   }
 }

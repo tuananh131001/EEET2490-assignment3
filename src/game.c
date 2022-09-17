@@ -1180,7 +1180,7 @@ void drawGameMenu(World *game)
             yMenu++;
             xMenu = (int)((MAP_WIDTH / 2) - (widthMenu / 2));
         }
-        drawPixel(xMenu, yMenu, colorptrMenu[i]);
+        drawPixelARGB32(xMenu, yMenu, colorptrMenu[i]);
     }
 }
 void drawMainMenu(Game *game)
@@ -1206,7 +1206,7 @@ void drawMainMenu(Game *game)
             yMenu++;
             xMenu = (int)((MAP_WIDTH / 2) - (widthMenu / 2));
         }
-        drawPixel(xMenu, yMenu, colorptrMenu[i]);
+        drawPixelARGB32(xMenu, yMenu, colorptrMenu[i]);
     }
     // drawAuthors();
     displayAuthorsImage(80, 620);
@@ -1217,6 +1217,7 @@ void endScreen(bool won, World *world)
     pauseGame = true;
     uart_puts("\n\n");
     uart_puts("Press o to out: \n");
+    uart_puts("Press n to go to next stage: \n");
     uart_puts("Press r to restart: \n");
     // drawBackground();
 
@@ -1417,7 +1418,7 @@ void clear_projectile(Position position, Dimension dimension)
             y++;
             x = oldX;
         }
-        drawPixel(x, y, 0);
+        drawPixelARGB32(x, y, 0);
     }
 }
 
@@ -1443,7 +1444,7 @@ void draw_projectile(Type type, Position position, Dimension dimension)
             y++;
             x = oldX;
         }
-        drawPixel(x, y, colorptr[i]);
+        drawPixelARGB32(x, y, colorptr[i]);
     }
 }
 
@@ -1578,7 +1579,7 @@ void drawBackground()
             y++;
             x = LEFT_MAX;
         }
-        drawPixel(x, y, 0);
+        drawPixelARGB32(x, y, 0);
     }
 }
 void drawLogo()
@@ -1598,7 +1599,7 @@ void drawLogo()
             yLogo++;
             xLogo = (int)((MAP_WIDTH / 2) - (widthLogo / 2));
         }
-        drawPixel(xLogo, yLogo, colorptrLogo[i]);
+        drawPixelARGB32(xLogo, yLogo, colorptrLogo[i]);
     }
 }
 
@@ -1620,7 +1621,7 @@ void drawAuthors()
             yMenu++;
             xMenu = (int)((MAP_WIDTH / 2) - (widthNames / 2));
         }
-        drawPixel(xMenu, yMenu, colorptrNames[i]);
+        drawPixelARGB32(xMenu, yMenu, colorptrNames[i]);
     }
 }
 
@@ -1641,6 +1642,6 @@ void gameWinEndDisplay()
             y++;
             x = (int)((MAP_WIDTH / 2) - (width / 2));
         }
-        drawPixel(x, y, colorptr[i]);
+        drawPixelARGB32(x, y, colorptr[i]);
     }
 }
