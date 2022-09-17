@@ -15,7 +15,6 @@
 #define QUEEN_POINTS 50
 #define QUEEN_HEALTH 3
 
-
 #define NUM_BUNKERS 3
 #define BUNKER_HEALTH 10
 
@@ -25,14 +24,14 @@
 #define VERTICAL_OFFSET 61
 
 #define ENEMIES_VERTICAL_MAX (1080 - 262 - VERTICAL_OFFSET)
-#define NUM_ENEMIES  (NUM_PAWNS + NUM_QUEENS + NUM_KNIGHTS)
+#define NUM_ENEMIES (NUM_PAWNS + NUM_QUEENS + NUM_KNIGHTS)
 
 #define PLAYER_SPEED 15
 #define VERTICAL_SPEED 30
 #define HORIZONTAL_SPEED 1
 
 #define LEFT_MAX 50
-#define RIGHT_MAX (MAP_WIDTH - 50) 
+#define RIGHT_MAX (MAP_WIDTH - 50)
 #define TOP_MAX 20
 #define BOTTOM_MAX 917
 #define MAX_BULLETS 1
@@ -55,32 +54,52 @@ static bool travel_right = true;
 bool quitGame;
 bool restartGame;
 bool pauseGame;
-typedef union {
+typedef union
+{
     int current_health;
     int player_health;
 } Health;
 
-typedef struct {
+typedef struct
+{
     float x, y;
 } Position;
 
-typedef struct {
+typedef struct
+{
     float width, height;
 } Dimension;
 
-typedef struct {
+typedef struct
+{
     float x, y;
 } Velocity;
 
-typedef struct {
+typedef struct
+{
     int score;
     bool needsUpdate;
     bool needsRender;
 } Score;
 
-typedef enum { PLAYER = 1, PAWN = 2, QUEEN = 3, BUNKER = 4,KNIGHT = 5} Type;
+typedef struct
+{
+    bool needsRender;
+    bool needsUpdate;
+    int current_stage;
+} Stage;
 
-typedef struct {
+typedef enum
+{
+    PLAYER = 1,
+    PAWN = 2,
+    QUEEN = 3,
+    BUNKER = 4,
+    KNIGHT = 5
+} Type;
+
+typedef struct
+{
     Position position;
     Position previous_pos;
     Velocity velocity;
@@ -91,7 +110,8 @@ typedef struct {
     bool active;
 } Missile;
 /* ship, alien, bunker */
-typedef struct {
+typedef struct
+{
     Velocity velocity;
     Dimension dimension;
     Position position;
@@ -105,17 +125,20 @@ typedef struct {
     bool combat_update;
     bool enabled;
 } Entity;
-typedef struct {
+typedef struct
+{
     int game_menu_option;
     bool on_gameMenu_menu;
 } GameMenu;
 
-typedef struct {
+typedef struct
+{
     bool game_start_menu;
     bool on_game_menu;
 } MainMenu;
 
-typedef struct map {
+typedef struct map
+{
     Entity player;
     Entity bunkers[NUM_BUNKERS];
     Entity enemies[NUM_ENEMIES];
@@ -125,12 +148,14 @@ typedef struct map {
     int enemies_alive;
     bool game_over;
     Score playerScore;
+    Stage stage;
     Entity life;
     GameMenu game_menu;
 
 } World;
 
-typedef struct {
+typedef struct
+{
     World world;
     bool game_win;
     bool game_over;
@@ -138,7 +163,8 @@ typedef struct {
     MainMenu main_menu;
 } Game;
 
-typedef enum {
+typedef enum
+{
     LEFT,
     RIGHT,
     UP,
@@ -154,7 +180,7 @@ void init_map(World *world);
 void init_player(Entity *player);
 void init_enemies(World *world);
 void init_life(Entity *life);
-void render(World *world);  // framebf.c
+void render(World *world); // framebf.c
 // void move_player(World *world);
 void move_player(World *world);
 
@@ -170,7 +196,7 @@ void draw_projectile(Type type, Position position, Dimension dimension);
 void clear_projectile(Position position, Dimension dimension);
 void render_health(World *world);
 
-void render_score(int num,int x, int y);
+void render_score(int num, int x, int y);
 
 void update_combat_system(World *world);
 void update_collision_system(World *world);
@@ -185,10 +211,10 @@ void update_shooters(World *world, int index);
 void drawGameMenu(World *game);
 void drawMainMenu(Game *game);
 void show_game_menu(World *world);
-void show_main_menu(Game *game) ;
-void drawScore(World *world,char *type);
+void show_main_menu(Game *game);
+void drawScore(World *world, char *type);
 void init_bunkers(Entity bunkers[]);
 void init_playerScore(Score *playerScore);
-void endScreen(bool won, World *world) ;
+void endScreen(bool won, World *world);
 void restart_game(Game *world);
 void drawSpaceShip(Entity entity, World *world);

@@ -382,3 +382,23 @@ void displayGameBackground(int x, int y){
     }
   }
 }
+
+void displayStage1(int x, int y){
+  for (int h = 0; h < stage1_height; h++)
+  {
+    for (int w = 0; w < stage1_width; w++)
+    {
+      drawPixelARGB32(x + w, y + h, stage1_image[h * stage1_width + w]);
+    }
+  }
+}
+
+void displayStage2(int x, int y){
+  for (int h = 0; h < stage2_height; h++)
+  {
+    for (int w = 0; w < stage2_width; w++)
+    {
+      drawPixelARGB32(x + w, y + h, stage2_image[h * stage2_width + w]);
+    }
+  }
+}
