@@ -305,10 +305,6 @@ void show_game_menu(World *world) {
     world->game_menu.on_gameMenu_menu = true;
     pauseGame = true;
     while (world->game_menu.on_gameMenu_menu) {
-        //    while (clock() < menu_timer)
-        //         ;
-        //     menu_timer = clock() + CLOCKS_PER_SEC / 4;
-
         drawGameMenu(world);
         char character = uart_getc_game();
         printf("\n%d", world->game_menu.game_menu_option);
@@ -978,9 +974,9 @@ void drawMainMenu(Game *game) {
     int heightMenu = main_menu_quit.height;
 
     if ((game->main_menu.game_start_menu))
-        colorptrMenu = (int *)main_menu_quit.image_pixels;
-    else
         colorptrMenu = (int *)main_menu_start.image_pixels;
+    else
+        colorptrMenu = (int *)main_menu_quit.image_pixels;
 
     int xMenu = (int)((MAP_WIDTH / 2) - (widthMenu / 2));
     int yMenu = TOP_MAX + LOGO.height;
