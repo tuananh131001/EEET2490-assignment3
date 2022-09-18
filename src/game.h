@@ -6,14 +6,17 @@
 #define NUM_PAWNS 20
 #define PAWN_POINTS 10
 #define PAWN_HEALTH 1
+#define PAWN_HEALTH_2 2
 
 #define NUM_KNIGHTS 10
 #define KNIGHT_POINTS 30
-#define KNIGHT_HEALTH 2
+#define KNIGHT_HEALTH 1
+#define KNIGHT_HEALTH_2 2
 
 #define NUM_QUEENS 10
 #define QUEEN_POINTS 50
-#define QUEEN_HEALTH 3
+#define QUEEN_HEALTH 1
+#define QUEEN_HEALTH_2 2
 
 #define NUM_BUNKERS 3
 #define BUNKER_HEALTH 10
