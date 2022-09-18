@@ -769,7 +769,8 @@ void render(World *world) {
             if (world->enemies[index].projectile[j].needs_render &&
                 world->enemies[index].enabled &&
                 world->enemies[index].projectile[j].position.y > 50 &&
-                world->enemies[index].projectile[j].position.x > 50) { // fix bug bullet from top left
+                world->enemies[index].projectile[j].position.x >
+                    50) {  // fix bug bullet from top left
                 clear_projectile(
                     world->enemies[index].projectile[j].previous_pos,
                     world->enemies[index].projectile[j].dimension);
@@ -1000,10 +1001,11 @@ void endScreen(bool won, World *world) {
     pauseGame = true;
     uart_puts("\n\n");
     uart_puts("Press o to out: \n");
-    uart_puts("Press n to go to next stage: \n");
     uart_puts("Press r to restart: \n");
     // drawBackground();
-
+    if (stage == 1 && won) {
+        uart_puts("Press n to next stage: \n");
+    }
     clear_emulator_screen(1024, 768);
 
     if (won) {
@@ -1017,6 +1019,7 @@ void endScreen(bool won, World *world) {
         drawScore(world, type);
         displayGameOverImage(300, 100);
     }
+
     while (!restartGame) {
         char character = uart_getc();
 
@@ -1257,37 +1260,6 @@ void drawCircle(int x0, int y0, int radius, unsigned char attr, int fill) {
         }
     }
 }
-
-void drawCharTest(unsigned char ch, int x, int y, unsigned char attr) {
-    // unsigned char *glyph =
-    //     (unsigned char *)&font + (ch < FONT_NUMGLYPHS ? ch : 0) * FONT_BPG;
-    //     printf("%c", *glyph);
-    // // print glyph
-    // for (int i = 0; i < FONT_HEIGHT; i++) {
-    //     for (int j = 0; j < FONT_WIDTH; j++) {
-    //         // draw pixel
-    //         if (glyph[i] & (1 << j)) { // if bit is set
-    //             drawPixel(x + j, y + i, attr);
-    //         }
-    //     }
-    // }
-    // for (int i = 0; i < FONT_HEIGHT; i++) {
-    //     for (int j = 0; j < FONT_WIDTH; j++) {
-    //         unsigned char mask = 1 << j;
-    //         unsigned char col =
-    //             (*glyph & mask) ? attr & 0x0f : (attr & 0xf0) >> 4;
-
-    //         drawPixel(x + j, y + i, col);
-    //     }
-    //     glyph += FONT_BPL;
-    // }
-}
-
-// void drawPixel(int x, int y, unsigned char attr)
-// {
-//     int offs = (y * pitch) + (x * 4);
-//     *((unsigned int *)(fb + offs)) = vgapal[attr & 0x0f];
-// }
 
 void drawBackground() {
     int width = RIGHT_MAX - LEFT_MAX;
