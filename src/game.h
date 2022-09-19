@@ -180,8 +180,8 @@ typedef enum
 void init_game(Game *world);
 void init_map(World *world);
 
-void init_player(Entity *player);
-void init_enemies(World *world);
+void init_gamer(Entity *player);
+void init_aliens(World *world);
 void init_life(Entity *life);
 void render(World *world); // framebf.c
 // void move_player(World *world);
@@ -216,8 +216,12 @@ void drawMainMenu(Game *game);
 void show_game_menu(World *world);
 void show_main_menu(Game *game);
 void drawScore(World *world, char *type);
-void init_bunkers(Entity bunkers[]);
+void create_bunkers(Entity bunkers[]) ;
 void init_playerScore(Score *playerScore);
 void endScreen(bool won, World *world);
 void restart_game(Game *world);
 void drawSpaceShip(Entity entity, World *world);
+void init_aliens_stage2(World *world);
+void init_gamer_score(Score *playerScore);
+void init_stage(Stage *stage, int stageNum);
+void drawExplosion(Entity entity);

@@ -8,6 +8,7 @@
 int wait_time_shoot = 50;
 int stage = 1;
 
+// Create new game
 void init_game(Game *world) {
     world->game_over = false;
     world->game_start = false;
@@ -24,11 +25,11 @@ void init_game(Game *world) {
 // Create the stage
 void init_map(World *world) {
     if (stage == 2) {
-        init_player(&world->player);
-        init_enemies_stage2(world);
-        init_bunkers(world->bunkers);
+        init_gamer(&world->player);
+        init_aliens_stage2(world);
+        create_bunkers(world->bunkers);
         init_stage(&world->stage, 2);
-        // init_playerScore(&world->playerScore);
+        // init_gamer_score(&world->playerScore);
         world->playerScore.needsUpdate = false;
         world->playerScore.needsRender = true;
         init_life(&world->life);
@@ -37,11 +38,11 @@ void init_map(World *world) {
         world->game_menu.on_gameMenu_menu = false;
         world->game_over = false;
     } else {
-        init_player(&world->player);
-        init_enemies(world);
+        init_gamer(&world->player);
+        init_aliens(world);
         init_stage(&world->stage, 1);
-        init_bunkers(world->bunkers);
-        init_playerScore(&world->playerScore);
+        create_bunkers(world->bunkers);
+        init_gamer_score(&world->playerScore);
         init_life(&world->life);
         world->enemies_alive = NUM_ENEMIES;
         world->game_menu.game_menu_option = 0;
@@ -49,6 +50,7 @@ void init_map(World *world) {
         world->game_over = false;
     }
 }
+// Setting the value to the stage where game is new
 void restart_game(Game *world) {
     init_map(&world->world);
     world->game_over = false;
@@ -62,7 +64,7 @@ void restart_game(Game *world) {
     quitGame = false;
 }
 // Setting the value for player
-void init_player(Entity *player) {
+void init_gamer(Entity *player) {
     player->dimension.height = 46;
     player->dimension.width = 50;
     player->position.x = (MAP_WIDTH / 2) - (player->dimension.width / 2);
@@ -78,7 +80,8 @@ void init_player(Entity *player) {
 }
 
 // Setting the value for aliens
-void init_enemies(World *world) {
+// Init the aliens in the correct position
+void init_aliens(World *world) {
     for (int i = 0, j = 0; i < NUM_ENEMIES; i++) {
         if (i < NUM_PAWNS) {
             if (i < 10) {
@@ -135,15 +138,11 @@ void init_enemies(World *world) {
             world->enemies[i].projectile[j].active = false;
     }
 
-    // for (int i = 0; i < 6; i++) {
-    //     world->left_most_enemies[i] = 10 * i;
-    //     world->right_most_enemies[i] = 10 * i + 9;
-    // }
     for (int i = 0; i < MAX_SHOOTERS; i++) {
         world->shooters[i] = i;
     }
 }
-void init_enemies_stage2(World *world) {
+void init_aliens_stage2(World *world) {
     for (int i = 0, j = 0; i < NUM_ENEMIES; i++) {
         if (i < NUM_PAWNS) {
             if (i < 10) {
@@ -200,17 +199,13 @@ void init_enemies_stage2(World *world) {
             world->enemies[i].projectile[j].active = false;
     }
 
-    // for (int i = 0; i < 6; i++) {
-    //     world->left_most_enemies[i] = 10 * i;
-    //     world->right_most_enemies[i] = 10 * i + 9;
-    // }
     for (int i = 0; i < MAX_SHOOTERS; i++) {
         world->shooters[i] = i;
     }
 }
 
 // Setting the value for bunker
-void init_bunkers(Entity bunkers[]) {
+void create_bunkers(Entity bunkers[]) {
     for (int i = 0; i < NUM_BUNKERS; i++) {
         bunkers[i].position.x = 20 + (150 * (i + 1)) + (120 * i);
         bunkers[i].position.y = (MAP_HEIGHT)-150;
@@ -921,7 +916,7 @@ void init_life(Entity *life) {
     life->needs_render = true;
 }
 
-void init_playerScore(Score *playerScore) {
+void init_gamer_score(Score *playerScore) {
     playerScore->score = 0;
     playerScore->needsUpdate = false;
     playerScore->needsRender = true;

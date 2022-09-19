@@ -29,3 +29,5 @@ void displayExplosion2(int x, int y);
 void displayGameBackground(int x, int y);
 void displayStage1(int x, int y);
 void displayStage2(int x, int y);
+void displayGameBackground(int x, int y);
+void displayBackgroundText(int x, int y);
