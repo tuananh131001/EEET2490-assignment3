@@ -275,6 +275,7 @@ void move_player(World *world) {
             } else if (character == 'p') {
                 show_game_menu(world);
             }
+            wait_msec(5000);
             // Game logic looping
             update_AI_system(world);
             update_collision_system(world);
