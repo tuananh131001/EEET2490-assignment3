@@ -8,6 +8,9 @@
 #include "helper.h"
 #include "mbox.h"
 #include "uart.h"
+bool pauseGame = false;
+bool restartGame = false;
+bool quitGame = false;
 void displayMenu();
 void main()
 {
@@ -16,6 +19,8 @@ void main()
     char str[40]; // char array to store user inputs
     int x_coordinate = 400;
     int y_coordinate = 300;
+
+
     Game game;
     uart_init();
     fb_init();
@@ -28,7 +33,7 @@ void main()
         // read each char
         uart_puts("\n\n");
 
-        uart_puts("YplOS>>> ");
+        uart_puts("YplOSv2>>> ");
 
         char command = uart_getc();
 
@@ -38,20 +43,12 @@ void main()
         if (command == '1')
         {
             clear_emulator_screen(1920, 1080);
-            // drawRect(150, 150, 400, 400, 0x03, 0);
-            // drawRect(300, 300, 350, 350, 0x2e, 1);
-
-            // drawCircle(960, 540, 250, 0x0e, 0);
-            // drawCircle(960, 540, 50, 0x13, 1);
             displayBackgroundText(0, 0);
             drawString(150, 200, "NGUYEN TUAN ANH", 0xa);
             drawString(290, 250, "S3864077", 0x3);
 
             drawString(230, 350, "VO QUOC HUY", 0x2);
             drawString(290, 400, "S3823236", 0xF);
-
-            // drawChar('A', 1920 / 2 - 200, 100, 0x0e);
-            // drawChar('B', 1920 / 2 - 200, 200, 0x0e);
         }
         else if (command == '2')
         {
