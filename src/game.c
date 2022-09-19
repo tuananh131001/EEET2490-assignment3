@@ -715,7 +715,7 @@ bool enemies_at_bottom(World *world) {
 }
 // Draw the enity using the data has set
 void render(World *world) {
-    wait_msec(1000);
+    // wait_msec(5000);
 
     for (int i = 0; i < MAX_BULLETS; i++) {
         Type type = world->player.type;
@@ -735,8 +735,7 @@ void render(World *world) {
             wait_msec(200);
             clear(world->enemies[i]);
             drawEntity(world->enemies[i]);
-
-            world->enemies[i].needs_render = true;  // false default
+            world->enemies[i].needs_render = false;  // false default
         } else if (world->enemies[i].needs_clear) {
             clear(world->enemies[i]);
             // fix bug bullet not clear
