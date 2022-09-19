@@ -715,7 +715,7 @@ bool enemies_at_bottom(World *world) {
 }
 // Draw the enity using the data has set
 void render(World *world) {
-    wait_msec(20000);
+    wait_msec(1000);
 
     for (int i = 0; i < MAX_BULLETS; i++) {
         Type type = world->player.type;
@@ -732,6 +732,7 @@ void render(World *world) {
     }
     for (int i = 0; i < NUM_ENEMIES; i++) {
         if (world->enemies[i].needs_render && world->enemies[i].enabled) {
+            wait_msec(200);
             clear(world->enemies[i]);
             drawEntity(world->enemies[i]);
 
@@ -753,7 +754,6 @@ void render(World *world) {
             drawEntity(world->bunkers[i]);
         } else if (world->bunkers[i].needs_clear) {
             clear(world->bunkers[i]);
-
             drawSpaceShip(world->player, world);
             world->bunkers[i].needs_clear = false;
         }
