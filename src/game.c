@@ -5,7 +5,7 @@
 #include "helper.h"
 #include "object.h"
 #include "printf.h"
-int wait_time_shoot = 30;
+int wait_time_shoot = 50;
 int stage = 1;
 
 void init_game(Game *world) {
@@ -256,6 +256,7 @@ void move_player(World *world) {
                 world->player.velocity.x = 0;
                 world->player.needs_update = true;
             } else if (character == ' ') {
+                wait_msec(5000);
                 entity_shoot(&world->player, UP);
             } else if (character == 'p') {
                 show_game_menu(world);
@@ -482,7 +483,7 @@ void update_player_position(World *world) {
     }
 }
 void enemy_shoot(World *world) {
-    wait_msec(100);
+    wait_msec(5000);
     int random = (rand() % 100) % 10;
     if (world->enemies[world->shooters[random]].enabled ==
         1)  // if enermy is still alive
@@ -496,7 +497,6 @@ int rand(void) {
     return (unsigned int)(next / 65536) % 32768;
 }
 void entity_shoot(Entity *entity, Direction direction) {
-    wait_msec(100);
     for (int i = 0; i < MAX_BULLETS; i++) {
         if (!entity->projectile[i].active) {
             // Initial a bullet
@@ -732,7 +732,7 @@ void render(World *world) {
     }
     for (int i = 0; i < NUM_ENEMIES; i++) {
         if (world->enemies[i].needs_render && world->enemies[i].enabled) {
-            wait_msec(200);
+            wait_msec(100);
             clear(world->enemies[i]);
             drawEntity(world->enemies[i]);
             world->enemies[i].needs_render = false;  // false default
@@ -749,6 +749,7 @@ void render(World *world) {
     }
     for (int i = 0; i < NUM_BUNKERS; i++) {
         if (world->bunkers[i].enabled) {
+            wait_msec(1000);
             clear(world->bunkers[i]);
             drawEntity(world->bunkers[i]);
         } else if (world->bunkers[i].needs_clear) {
