@@ -187,7 +187,7 @@ void render(World *world); // framebf.c
 // void move_player(World *world);
 void move_player(World *world);
 
-void update_player_position(World *world);
+void update_all_position(World *world);
 void move_entity(Entity *entity, Direction direction);
 void drawEntity(Entity entity);
 

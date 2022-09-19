@@ -22,14 +22,14 @@ void init_game(Game *world) {
     init_map(&world->world);
     fb_init();
 }
-// Create the stage
+// Create the stage of the game
 void init_map(World *world) {
+    // setting variable for stage 2
     if (stage == 2) {
         init_gamer(&world->player);
         init_aliens_stage2(world);
         create_bunkers(world->bunkers);
         init_stage(&world->stage, 2);
-        // init_gamer_score(&world->playerScore);
         world->playerScore.needsUpdate = false;
         world->playerScore.needsRender = true;
         init_life(&world->life);
@@ -38,6 +38,7 @@ void init_map(World *world) {
         world->game_menu.on_gameMenu_menu = false;
         world->game_over = false;
     } else {
+    // setting variable for stage 1
         init_gamer(&world->player);
         init_aliens(world);
         init_stage(&world->stage, 1);
@@ -63,7 +64,7 @@ void restart_game(Game *world) {
     pauseGame = false;
     quitGame = false;
 }
-// Setting the value for player
+// Setting the value for player with 3 heath and 0 score
 void init_gamer(Entity *player) {
     player->dimension.height = 46;
     player->dimension.width = 50;
@@ -79,8 +80,16 @@ void init_gamer(Entity *player) {
     player->enabled = true;
 }
 
+
+/* The code above does the following:
+1. Initializes the enemies with the appropriate sprite and health
+2. Initializes the enemies' starting position
+3. Initializes the array of shooters, which is used to determine which enemy
+has the right to shoot a projectile
+4. Initializes the array of projectiles, which is used to determine if an
+enemy has a projectile active or not
 // Setting the value for aliens
-// Init the aliens in the correct position
+// Init the aliens in the correct position */
 void init_aliens(World *world) {
     for (int i = 0, j = 0; i < NUM_ENEMIES; i++) {
         if (i < NUM_PAWNS) {
@@ -142,6 +151,7 @@ void init_aliens(World *world) {
         world->shooters[i] = i;
     }
 }
+// Like above but for stage 2 with most of enermies is knight
 void init_aliens_stage2(World *world) {
     for (int i = 0, j = 0; i < NUM_ENEMIES; i++) {
         if (i < NUM_PAWNS) {
@@ -221,7 +231,16 @@ void create_bunkers(Entity bunkers[]) {
         bunkers[i].combat_update = false;
     }
 }
-// Move player
+/* 
+1. Waits for the user to press a key on the keyboard.
+2. If the user presses the 'a' key, the player moves left.
+3. If the user presses the 'd' key, the player moves right.
+4. If the user presses the 's' key, the player moves down.
+5. If the user presses the 'w' key, the player moves up.
+6. If the user presses the 'space' key, the player shoots.
+7. If the user presses the 'p' key, the game is paused.
+8. If the user presses the 'q' key, the game is quit.
+9. If the user presses the 'r' key, the game is restarted. */
 void move_player(World *world) {
     uart_puts("Press A to move left: \n");
     uart_puts("Press D to move right: \n");
@@ -256,10 +275,11 @@ void move_player(World *world) {
             } else if (character == 'p') {
                 show_game_menu(world);
             }
+            // Game logic looping
             update_AI_system(world);
             update_collision_system(world);
             update_combat_system(world);
-            update_player_position(world);
+            update_all_position(world);
             render(world);
             if (wait_time_shoot == 50) {
                 enemy_shoot(world);
@@ -270,6 +290,12 @@ void move_player(World *world) {
     }
 }
 
+/* The code above does the following
+1. Draw the main menu
+2. Wait for the user to press a button
+3. If the user presses w, select start
+4. If the user presses s, select quit
+5. If the user presses space, start the game */
 void show_main_menu(Game *game) {
     uart_puts("Press s to move down: \n");
     uart_puts("Press w to move up: \n");
@@ -296,6 +322,7 @@ void show_main_menu(Game *game) {
         }
     }
 }
+// Menu to resume, restart or quit the game
 void show_game_menu(World *world) {
     world->game_menu.game_menu_option = 1;
     world->game_menu.on_gameMenu_menu = true;
@@ -325,12 +352,12 @@ void show_game_menu(World *world) {
                 world->player.needs_render = true;
                 pauseGame = false;
             } else if (world->game_menu.game_menu_option == 1) {
-                clear_emulator_screen(1920, 1080);
+                clear_emulator_screen(1024, 768);
                 printf("\nSELECT: Restart");
                 restartGame = true;
                 return;
             } else if (world->game_menu.game_menu_option == 0) {
-                clear_emulator_screen(1920, 1080);
+                clear_emulator_screen(1024, 768);
                 printf("\nSELECT: Quit");
                 quitGame = true;
                 return;
@@ -378,8 +405,9 @@ void move_entity(Entity *entity, Direction direction) {
             entity->needs_update = true;
     }
 }
-// void update_movement_system(World *world) {
-void update_player_position(World *world) {
+
+// Check any entity need updates it will render and clear at the new position
+void update_all_position(World *world) {
     if (world->player.needs_update) {
         world->player.previous_pos = world->player.position;
         world->player.position.x += world->player.velocity.x;
@@ -439,6 +467,7 @@ void update_player_position(World *world) {
             endScreen(0, world);
         }
     }
+    // Update position for bullets of player
     for (int i = 0; i < MAX_BULLETS; i++) {
         if (world->player.projectile[i].needs_update) {
             if (world->player.projectile[i].position.y > TOP_MAX) {
@@ -456,6 +485,7 @@ void update_player_position(World *world) {
             }
         }
     }
+    // Update position for bullet
     for (int index = 0; index < 10; index++) {
         int i = world->shooters[index];
         for (int j = 0; j < MAX_BULLETS; j++) {
@@ -477,6 +507,7 @@ void update_player_position(World *world) {
         }
     }
 }
+// shot bullet for enermy
 void enemy_shoot(World *world) {
     wait_msec(5000);
     int random = (rand() % 100) % 10;
@@ -487,10 +518,12 @@ void enemy_shoot(World *world) {
     }
 }
 unsigned long int next = 1;
+//helper function to create random index of enermy
 int rand(void) {
     next = next * 1103515245 + 12345;
     return (unsigned int)(next / 65536) % 32768;
 }
+// create bullet for player and enermy
 void entity_shoot(Entity *entity, Direction direction) {
     for (int i = 0; i < MAX_BULLETS; i++) {
         if (!entity->projectile[i].active) {
@@ -515,6 +548,7 @@ void entity_shoot(Entity *entity, Direction direction) {
         }
     }
 }
+// Update moving of enermies
 void update_AI_system(World *world) {
     /* vertical reset */
     for (int i = 0; i < NUM_ENEMIES; i++)
@@ -549,6 +583,7 @@ void update_AI_system(World *world) {
         }
     }
 }
+// Update the speed of bullet
 void move_bullet(Missile *projectile, Direction direction) {
     switch (direction) {
         case UP:
@@ -561,23 +596,7 @@ void move_bullet(Missile *projectile, Direction direction) {
             projectile->velocity.y = 0;
     }
 }
-
-void update_left_most(World *world, int index) {
-    for (int i = 0; i < 6; i++) {
-        if (world->left_most_enemies[i] == index) {
-            world->left_most_enemies[i] += 1;
-        }
-    }
-}
-
-void update_right_most(World *world, int index) {
-    for (int i = 0; i < 6; i++) {
-        if (world->right_most_enemies[i] == index) {
-            world->right_most_enemies[i] -= 1;
-        }
-    }
-}
-
+// check if bullet hit enermy or player
 bool intersectAABB(Missile *projectile, Entity *entity) {
     return projectile->position.x <
                (entity->position.x + entity->dimension.width) &&
@@ -589,6 +608,7 @@ bool intersectAABB(Missile *projectile, Entity *entity) {
                entity->position.y;
 }
 
+// when bullet hit player trigger the steep to remove the bullet and entity
 void resolve_collisions(Missile *projectile, Entity *entity) {
     bool isEnabled = entity->enabled;
     bool intersects = intersectAABB(projectile, entity);
@@ -600,7 +620,11 @@ void resolve_collisions(Missile *projectile, Entity *entity) {
         entity->combat_update = true;
     }
 }
-
+/* The code above does the following:
+1. Check if the player's projectiles are active
+2. If so, check if they collide with any of the enemies or bunkers
+3. Check if the enemies' projectiles are active
+4. If so, check if they collide with the player or any of the bunkers */
 void update_collision_system(World *world) {
     Entity *player = &world->player;
     Entity *enemy = world->enemies;
@@ -625,6 +649,10 @@ void update_collision_system(World *world) {
         }
     }
 }
+/* The code above does the following:
+1. If the index of the player is in the shooters array, then it is updated.
+2. The shooter array will now have a value that is 10 higher than the index of the player.
+3. The shooter array will have a value that is not the index of the player. */
 void update_shooters(World *world, int index) {
     for (int i = 0; i < MAX_SHOOTERS; i++) {
         if (world->shooters[i] == index) {
@@ -632,6 +660,26 @@ void update_shooters(World *world, int index) {
         }
     }
 }
+
+/* The code above does the following:
+1. Checks if the player has been hit by an enemy bullet
+2. If the player has been hit, it will display the explosion animation
+3. Then it will wait for half a second
+4. Then it will redraw the spaceship
+5. If the player has no lives left, it will end the game
+6. If the player has been hit, it will decrement the player's health by 1
+7. If the player has no health left, it will end the game
+8. Checks if any enemies have been hit by the player's bullets
+9. If an enemy has been hit, it will display the explosion animation
+10. Then it will wait for half a second
+11. Then it will update the score
+12. Then it will update the number of enemies left
+13. If there are no enemies left, it will end the game
+14. Checks if any bunkers have been hit
+15. If a bunker has been hit, it will decrement the bunker's health by 1
+16. If a bunker has no health left, it will disable the bunker
+17. If a bunker has no health left, it will move the bunker off the screen
+18. If a bunker has no health left, it will clear the bunker from the screen */
 void update_combat_system(World *world) {
     for (int i = 0; i < NUM_ENEMIES; i++) {
         if (world->enemies[i].combat_update) {
@@ -690,12 +738,10 @@ void update_combat_system(World *world) {
         }
         world->player.combat_update = false;
         if (world->player.health.current_health == 0) {
-            // clearPlayerLife(170, 20);
-            // displayScore0(170, 10);
-            // endScreen(0, world);
         }
     }
 }
+// stop enemy when it reach the bottom
 bool enemies_at_bottom(World *world) {
     int bottom_most = 0;
     for (int i = 0; i < 10; i++) {
@@ -742,6 +788,7 @@ void render(World *world) {
             world->enemies[i].needs_clear = false;
         }
     }
+    // clear and draw bunker
     for (int i = 0; i < NUM_BUNKERS; i++) {
         if (world->bunkers[i].enabled) {
             wait_msec(1000);
@@ -753,6 +800,7 @@ void render(World *world) {
             world->bunkers[i].needs_clear = false;
         }
     }
+    // clean and draw bullets
     for (int i = 0; i < MAX_SHOOTERS; i++) {
         for (int j = 0; j < MAX_BULLETS; j++) {
             int index = world->shooters[i];
@@ -775,7 +823,7 @@ void render(World *world) {
             }
         }
     }
-
+    // clear and draw player
     if (world->player.needs_render && world->player.enabled) {
         clear(world->player);
         drawSpaceShip(world->player, world);
@@ -784,15 +832,17 @@ void render(World *world) {
         clear(world->player);
         world->player.needs_clear = false;
     }
-
+    // clear and draw life
     if (world->life.needs_render) {
         render_health(world);
     }
+    // clear and draw score
     if (world->playerScore.needsRender) {
         char *type = "";
         drawScore(world, type);
         world->playerScore.needsRender = false;
     }
+    // clear and draw stage
     if (world->stage.needsRender) {
         if (world->stage.current_stage == 1) {
             displayStage1(450, 5);
@@ -802,6 +852,7 @@ void render(World *world) {
     }
 }
 
+// draw score
 void drawScore(World *world, char *type) {
     int x = 0;
     int y = 0;
@@ -852,6 +903,7 @@ void drawScore(World *world, char *type) {
     }
 }
 
+// draw health left of player
 void render_health(World *world) {
     int clife = (world->player.health.current_health);
     printf("health: %d\n", clife);
@@ -879,6 +931,7 @@ void render_health(World *world) {
     world->life.needs_render = false;
 }
 
+// clear health of player 
 void clear_health(int x, int y) {
     for (int h = 0; h < x; h++) {
         for (int w = 0; w < y; w++) {
@@ -886,7 +939,7 @@ void clear_health(int x, int y) {
         }
     }
 }
-
+// render score
 void render_score(int num, int x, int y) {
     if (num == 1)
         displayScore1(x, y);
@@ -910,24 +963,25 @@ void render_score(int num, int x, int y) {
         displayScore0(x, y);
 }
 
+// init life of 3 hearts
 void init_life(Entity *life) {
     life->health.player_health = 3;
     life->needs_update = false;
     life->needs_render = true;
 }
-
+// init score
 void init_gamer_score(Score *playerScore) {
     playerScore->score = 0;
     playerScore->needsUpdate = false;
     playerScore->needsRender = true;
 }
-
+// init stage
 void init_stage(Stage *stage, int stageNum) {
     stage->current_stage = stageNum;
     stage->needsUpdate = false;
     stage->needsRender = true;
 }
-
+//  init player
 void update_score(World *world, Type type) {
     if (type == PAWN) world->playerScore.score += PAWN_POINTS;
     if (type == KNIGHT) world->playerScore.score += KNIGHT_POINTS;
@@ -940,6 +994,7 @@ void *memcpy(void *dest, const void *src, unsigned long n) {
     }
 }
 
+// draw game menu when player press p and select resume , restart, quit
 void drawGameMenu(World *game) {
     int *colorptrMenu;
     int widthMenu = game_menu_pause.width;
@@ -963,6 +1018,7 @@ void drawGameMenu(World *game) {
         drawPixelARGB32(xMenu, yMenu, colorptrMenu[i]);
     }
 }
+// draw main menu where can select start game or exit
 void drawMainMenu(Game *game) {
     int *colorptrMenu;
     int widthMenu = main_menu_quit.width;
@@ -988,6 +1044,7 @@ void drawMainMenu(Game *game) {
     displayAuthorsImage(80, 620);
 }
 
+// announce loss or win and n to next stage
 void endScreen(bool won, World *world) {
     pauseGame = true;
     uart_puts("\n\n");
@@ -1042,18 +1099,18 @@ void endScreen(bool won, World *world) {
     return;
 }
 
+// draw a small explosion  when bullet hit enemy
 void drawExplosion(Entity entity) {
     int x = entity.position.x;
     int oldX = x;
     int y = entity.position.y;
     if (entity.type == PLAYER) {
-        uart_puts("Choó Sir");
         displayExplosion2(x, y);
     } else {
         displayExplosion(x, y);
     }
 }
-
+// draw spaceship with different level
 void drawSpaceShip(Entity entity, World *world) {
     int score = world->playerScore.score;
     int width = entity.dimension.width;
@@ -1077,7 +1134,7 @@ void drawSpaceShip(Entity entity, World *world) {
         }
     }
 }
-
+// clear the entity on screen
 void clear(Entity entity) {
     int width = entity.dimension.width;
     int height = entity.dimension.height;
@@ -1138,7 +1195,7 @@ void drawEntity(Entity entity) {
         drawPixelARGB32(x, y, colorptr[i]);
     }
 }
-
+// clear bullet
 void clear_projectile(Position position, Dimension dimension) {
     int width = dimension.width;
     int height = dimension.height;
@@ -1156,7 +1213,7 @@ void clear_projectile(Position position, Dimension dimension) {
         drawPixelARGB32(x, y, 0);
     }
 }
-
+// draw bullet
 void draw_projectile(Type type, Position position, Dimension dimension) {
     int *colorptr;
     int width = dimension.width;
@@ -1179,7 +1236,7 @@ void draw_projectile(Type type, Position position, Dimension dimension) {
         drawPixelARGB32(x, y, colorptr[i]);
     }
 }
-
+// draw score
 void drawBar(int health, int x, int y) {
     int *colorptr;
     int width = 40;
@@ -1196,7 +1253,7 @@ void drawBar(int health, int x, int y) {
         drawPixel(x, y, colorptr[i]);
     }
 }
-
+// draw line
 void drawLine(int x1, int y1, int x2, int y2, unsigned char attr) {
     int dx, dy, p, x, y;
 
@@ -1218,7 +1275,7 @@ void drawLine(int x1, int y1, int x2, int y2, unsigned char attr) {
         x++;
     }
 }
-
+// draw circle
 void drawCircle(int x0, int y0, int radius, unsigned char attr, int fill) {
     int x = radius;
     int y = 0;
@@ -1251,7 +1308,7 @@ void drawCircle(int x0, int y0, int radius, unsigned char attr, int fill) {
         }
     }
 }
-
+// draw background
 void drawBackground() {
     int width = RIGHT_MAX - LEFT_MAX;
     int height = BOTTOM_MAX - TOP_MAX + 60;
@@ -1266,6 +1323,7 @@ void drawBackground() {
         drawPixelARGB32(x, y, 0);
     }
 }
+// draw logo
 void drawLogo() {
     int *colorptrLogo = (int *)LOGO.image_pixels;
     int widthLogo = LOGO.width;
@@ -1283,7 +1341,7 @@ void drawLogo() {
         drawPixelARGB32(xLogo, yLogo, colorptrLogo[i]);
     }
 }
-
+// draw Tuan Anh name and Huy
 void drawAuthors() {
     int *colorptrNames;
     int widthNames = authors.width;
@@ -1302,7 +1360,7 @@ void drawAuthors() {
         drawPixelARGB32(xMenu, yMenu, colorptrNames[i]);
     }
 }
-
+// draw you win
 void gameWinEndDisplay() {
     int *colorptr;
     int width = game_win_logo.width;
