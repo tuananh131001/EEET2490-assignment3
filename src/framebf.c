@@ -103,23 +103,24 @@ void drawRect(int x1, int y1, int x2, int y2, unsigned char attr, int fill) {
     }
 }
 void drawChar(unsigned char ch, int x, int y, unsigned char attr) {
-    // unsigned char *glyph = (unsigned char *)&letterA;
-
-    // print glyph epd_bitmap_allArray
+    // add the index of a-z or number
     int index = (ch >= 'A' && ch <= 'Z') ? ch - 55 : ch - 48;
+    // add index of the space
     index = (ch == ' ') ? 37 : index;
     for (int i = 0; i < FONT_HEIGHT; i++) {
         for (int j = 0; j < FONT_WIDTH; j++) {
+            // get the pixel of the character
             unsigned char *glyph =
                 (unsigned char *)&epd_bitmap_allArray[index]
                                                      [i * FONT_WIDTH + j];
+            // if the pixel is white then draw the pixel with the color 
+            // otherwise skip it
             unsigned long mask = 0xffff;
             unsigned char col = (*glyph & mask) ? (attr & 0x0f) : 1;
             if (col == 1) {
                 continue;
             }
             drawPixel(x + j, y + i, col);
-            // drawPixel(x + j, y + i, letterA[i * FONT_WIDTH + j]);
         }
     }
 }
